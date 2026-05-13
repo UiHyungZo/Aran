@@ -1,14 +1,14 @@
 import Foundation
 
-struct DrugDetailResponseDTO: Decodable {
+nonisolated struct DrugDetailResponseDTO: Decodable, Sendable {
     let body: DrugDetailBodyDTO
 }
 
-struct DrugDetailBodyDTO: Decodable {
+nonisolated struct DrugDetailBodyDTO: Decodable, Sendable {
     let items: [DrugDetailItemDTO]?
 }
 
-struct DrugDetailItemDTO: Decodable {
+nonisolated struct DrugDetailItemDTO: Decodable, Sendable {
     let itemSeq: String
     let itemName: String
     let entpName: String
@@ -21,7 +21,7 @@ struct DrugDetailItemDTO: Decodable {
     let depositMethodQesitm: String?
     let itemImage: String?
 
-    func toDomain() -> Drug {
+    nonisolated func toDomain() -> Drug {
         Drug(
             itemSeq: itemSeq,
             itemName: itemName,
