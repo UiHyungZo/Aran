@@ -2,7 +2,7 @@ import UIKit
 import SwiftUI
 
 enum AranColor {
-    static let primary = Color("primaryColor")
+    static let primary = Color(uiColor: UIColor(named: "primaryColor") ?? .systemPink)
     static let secondary = Color("secondaryColor")
     static let background = Color("backgroundColor")
 
