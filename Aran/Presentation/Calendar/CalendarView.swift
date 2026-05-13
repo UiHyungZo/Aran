@@ -2,6 +2,8 @@ import SwiftUI
 
 struct CalendarView: View {
     @StateObject private var viewModel: CalendarViewModel
+    @State private var pageIndex: Int = 1
+    @State private var calendarID: UUID = UUID()
 
     init(viewModel: CalendarViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -10,45 +12,87 @@ struct CalendarView: View {
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
     private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
 
+    private static let monthFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "yyyy년 M월"
+        return f
+    }()
+
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                monthHeader
-                weekdayHeader
-                calendarGrid
-                Spacer()
+        VStack(spacing: 0) {
+            monthHeader
+            TabView(selection: $pageIndex) {
+                calendarPage(monthOffset: -1).tag(0)
+                calendarPage(monthOffset:  0).tag(1)
+                calendarPage(monthOffset: +1).tag(2)
             }
-            .navigationTitle("캘린더")
-            .sheet(isPresented: $viewModel.isDetailSheetPresented) {
-                DateDetailSheet(viewModel: viewModel)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .id(calendarID)
+            .onChange(of: pageIndex) { _, newValue in
+                guard newValue != 1 else { return }
+                viewModel.navigateMonth(by: newValue == 2 ? 1 : -1)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    calendarID = UUID()
+                    pageIndex = 1
+                }
             }
-            .alert("오류", isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { if !$0 { viewModel.errorMessage = nil } }
-            )) {
-                Button("확인") { viewModel.errorMessage = nil }
-            } message: {
-                Text(viewModel.errorMessage ?? "")
-            }
+        }
+        .sheet(isPresented: $viewModel.isDetailSheetPresented) {
+            DateDetailSheet(viewModel: viewModel)
+        }
+        .alert("오류", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("확인") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
         .task { await viewModel.loadMonthRecords() }
     }
 
     private var monthHeader: some View {
         HStack {
-            Button { viewModel.navigateMonth(by: -1) } label: {
+            Button { withAnimation { pageIndex = 0 } } label: {
                 Image(systemName: "chevron.left")
             }
             Spacer()
-            Text(viewModel.currentMonth, format: .dateTime.year().month())
+            Text(Self.monthFormatter.string(from: viewModel.currentMonth))
                 .font(AranFont.title())
             Spacer()
-            Button { viewModel.navigateMonth(by: 1) } label: {
+            Button { withAnimation { pageIndex = 2 } } label: {
                 Image(systemName: "chevron.right")
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
+    }
+
+    @ViewBuilder
+    private func calendarPage(monthOffset: Int) -> some View {
+        let month = Calendar.current.date(byAdding: .month, value: monthOffset, to: viewModel.currentMonth)!
+        let isCurrent = monthOffset == 0
+        VStack(spacing: 0) {
+            weekdayHeader
+            LazyVGrid(columns: columns, spacing: 4) {
+                ForEach(daysInMonth(for: month), id: \.self) { date in
+                    if let date {
+                        DayCell(
+                            date: date,
+                            isSelected: isCurrent && Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate),
+                            isToday: Calendar.current.isDateInToday(date),
+                            events: isCurrent ? viewModel.events(for: date) : []
+                        )
+                        .onTapGesture { if isCurrent { viewModel.selectDate(date) } }
+                    } else {
+                        Color.clear.frame(height: 44)
+                    }
+                }
+            }
+            .padding(.horizontal, 8)
+            Spacer()
+        }
     }
 
     private var weekdayHeader: some View {
@@ -63,29 +107,10 @@ struct CalendarView: View {
         .padding(.horizontal, 8)
     }
 
-    private var calendarGrid: some View {
-        LazyVGrid(columns: columns, spacing: 4) {
-            ForEach(daysInMonth(), id: \.self) { date in
-                if let date {
-                    DayCell(
-                        date: date,
-                        isSelected: Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate),
-                        isToday: Calendar.current.isDateInToday(date),
-                        events: viewModel.events(for: date)
-                    )
-                    .onTapGesture { viewModel.selectDate(date) }
-                } else {
-                    Color.clear.frame(height: 44)
-                }
-            }
-        }
-        .padding(.horizontal, 8)
-    }
-
-    private func daysInMonth() -> [Date?] {
+    private func daysInMonth(for month: Date) -> [Date?] {
         let calendar = Calendar.current
-        let range = calendar.range(of: .day, in: .month, for: viewModel.currentMonth)!
-        let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: viewModel.currentMonth))!
+        let range = calendar.range(of: .day, in: .month, for: month)!
+        let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
         let weekdayOffset = calendar.component(.weekday, from: firstDay) - 1
 
         var days: [Date?] = Array(repeating: nil, count: weekdayOffset)
