@@ -21,14 +21,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         
-        let container = try! ModelContainer(for:
+        let modelContainer = try! ModelContainer(for:
                                                 CycleRecordModel.self,
                                             MedicationModel.self,
                                             HealthRecordModel.self
         )
-        
-        let rootView = MainTabView()
-            .modelContainer(container)
+
+        let diContainer = DIContainer(modelContext: modelContainer.mainContext)
+        let rootView = MainTabView(container: diContainer)
+            .modelContainer(modelContainer)
         
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = UIHostingController(rootView: rootView)

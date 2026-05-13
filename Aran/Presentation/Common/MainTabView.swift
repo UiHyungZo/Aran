@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct MainTabView: View {
 
+    let container: DIContainer
     @State private var selectedTab: Tab = .calendar
-    @Environment(\.modelContext) private var modelContext
 
     enum Tab: CaseIterable {
         case calendar, medication, exam, drugInfo
@@ -51,11 +50,7 @@ struct MainTabView: View {
     private var contentView: some View {
         switch selectedTab {
         case .calendar:
-            CalendarView(viewModel: CalendarViewModel(
-                cycleRecordUseCase: CycleRecordUseCase(
-                    repository: CycleRecordRepository(context: modelContext)
-                )
-            ))
+            CalendarView(viewModel: container.makeCalendarViewModel())
         case .medication:
             MedicationListWrapper()
         case .exam:
