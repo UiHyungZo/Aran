@@ -37,7 +37,9 @@ struct CalendarView: View {
 
     private var calendarGridHeight: CGFloat {
         let detailH = isExpanded ? 0 : availableHeight * detailRatio
-        return max(200, availableHeight - monthHeaderH - weekdayHeaderH - dragHandleH - detailH)
+        let weeks = CGFloat(numberOfWeeks(for: viewModel.currentMonth))
+        let minH = weeks * 44 + 4 * (weeks - 1)
+        return max(minH, availableHeight - monthHeaderH - weekdayHeaderH - dragHandleH - detailH)
     }
 
     private var cellHeight: CGFloat {
@@ -220,7 +222,7 @@ struct CalendarView: View {
         let month = Calendar.current.date(byAdding: .month, value: monthOffset, to: viewModel.currentMonth)!
         let isCurrent = monthOffset == 0
         return LazyVGrid(columns: columns, spacing: 4) {
-            ForEach(daysInMonth(for: month), id: \.self) { date in
+            ForEach(Array(daysInMonth(for: month).enumerated()), id: \.offset) { _, date in
                 if let date {
                     DayCell(
                         date: date,
@@ -229,7 +231,16 @@ struct CalendarView: View {
                         events: isCurrent ? viewModel.events(for: date) : [],
                         cellHeight: cellHeight
                     )
-                    .onTapGesture { if isCurrent { viewModel.selectDate(date) } }
+                    .onTapGesture {
+                        if isCurrent {
+                            viewModel.selectDate(date)
+                            if isExpanded {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                                    isExpanded = false
+                                }
+                            }
+                        }
+                    }
                 } else {
                     Color.clear.frame(height: cellHeight)
                 }

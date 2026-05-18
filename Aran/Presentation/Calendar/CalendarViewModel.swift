@@ -40,7 +40,6 @@ final class CalendarViewModel: ObservableObject {
 
     func selectDate(_ date: Date) {
         selectedDate = date
-        isDetailSheetPresented = true
     }
 
     func navigateMonth(by value: Int) {
