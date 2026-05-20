@@ -15,11 +15,30 @@ final class DIContainer {
     private lazy var cycleRecordUseCase: CycleRecordUseCase =
         CycleRecordUseCase(repository: cycleRecordRepository)
 
+    private lazy var medicationRepository: MedicationRepositoryProtocol =
+        MedicationRepository(context: modelContext)
+
+    private lazy var notificationRepository: NotificationRepositoryProtocol =
+        NotificationManager()
+
+    private lazy var medicationUseCase: MedicationUseCase =
+        MedicationUseCase(
+            medicationRepository: medicationRepository,
+            notificationRepository: notificationRepository
+        )
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
     func makeCalendarViewModel() -> CalendarViewModel {
         CalendarViewModel(cycleRecordUseCase: cycleRecordUseCase)
+    }
+
+    func makeMedicationListViewController() -> MedicationListViewController {
+        MedicationListViewController(
+            viewModel: MedicationViewModel(medicationUseCase: medicationUseCase),
+            medicationUseCase: medicationUseCase
+        )
     }
 }
