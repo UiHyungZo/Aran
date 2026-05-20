@@ -5,20 +5,29 @@ import RxCocoa
 final class MedicationListViewController: UIViewController {
     private let viewModel: MedicationViewModel
     private let medicationUseCase: MedicationUseCase
+    private let searchDrugUseCase: SearchDrugUseCase
     private let disposeBag = DisposeBag()
 
     private let tableView = UITableView()
     private let activityIndicator = UIActivityIndicatorView(style: .medium)
+    private let emptyLabel = UILabel()
 
     private let toggleRelay = PublishRelay<Medication>()
     private let deleteRelay = PublishRelay<Medication>()
     private let viewWillAppearSubject = PublishSubject<Void>()
 
     private var medications: [Medication] = []
+    private var activeMedications: [Medication] { medications.filter(\.isEnabled) }
+    private var inactiveMedications: [Medication] { medications.filter { !$0.isEnabled } }
 
-    init(viewModel: MedicationViewModel, medicationUseCase: MedicationUseCase) {
+    init(
+        viewModel: MedicationViewModel,
+        medicationUseCase: MedicationUseCase,
+        searchDrugUseCase: SearchDrugUseCase
+    ) {
         self.viewModel = viewModel
         self.medicationUseCase = medicationUseCase
+        self.searchDrugUseCase = searchDrugUseCase
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,8 +45,8 @@ final class MedicationListViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .systemBackground
-        title = "약/주사"
+        view.backgroundColor = .secondarySystemGroupedBackground
+        title = "약 / 주사"
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
@@ -48,15 +57,25 @@ final class MedicationListViewController: UIViewController {
         tableView.register(MedicationCell.self, forCellReuseIdentifier: MedicationCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.backgroundColor = .secondarySystemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 70
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.estimatedRowHeight = 64
+        tableView.separatorStyle = .none
+        tableView.sectionHeaderTopPadding = 0
+
+        emptyLabel.text = "등록된 약/주사가 없습니다."
+        emptyLabel.font = AranFont.captionUI(13)
+        emptyLabel.textColor = .secondaryLabel
+        emptyLabel.textAlignment = .center
+        emptyLabel.isHidden = true
 
         activityIndicator.hidesWhenStopped = true
 
         view.addSubview(tableView)
+        view.addSubview(emptyLabel)
         view.addSubview(activityIndicator)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -64,6 +83,8 @@ final class MedicationListViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
@@ -81,6 +102,7 @@ final class MedicationListViewController: UIViewController {
         output.medications
             .drive(onNext: { [weak self] medications in
                 self?.medications = medications
+                self?.emptyLabel.isHidden = !medications.isEmpty
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -100,17 +122,27 @@ final class MedicationListViewController: UIViewController {
     }
 
     @objc private func addTapped() {
-        let formVM = MedicationFormViewModel(medicationUseCase: medicationUseCase)
-        let formVC = MedicationFormViewController(viewModel: formVM)
-        navigationController?.pushViewController(formVC, animated: true)
+        let searchVC = MedicationSearchViewController(
+            searchDrugUseCase: searchDrugUseCase,
+            medicationUseCase: medicationUseCase
+        )
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
+
+    private func medication(at indexPath: IndexPath) -> Medication {
+        indexPath.section == 0 ? activeMedications[indexPath.row] : inactiveMedications[indexPath.row]
     }
 }
 
 // MARK: - UITableViewDataSource
 
 extension MedicationListViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        inactiveMedications.isEmpty ? 1 : 2
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        medications.count
+        section == 0 ? activeMedications.count : inactiveMedications.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -120,12 +152,16 @@ extension MedicationListViewController: UITableViewDataSource {
         ) as? MedicationCell else {
             return UITableViewCell()
         }
-        let medication = medications[indexPath.row]
+        let medication = medication(at: indexPath)
         cell.configure(with: medication)
         cell.onToggle = { [weak self] _ in
             self?.toggleRelay.accept(medication)
         }
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        section == 0 ? "복용 중" : "중단됨"
     }
 }
 
@@ -136,7 +172,7 @@ extension MedicationListViewController: UITableViewDelegate {
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        let medication = medications[indexPath.row]
+        let medication = medication(at: indexPath)
 
         let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { [weak self] _, _, completion in
             self?.deleteRelay.accept(medication)
@@ -151,5 +187,27 @@ extension MedicationListViewController: UITableViewDelegate {
         toggleAction.backgroundColor = .systemOrange
 
         return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = section == 0 ? "복용 중" : "중단됨"
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = .secondaryLabel
+
+        let container = UIView()
+        container.backgroundColor = .secondarySystemGroupedBackground
+        container.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6)
+        ])
+        return container
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        section == 0 ? 30 : 34
     }
 }

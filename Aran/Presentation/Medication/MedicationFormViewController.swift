@@ -4,6 +4,8 @@ import RxCocoa
 
 final class MedicationFormViewController: UIViewController {
     private let viewModel: MedicationFormViewModel
+    private let initialDrugName: String
+    private let initialDosage: String
     private let disposeBag = DisposeBag()
 
     private let scrollView = UIScrollView()
@@ -17,11 +19,13 @@ final class MedicationFormViewController: UIViewController {
     private let timePicker = UIDatePicker()
     private let notificationSwitch = UISwitch()
 
-    private let saveBarButton = UIBarButtonItem(title: "저장", style: .done, target: nil, action: nil)
+    private let saveButton = UIButton(type: .system)
     private let saveTappedRelay = PublishRelay<Void>()
 
-    init(viewModel: MedicationFormViewModel) {
+    init(viewModel: MedicationFormViewModel, initialDrugName: String = "", initialDosage: String = "") {
         self.viewModel = viewModel
+        self.initialDrugName = initialDrugName
+        self.initialDosage = initialDosage
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,15 +40,30 @@ final class MedicationFormViewController: UIViewController {
     // MARK: - UI Setup
 
     private func setupUI() {
-        view.backgroundColor = .systemGroupedBackground
-        title = "약 추가"
-        navigationItem.rightBarButtonItem = saveBarButton
-        saveBarButton.isEnabled = false
+        view.backgroundColor = .systemBackground
+        title = "약 등록"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "취소",
+            style: .plain,
+            target: self,
+            action: #selector(cancelTapped)
+        )
 
         setupScrollView()
-        contentStack.addArrangedSubview(makeInfoSection())
-        contentStack.addArrangedSubview(makeTimeSection())
-        contentStack.addArrangedSubview(makeNotificationSection())
+        contentStack.addArrangedSubview(makeInfoFields())
+        contentStack.addArrangedSubview(makeTimeRows())
+        contentStack.addArrangedSubview(makeNotificationRow())
+        contentStack.addArrangedSubview(saveButton)
+
+        saveButton.setTitle("저장", for: .normal)
+        saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.setTitleColor(.secondaryLabel, for: .disabled)
+        saveButton.backgroundColor = AranColor.primaryUI
+        saveButton.layer.cornerRadius = 10
+        saveButton.isEnabled = false
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        saveButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
     }
 
     private func setupScrollView() {
@@ -59,9 +78,9 @@ final class MedicationFormViewController: UIViewController {
         ])
 
         contentStack.axis = .vertical
-        contentStack.spacing = 24
+        contentStack.spacing = 0
         contentStack.isLayoutMarginsRelativeArrangement = true
-        contentStack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 24, leading: 16, bottom: 24, trailing: 16)
+        contentStack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 14, bottom: 24, trailing: 14)
 
         scrollView.addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
@@ -76,14 +95,16 @@ final class MedicationFormViewController: UIViewController {
 
     // MARK: - Section Builders
 
-    private func makeInfoSection() -> UIView {
+    private func makeInfoFields() -> UIView {
         drugNameField.placeholder = "예: 프로게스테론"
+        drugNameField.text = initialDrugName
         drugNameField.borderStyle = .none
         drugNameField.font = AranFont.bodyUI()
         drugNameField.clearButtonMode = .whileEditing
         drugNameField.returnKeyType = .next
 
         dosageField.placeholder = "예: 100mg / 1정"
+        dosageField.text = initialDosage
         dosageField.borderStyle = .none
         dosageField.font = AranFont.bodyUI()
         dosageField.clearButtonMode = .whileEditing
@@ -91,89 +112,110 @@ final class MedicationFormViewController: UIViewController {
 
         typeSegment.selectedSegmentIndex = 0
 
-        return makeCard(title: "약 정보", rows: [
-            ("약 이름", drugNameField),
-            ("종류", typeSegment),
-            ("용량", dosageField)
+        return makeStack(rows: [
+            makeFieldRow(label: "약 이름", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
+            makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
+            makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false)
         ])
     }
 
-    private func makeTimeSection() -> UIView {
+    private func makeTimeRows() -> UIView {
         timePicker.datePickerMode = .time
         timePicker.preferredDatePickerStyle = .compact
         timePicker.tintColor = AranColor.primaryUI
         timePicker.locale = Locale(identifier: "ko_KR")
 
-        return makeCard(title: "복용 시간", rows: [
-            ("복용 시간", timePicker)
-        ])
+        let title = sectionTitle("복용 시간")
+        let row = makePlainRow(label: "복용 시간", detailView: timePicker)
+        let addLabel = UILabel()
+        addLabel.text = "+ 시간 추가"
+        addLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        addLabel.textColor = AranColor.primaryUI
+        addLabel.heightAnchor.constraint(equalToConstant: 36).isActive = true
+
+        return makeStack(rows: [title, row, addLabel])
     }
 
-    private func makeNotificationSection() -> UIView {
+    private func makeNotificationRow() -> UIView {
         notificationSwitch.onTintColor = AranColor.primaryUI
 
-        return makeCard(title: "알림", rows: [
-            ("알림 설정", notificationSwitch)
-        ])
+        let titleLabel = UILabel()
+        titleLabel.text = "알림 받기"
+        titleLabel.font = AranFont.bodyUI()
+        titleLabel.textColor = .label
+
+        let subLabel = UILabel()
+        subLabel.text = "복용 시간에 알림"
+        subLabel.font = AranFont.captionUI()
+        subLabel.textColor = .secondaryLabel
+
+        let labelStack = UIStackView(arrangedSubviews: [titleLabel, subLabel])
+        labelStack.axis = .vertical
+        labelStack.spacing = 2
+
+        return makePlainRow(labelView: labelStack, detailView: notificationSwitch)
     }
 
     // MARK: - Layout Helpers
 
-    private func makeCard(title: String, rows: [(String, UIView)]) -> UIView {
-        let headerLabel = UILabel()
-        headerLabel.text = title
-        headerLabel.font = AranFont.captionUI(13)
-        headerLabel.textColor = .secondaryLabel
-
-        let card = UIView()
-        card.backgroundColor = .secondarySystemGroupedBackground
-        card.layer.cornerRadius = 12
-        card.clipsToBounds = true
-
-        let rowStack = UIStackView()
-        rowStack.axis = .vertical
-        rowStack.spacing = 0
-
-        for (index, (label, control)) in rows.enumerated() {
-            rowStack.addArrangedSubview(makeRow(label: label, control: control))
-            if index < rows.count - 1 {
-                let sep = UIView()
-                sep.backgroundColor = .separator
-                sep.translatesAutoresizingMaskIntoConstraints = false
-                sep.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
-                rowStack.addArrangedSubview(sep)
-            }
-        }
-
-        card.addSubview(rowStack)
-        rowStack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            rowStack.topAnchor.constraint(equalTo: card.topAnchor),
-            rowStack.leadingAnchor.constraint(equalTo: card.leadingAnchor),
-            rowStack.trailingAnchor.constraint(equalTo: card.trailingAnchor),
-            rowStack.bottomAnchor.constraint(equalTo: card.bottomAnchor)
-        ])
-
-        let section = UIStackView(arrangedSubviews: [headerLabel, card])
-        section.axis = .vertical
-        section.spacing = 8
-
-        return section
+    private func makeStack(rows: [UIView]) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: rows)
+        stack.axis = .vertical
+        stack.spacing = 0
+        return stack
     }
 
-    private func makeRow(label: String, control: UIView) -> UIView {
+    private func sectionTitle(_ text: String) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = .secondaryLabel
+        label.heightAnchor.constraint(equalToConstant: 34).isActive = true
+        return label
+    }
+
+    private func makeFieldRow(label: String, control: UIView, isPrefilled: Bool) -> UIView {
+        let titleLabel = UILabel()
+        titleLabel.text = label
+        titleLabel.font = AranFont.captionUI()
+        titleLabel.textColor = .secondaryLabel
+
+        control.backgroundColor = isPrefilled
+            ? UIColor(red: 0.93, green: 0.93, blue: 1, alpha: 1)
+            : .secondarySystemGroupedBackground
+        control.layer.cornerRadius = 8
+
+        let fieldStack = UIStackView(arrangedSubviews: [titleLabel, control])
+        fieldStack.axis = .vertical
+        fieldStack.spacing = 4
+        fieldStack.isLayoutMarginsRelativeArrangement = true
+        fieldStack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+
+        control.translatesAutoresizingMaskIntoConstraints = false
+        control.heightAnchor.constraint(greaterThanOrEqualToConstant: 36).isActive = true
+        if let textField = control as? UITextField {
+            textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 1))
+            textField.leftViewMode = .always
+        }
+
+        return fieldStack
+    }
+
+    private func makePlainRow(label: String, detailView: UIView) -> UIView {
         let labelView = UILabel()
         labelView.text = label
         labelView.font = AranFont.bodyUI()
-        labelView.setContentHuggingPriority(.required, for: .horizontal)
-        labelView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return makePlainRow(labelView: labelView, detailView: detailView)
+    }
 
-        let row = UIStackView(arrangedSubviews: [labelView, control])
+    private func makePlainRow(labelView: UIView, detailView: UIView) -> UIView {
+        let row = UIStackView(arrangedSubviews: [labelView, detailView])
         row.axis = .horizontal
         row.alignment = .center
+        row.distribution = .equalSpacing
         row.spacing = 12
         row.isLayoutMarginsRelativeArrangement = true
-        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)
+        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
 
         return row
     }
@@ -197,7 +239,12 @@ final class MedicationFormViewController: UIViewController {
         let output = viewModel.transform(input: input)
 
         output.isSaveEnabled
-            .drive(saveBarButton.rx.isEnabled)
+            .drive(onNext: { [weak self] isEnabled in
+                self?.saveButton.isEnabled = isEnabled
+                self?.saveButton.backgroundColor = isEnabled
+                    ? AranColor.primaryUI
+                    : .secondarySystemGroupedBackground
+            })
             .disposed(by: disposeBag)
 
         output.saveCompleted
@@ -215,8 +262,12 @@ final class MedicationFormViewController: UIViewController {
             })
             .disposed(by: disposeBag)
 
-        saveBarButton.rx.tap
+        saveButton.rx.tap
             .bind(to: saveTappedRelay)
             .disposed(by: disposeBag)
+    }
+
+    @objc private func cancelTapped() {
+        navigationController?.popViewController(animated: true)
     }
 }

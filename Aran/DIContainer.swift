@@ -27,6 +27,12 @@ final class DIContainer {
             notificationRepository: notificationRepository
         )
 
+    private lazy var drugRepository: DrugRepositoryProtocol =
+        DrugRepository()
+
+    private lazy var searchDrugUseCase: SearchDrugUseCase =
+        SearchDrugUseCase(repository: drugRepository)
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
@@ -38,7 +44,8 @@ final class DIContainer {
     func makeMedicationListViewController() -> MedicationListViewController {
         MedicationListViewController(
             viewModel: MedicationViewModel(medicationUseCase: medicationUseCase),
-            medicationUseCase: medicationUseCase
+            medicationUseCase: medicationUseCase,
+            searchDrugUseCase: searchDrugUseCase
         )
     }
 }
