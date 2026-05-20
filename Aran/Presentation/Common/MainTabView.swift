@@ -52,7 +52,7 @@ struct MainTabView: View {
         case .calendar:
             CalendarView(viewModel: container.makeCalendarViewModel())
         case .medication:
-            MedicationListWrapper()
+            MedicationListWrapper(container: container)
         case .exam:
             ExamListWrapper()
         case .drugInfo:

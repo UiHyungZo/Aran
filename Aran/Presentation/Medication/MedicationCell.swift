@@ -26,6 +26,7 @@ final class MedicationCell: UITableViewCell {
         super.prepareForReuse()
         disposeBag = DisposeBag()
         onToggle = nil
+        bindSwitch()
     }
 
     private func setupUI() {
@@ -55,6 +56,10 @@ final class MedicationCell: UITableViewCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
         ])
 
+        bindSwitch()
+    }
+
+    private func bindSwitch() {
         enabledSwitch.rx.isOn
             .skip(1)
             .subscribe(onNext: { [weak self] isOn in self?.onToggle?(isOn) })
