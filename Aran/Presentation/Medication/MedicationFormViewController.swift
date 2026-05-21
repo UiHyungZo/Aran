@@ -16,7 +16,9 @@ final class MedicationFormViewController: UIViewController {
         items: MedicationType.allCases.map { $0.rawValue }
     )
     private let dosageField = UITextField()
-    private let timePicker = UIDatePicker()
+    private let timePickerContainer = UIStackView()
+    private var timePickers: [UIDatePicker] = []
+    private let timesRelay = BehaviorRelay<[Date]>(value: [])
     private let notificationSwitch = UISwitch()
 
     private let saveButton = UIButton(type: .system)
@@ -120,20 +122,87 @@ final class MedicationFormViewController: UIViewController {
     }
 
     private func makeTimeRows() -> UIView {
-        timePicker.datePickerMode = .time
-        timePicker.preferredDatePickerStyle = .compact
-        timePicker.tintColor = AranColor.primaryUI
-        timePicker.locale = Locale(identifier: "ko_KR")
+        timePickerContainer.axis = .vertical
+        timePickerContainer.spacing = 0
+        addTimePickerRow()
+
+        let addButton = UIButton(type: .system)
+        addButton.setTitle("+ 시간 추가", for: .normal)
+        addButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        addButton.setTitleColor(AranColor.primaryUI, for: .normal)
+        addButton.contentHorizontalAlignment = .leading
+        addButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        addButton.addTarget(self, action: #selector(addTimeTapped), for: .touchUpInside)
 
         let title = sectionTitle("복용 시간")
-        let row = makePlainRow(label: "복용 시간", detailView: timePicker)
-        let addLabel = UILabel()
-        addLabel.text = "+ 시간 추가"
-        addLabel.font = .systemFont(ofSize: 14, weight: .medium)
-        addLabel.textColor = AranColor.primaryUI
-        addLabel.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        return makeStack(rows: [title, timePickerContainer, addButton])
+    }
 
-        return makeStack(rows: [title, row, addLabel])
+    private func addTimePickerRow(date: Date = Date()) {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .time
+        picker.preferredDatePickerStyle = .compact
+        picker.tintColor = AranColor.primaryUI
+        picker.locale = Locale(identifier: "ko_KR")
+        picker.date = date
+        picker.addTarget(self, action: #selector(pickerValueChanged), for: .valueChanged)
+        timePickers.append(picker)
+
+        let label = UILabel()
+        label.text = "복용 시간"
+        label.font = AranFont.bodyUI()
+
+        let deleteButton = UIButton(type: .system)
+        deleteButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+        deleteButton.tintColor = .systemRed
+        deleteButton.isHidden = true
+        deleteButton.addTarget(self, action: #selector(deleteTimeTapped(_:)), for: .touchUpInside)
+        deleteButton.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        deleteButton.heightAnchor.constraint(equalToConstant: 24).isActive = true
+
+        let row = UIStackView(arrangedSubviews: [label, picker, deleteButton])
+        row.axis = .horizontal
+        row.alignment = .center
+        row.distribution = .equalSpacing
+        row.isLayoutMarginsRelativeArrangement = true
+        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+
+        timePickerContainer.addArrangedSubview(row)
+        updateTimesRelay()
+        refreshDeleteButtons()
+    }
+
+    private func refreshDeleteButtons() {
+        let showDelete = timePickers.count > 1
+        for row in timePickerContainer.arrangedSubviews {
+            row.subviews.last?.isHidden = !showDelete
+        }
+    }
+
+    private func updateTimesRelay() {
+        timesRelay.accept(timePickers.map { $0.date })
+    }
+
+    @objc private func addTimeTapped() {
+        guard timePickers.count < 4 else { return }
+        addTimePickerRow()
+    }
+
+    @objc private func deleteTimeTapped(_ sender: UIButton) {
+        guard let row = sender.superview,
+              let rowIndex = timePickerContainer.arrangedSubviews.firstIndex(of: row),
+              timePickers.count > 1 else { return }
+
+        timePickerContainer.removeArrangedSubview(row)
+        row.removeFromSuperview()
+        timePickers.remove(at: rowIndex)
+
+        updateTimesRelay()
+        refreshDeleteButtons()
+    }
+
+    @objc private func pickerValueChanged() {
+        updateTimesRelay()
     }
 
     private func makeNotificationRow() -> UIView {
@@ -230,7 +299,7 @@ final class MedicationFormViewController: UIViewController {
             drugNameChanged: drugNameField.rx.text.orEmpty.asObservable(),
             typeSelected: typeSelected.asObservable(),
             dosageChanged: dosageField.rx.text.orEmpty.asObservable(),
-            timesChanged: timePicker.rx.date.map { [$0] }.asObservable(),
+            timesChanged: timesRelay.asObservable(),
             startDateChanged: Observable.just(Date()),
             isNotificationEnabled: notificationSwitch.rx.isOn.asObservable(),
             saveTapped: saveTappedRelay.asObservable()
