@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                             HealthRecordModel.self
         )
 
-        let diContainer = DIContainer(modelContext: modelContainer.mainContext)
+        let diContainer = AppDIContainer(modelContainer: modelContainer)
         let rootView = MainTabView(container: diContainer)
             .modelContainer(modelContainer)
         

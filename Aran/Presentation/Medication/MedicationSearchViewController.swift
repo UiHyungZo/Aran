@@ -2,7 +2,7 @@ import UIKit
 
 final class MedicationSearchViewController: UIViewController {
     private let searchDrugUseCase: SearchDrugUseCase
-    private let medicationUseCase: MedicationUseCase
+    private let actions: MedicationSearchActions
 
     private let searchBar = UISearchBar()
     private let tableView = UITableView()
@@ -13,9 +13,9 @@ final class MedicationSearchViewController: UIViewController {
     private var drugs: [Drug] = []
     private var searchTask: Task<Void, Never>?
 
-    init(searchDrugUseCase: SearchDrugUseCase, medicationUseCase: MedicationUseCase) {
+    init(searchDrugUseCase: SearchDrugUseCase, actions: MedicationSearchActions) {
         self.searchDrugUseCase = searchDrugUseCase
-        self.medicationUseCase = medicationUseCase
+        self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -107,17 +107,11 @@ final class MedicationSearchViewController: UIViewController {
     }
 
     private func pushForm(drugName: String = "", dosage: String = "") {
-        let formVM = MedicationFormViewModel(medicationUseCase: medicationUseCase)
-        let formVC = MedicationFormViewController(
-            viewModel: formVM,
-            initialDrugName: drugName,
-            initialDosage: dosage
-        )
-        navigationController?.pushViewController(formVC, animated: true)
+        actions.showForm(drugName, dosage)
     }
 
     @objc private func closeTapped() {
-        navigationController?.popViewController(animated: true)
+        actions.close()
     }
 
     @objc private func directInputTapped() {

@@ -10,8 +10,21 @@ import SwiftUI
 import UIKit
 
 struct ExamListWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UINavigationController {
-        UINavigationController(rootViewController: ExamListViewController())
+    let container: HealthRecordSceneDIContainer
+
+    final class Coordinator {
+        var flowCoordinator: HealthRecordFlowCoordinator?
     }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeUIViewController(context: Context) -> UINavigationController {
+        let navController = UINavigationController()
+        let flow = container.makeHealthRecordFlowCoordinator(navigationController: navController)
+        context.coordinator.flowCoordinator = flow
+        flow.start()
+        return navController
+    }
+
     func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
 }

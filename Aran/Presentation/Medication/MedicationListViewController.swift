@@ -4,8 +4,7 @@ import RxCocoa
 
 final class MedicationListViewController: UIViewController {
     private let viewModel: MedicationViewModel
-    private let medicationUseCase: MedicationUseCase
-    private let searchDrugUseCase: SearchDrugUseCase
+    private let actions: MedicationListActions
     private let disposeBag = DisposeBag()
 
     private let tableView = UITableView()
@@ -20,14 +19,9 @@ final class MedicationListViewController: UIViewController {
     private var activeMedications: [Medication] { medications.filter(\.isEnabled) }
     private var inactiveMedications: [Medication] { medications.filter { !$0.isEnabled } }
 
-    init(
-        viewModel: MedicationViewModel,
-        medicationUseCase: MedicationUseCase,
-        searchDrugUseCase: SearchDrugUseCase
-    ) {
+    init(viewModel: MedicationViewModel, actions: MedicationListActions) {
         self.viewModel = viewModel
-        self.medicationUseCase = medicationUseCase
-        self.searchDrugUseCase = searchDrugUseCase
+        self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -122,11 +116,7 @@ final class MedicationListViewController: UIViewController {
     }
 
     @objc private func addTapped() {
-        let searchVC = MedicationSearchViewController(
-            searchDrugUseCase: searchDrugUseCase,
-            medicationUseCase: medicationUseCase
-        )
-        navigationController?.pushViewController(searchVC, animated: true)
+        actions.showSearch()
     }
 
     private func medication(at indexPath: IndexPath) -> Medication {

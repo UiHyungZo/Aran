@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
 
-    let container: DIContainer
+    let container: AppDIContainer
     @State private var selectedTab: Tab = .calendar
 
     enum Tab: CaseIterable {
@@ -50,11 +50,11 @@ struct MainTabView: View {
     private var contentView: some View {
         switch selectedTab {
         case .calendar:
-            CalendarView(viewModel: container.makeCalendarViewModel())
+            CalendarView(viewModel: container.calendarScene.makeCalendarViewModel())
         case .medication:
-            MedicationListWrapper(container: container)
+            MedicationListWrapper(container: container.medicationScene)
         case .exam:
-            ExamListWrapper()
+            ExamListWrapper(container: container.healthRecordScene)
         case .drugInfo:
             DrugInfoView()
         }

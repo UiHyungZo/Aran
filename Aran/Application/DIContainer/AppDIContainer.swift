@@ -1,0 +1,20 @@
+//
+//  DIContainer.swift
+//  Aran
+//
+
+import SwiftData
+
+@MainActor
+final class AppDIContainer {
+    private let modelContainer: ModelContainer
+    private var modelContext: ModelContext { modelContainer.mainContext }
+
+    lazy var calendarScene = CalendarSceneDIContainer(dependencies: .init(modelContext: modelContext))
+    lazy var medicationScene = MedicationSceneDIContainer(dependencies: .init(modelContext: modelContext))
+    lazy var healthRecordScene = HealthRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
+
+    init(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
+    }
+}
