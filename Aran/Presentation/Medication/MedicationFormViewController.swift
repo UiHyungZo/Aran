@@ -318,7 +318,7 @@ final class MedicationFormViewController: UIViewController {
 
         output.saveCompleted
             .drive(onNext: { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+                self?.dismissSelf()
             })
             .disposed(by: disposeBag)
 
@@ -337,6 +337,14 @@ final class MedicationFormViewController: UIViewController {
     }
 
     @objc private func cancelTapped() {
-        navigationController?.popViewController(animated: true)
+        dismissSelf()
+    }
+
+    private func dismissSelf() {
+        if let nav = navigationController, nav.viewControllers.first !== self {
+            nav.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
     }
 }

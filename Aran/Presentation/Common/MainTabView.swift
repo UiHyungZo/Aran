@@ -11,6 +11,7 @@ struct MainTabView: View {
 
     let container: AppDIContainer
     @State private var selectedTab: Tab = .calendar
+    @State private var drugToAdd: Drug?
 
     enum Tab: CaseIterable {
         case calendar, medication, exam, drugInfo
@@ -56,7 +57,18 @@ struct MainTabView: View {
         case .exam:
             ExamListWrapper(container: container.healthRecordScene)
         case .drugInfo:
-            DrugInfoView()
+            DrugInfoView(
+                viewModel: container.drugInfoScene.makeDrugInfoViewModel(),
+                onAddDrug: { drug in drugToAdd = drug }
+            )
+            .sheet(isPresented: Binding(
+                get: { drugToAdd != nil },
+                set: { if !$0 { drugToAdd = nil } }
+            )) {
+                if let drug = drugToAdd {
+                    MedicationFormSheet(drugName: drug.itemName, container: container.medicationScene)
+                }
+            }
         }
     }
 }

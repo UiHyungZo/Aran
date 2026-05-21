@@ -18,6 +18,10 @@ final class AppDIContainer {
         drugAPIEndpoint: appConfigurations.drugAPIEndpoint
     ))
     lazy var healthRecordScene = HealthRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
+    lazy var drugInfoScene = DrugInfoSceneDIContainer(dependencies: .init(
+        drugServiceKey: appConfigurations.drugAPIDecoding,
+        drugAPIEndpoint: appConfigurations.drugAPIEndpoint
+    ))
 
     init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer

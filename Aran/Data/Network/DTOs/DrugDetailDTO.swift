@@ -6,6 +6,19 @@ nonisolated struct DrugDetailResponseDTO: Decodable, Sendable {
 
 nonisolated struct DrugDetailBodyDTO: Decodable, Sendable {
     let items: [DrugDetailItemDTO]?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let array = try? container.decodeIfPresent([DrugDetailItemDTO].self, forKey: .items) {
+            items = array
+        } else if let single = try? container.decodeIfPresent(DrugDetailItemDTO.self, forKey: .items) {
+            items = [single]
+        } else {
+            items = nil
+        }
+    }
+
+    enum CodingKeys: String, CodingKey { case items }
 }
 
 nonisolated struct DrugDetailItemDTO: Decodable, Sendable {

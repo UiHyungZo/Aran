@@ -8,7 +8,7 @@
 import Foundation
 
 final class AppConfigurations{
-    lazy var drugAPIEndpoint: String = {
+lazy var drugAPIEndpoint: String = {
         guard let drugAPIEndpoint = Bundle.main.object(forInfoDictionaryKey: "DRUG_API_ENDPOINT") as? String else {
             fatalError("APIKey must not be emtpy")
         }
