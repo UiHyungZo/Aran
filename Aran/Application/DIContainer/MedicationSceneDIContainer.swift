@@ -11,6 +11,8 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
 
     struct Dependencies {
         let modelContext: ModelContext
+        let drugServiceKey: String
+        let drugAPIEndpoint: String
     }
 
     private let dependencies: Dependencies
@@ -28,7 +30,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         )
 
     private lazy var drugRepository: DrugRepositoryProtocol =
-        DrugRepository()
+        DrugRepository(serviceKey: dependencies.drugServiceKey, baseURL: dependencies.drugAPIEndpoint)
 
     private lazy var searchDrugUseCase: SearchDrugUseCase =
         SearchDrugUseCase(repository: drugRepository)

@@ -21,5 +21,11 @@
 			</array>
 		</dict>
 	</dict>
+	<key>DRUG_API_ENDPOINT</key>
+	<string>$(DRUG_API_ENDPOINT)</string>
+	<key>DRUG_API_DECODING</key>
+	<string>$(DRUG_API_DECODING)</string>
+	<key>DRUG_API_ENCODING</key>
+	<string>$(DRUG_API_ENCODING)</string>
 </dict>
 </plist>

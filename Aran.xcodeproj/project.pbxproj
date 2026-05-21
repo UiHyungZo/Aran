@@ -306,6 +306,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9G5T5K3BP2;
+				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
+				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
+				DRUG_API_ENDPOINT = "https://apis.data.go.kr/1471000/DrbEasyDrugInfoService";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -339,6 +342,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9G5T5K3BP2;
+				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
+				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
+				DRUG_API_ENDPOINT = "https://apis.data.go.kr/1471000/DrbEasyDrugInfoService";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
