@@ -128,7 +128,6 @@ final class ExamListCell: UITableViewCell {
             normalChip.update(count: pgt.normal)
             abnormalChip.update(count: pgt.abnormal)
             mosaicChip.update(count: pgt.mosaic)
-            normalChip.isHidden = pgt.normal == 0 && pgt.abnormal == 0 && pgt.mosaic == 0
             trailingStack.addArrangedSubview(chipStack)
         } else {
             valueLabel.text = "\(Int(summary.latestRecord.value))개"

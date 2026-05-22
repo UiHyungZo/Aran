@@ -97,22 +97,6 @@ final class ExamHistoryViewController: UIViewController {
             })
             .disposed(by: disposeBag)
 
-        output.latestSummary
-            .drive(onNext: { [weak self] summary in
-                self?.headerView.configure(latestSummary: summary, trend: nil)
-            })
-            .disposed(by: disposeBag)
-
-        output.trendText
-            .drive(onNext: { [weak self] trend in
-                // trendText는 latestSummary 이후에 별도 drive
-                if let summary = self?.headerView.currentLatest {
-                    self?.headerView.configure(latestSummary: summary, trend: trend)
-                }
-            })
-            .disposed(by: disposeBag)
-
-        // latestSummary와 trendText를 동시에 반영
         Driver.combineLatest(output.latestSummary, output.trendText)
             .drive(onNext: { [weak self] summary, trend in
                 self?.headerView.configure(latestSummary: summary, trend: trend)
