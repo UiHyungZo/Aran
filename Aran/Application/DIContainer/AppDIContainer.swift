@@ -1,5 +1,5 @@
 //
-//  DIContainer.swift
+//  AppDIContainer.swift
 //  Aran
 //
 
@@ -8,7 +8,10 @@ import SwiftData
 @MainActor
 final class AppDIContainer {
     private let modelContainer: ModelContainer
-    private var modelContext: ModelContext { modelContainer.mainContext }
+    private var modelContext: ModelContext {
+        modelContainer.mainContext
+    }
+
     private lazy var appConfigurations = AppConfigurations()
 
     lazy var calendarScene = CalendarSceneDIContainer(dependencies: .init(modelContext: modelContext))

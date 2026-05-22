@@ -1,6 +1,6 @@
-import UIKit
-import RxSwift
 import RxCocoa
+import RxSwift
+import UIKit
 
 final class MedicationCell: UITableViewCell {
     static let reuseIdentifier = "MedicationCell"
@@ -22,7 +22,10 @@ final class MedicationCell: UITableViewCell {
         setupUI()
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError()
+    }
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -41,7 +44,7 @@ final class MedicationCell: UITableViewCell {
         iconContainer.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             iconContainer.widthAnchor.constraint(equalToConstant: 36),
-            iconContainer.heightAnchor.constraint(equalToConstant: 36)
+            iconContainer.heightAnchor.constraint(equalToConstant: 36),
         ])
 
         iconLabel.font = .systemFont(ofSize: 17)
@@ -50,7 +53,7 @@ final class MedicationCell: UITableViewCell {
         iconLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             iconLabel.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
-            iconLabel.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor)
+            iconLabel.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
         ])
 
         nameLabel.font = .systemFont(ofSize: 15, weight: .semibold)
@@ -89,7 +92,7 @@ final class MedicationCell: UITableViewCell {
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
         ])
 
         bindSwitch()

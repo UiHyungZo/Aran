@@ -1,5 +1,5 @@
-import Foundation
 @testable import Aran
+import Foundation
 
 final class MockNotificationRepository: NotificationRepositoryProtocol {
     var scheduledMedications: [Medication] = []

@@ -1,10 +1,10 @@
 import Foundation
 
-nonisolated struct DrugDetailResponseDTO: Decodable, Sendable {
+nonisolated struct DrugDetailResponseDTO: Decodable {
     let body: DrugDetailBodyDTO
 }
 
-nonisolated struct DrugDetailBodyDTO: Decodable, Sendable {
+nonisolated struct DrugDetailBodyDTO: Decodable {
     let items: [DrugDetailItemDTO]?
 
     init(from decoder: Decoder) throws {
@@ -21,7 +21,7 @@ nonisolated struct DrugDetailBodyDTO: Decodable, Sendable {
     enum CodingKeys: String, CodingKey { case items }
 }
 
-nonisolated struct DrugDetailItemDTO: Decodable, Sendable {
+nonisolated struct DrugDetailItemDTO: Decodable {
     let itemSeq: String
     let itemName: String
     let entpName: String

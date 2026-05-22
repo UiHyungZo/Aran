@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct DrugDetailView: View {
-
     let drug: Drug
     let onAddDrug: (Drug) -> Void
 

@@ -1,5 +1,5 @@
-import Foundation
 import Alamofire
+import Foundation
 
 final class DrugAPIClient {
     private let session: Session

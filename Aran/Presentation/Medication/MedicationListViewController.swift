@@ -1,6 +1,6 @@
-import UIKit
-import RxSwift
 import RxCocoa
+import RxSwift
+import UIKit
 
 final class MedicationListViewController: UIViewController {
     private let viewModel: MedicationViewModel
@@ -16,8 +16,13 @@ final class MedicationListViewController: UIViewController {
     private let viewWillAppearSubject = PublishSubject<Void>()
 
     private var medications: [Medication] = []
-    private var activeMedications: [Medication] { medications.filter(\.isEnabled) }
-    private var inactiveMedications: [Medication] { medications.filter { !$0.isEnabled } }
+    private var activeMedications: [Medication] {
+        medications.filter(\.isEnabled)
+    }
+
+    private var inactiveMedications: [Medication] {
+        medications.filter { !$0.isEnabled }
+    }
 
     init(viewModel: MedicationViewModel, actions: MedicationListActions) {
         self.viewModel = viewModel
@@ -25,7 +30,10 @@ final class MedicationListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +88,7 @@ final class MedicationListViewController: UIViewController {
             emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
 
@@ -127,11 +135,11 @@ final class MedicationListViewController: UIViewController {
 // MARK: - UITableViewDataSource
 
 extension MedicationListViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in _: UITableView) -> Int {
         inactiveMedications.isEmpty ? 1 : 2
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         section == 0 ? activeMedications.count : inactiveMedications.count
     }
 
@@ -150,7 +158,7 @@ extension MedicationListViewController: UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
         section == 0 ? "복용 중" : "중단됨"
     }
 }
@@ -159,7 +167,7 @@ extension MedicationListViewController: UITableViewDataSource {
 
 extension MedicationListViewController: UITableViewDelegate {
     func tableView(
-        _ tableView: UITableView,
+        _: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
         let medication = medication(at: indexPath)
@@ -179,7 +187,7 @@ extension MedicationListViewController: UITableViewDelegate {
         return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
     }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
         label.text = section == 0 ? "복용 중" : "중단됨"
         label.font = .systemFont(ofSize: 12, weight: .semibold)
@@ -192,12 +200,12 @@ extension MedicationListViewController: UITableViewDelegate {
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
             label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
-            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6)
+            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
         ])
         return container
     }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         section == 0 ? 30 : 34
     }
 }

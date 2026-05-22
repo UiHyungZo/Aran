@@ -1,5 +1,5 @@
-import Foundation
 import Alamofire
+import Foundation
 
 enum DrugRouter: URLRequestConvertible {
     case search(keyword: String, pageNo: Int, serviceKey: String, baseURL: String)
@@ -29,7 +29,7 @@ enum DrugRouter: URLRequestConvertible {
     private var parameters: Parameters {
         var params: Parameters = [
             "serviceKey": serviceKey,
-            "type": "json"
+            "type": "json",
         ]
         switch self {
         case let .search(keyword, pageNo, _, _):

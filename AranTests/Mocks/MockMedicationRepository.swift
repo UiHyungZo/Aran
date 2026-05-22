@@ -1,5 +1,5 @@
-import Foundation
 @testable import Aran
+import Foundation
 
 final class MockMedicationRepository: MedicationRepositoryProtocol {
     var fetchAllResult: [Medication] = []

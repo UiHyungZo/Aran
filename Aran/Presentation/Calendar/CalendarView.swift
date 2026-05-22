@@ -3,7 +3,7 @@ import SwiftUI
 struct CalendarView: View {
     @StateObject private var viewModel: CalendarViewModel
     @State private var pageIndex: Int = 1
-    @State private var calendarID: UUID = UUID()
+    @State private var calendarID: UUID = .init()
     @State private var isExpanded: Bool = false
     @State private var availableHeight: CGFloat = 700
 
@@ -14,10 +14,10 @@ struct CalendarView: View {
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
     private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
 
-    private let monthHeaderH: CGFloat   = 48
+    private let monthHeaderH: CGFloat = 48
     private let weekdayHeaderH: CGFloat = 28
-    private let dragHandleH: CGFloat    = 21
-    private let detailRatio: CGFloat    = 0.38
+    private let dragHandleH: CGFloat = 21
+    private let detailRatio: CGFloat = 0.38
 
     private static let monthFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -60,7 +60,7 @@ struct CalendarView: View {
             weekdayHeader
             TabView(selection: $pageIndex) {
                 calendarPageGrid(monthOffset: -1).tag(0)
-                calendarPageGrid(monthOffset:  0).tag(1)
+                calendarPageGrid(monthOffset: 0).tag(1)
                 calendarPageGrid(monthOffset: +1).tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -207,12 +207,12 @@ struct CalendarView: View {
 
     private func eventLabel(for event: DayEvent) -> String {
         switch event {
-        case .hospitalVisit(let note):      return "병원 방문" + (note.map { " - \($0)" } ?? "")
-        case .ovulation:                    return "배란일"
-        case .periodStart:                  return "생리 시작"
-        case .embryoRetrieval(let n):       return "난자 채취 \(n)개"
-        case .embryoTransfer(let n, let t): return "\(t.rawValue) 배아 이식 \(n)개"
-        case .medication:                   return "약물 복용"
+        case let .hospitalVisit(note): return "병원 방문" + (note.map { " - \($0)" } ?? "")
+        case .ovulation: return "배란일"
+        case .periodStart: return "생리 시작"
+        case let .embryoRetrieval(n): return "난자 채취 \(n)개"
+        case let .embryoTransfer(n, t): return "\(t.rawValue) 배아 이식 \(n)개"
+        case .medication: return "약물 복용"
         }
     }
 

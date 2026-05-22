@@ -1,9 +1,8 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class DrugInfoViewModel: ObservableObject {
-
     enum ViewState {
         case initial
         case loading

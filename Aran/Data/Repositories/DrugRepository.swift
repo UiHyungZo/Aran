@@ -4,7 +4,7 @@ final class DrugRepository: DrugRepositoryProtocol {
     private let apiClient: DrugAPIClient
 
     init(serviceKey: String, baseURL: String) {
-        self.apiClient = DrugAPIClient(serviceKey: serviceKey, baseURL: baseURL)
+        apiClient = DrugAPIClient(serviceKey: serviceKey, baseURL: baseURL)
     }
 
     func search(keyword: String, pageNo: Int) async throws -> [Drug] {

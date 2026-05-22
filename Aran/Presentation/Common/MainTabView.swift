@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MainTabView: View {
-
     let container: AppDIContainer
     @State private var selectedTab: Tab = .calendar
     @State private var drugToAdd: Drug?
@@ -18,19 +17,19 @@ struct MainTabView: View {
 
         var icon: String {
             switch self {
-            case .calendar:   return "calendar"
+            case .calendar: return "calendar"
             case .medication: return "pill.fill"
-            case .exam:       return "waveform.path.ecg"
-            case .drugInfo:   return "magnifyingglass"
+            case .exam: return "waveform.path.ecg"
+            case .drugInfo: return "magnifyingglass"
             }
         }
 
         var label: String {
             switch self {
-            case .calendar:   return "캘린더"
+            case .calendar: return "캘린더"
             case .medication: return "약/주사"
-            case .exam:       return "검사"
-            case .drugInfo:   return "약 정보"
+            case .exam: return "검사"
+            case .drugInfo: return "약 정보"
             }
         }
     }
@@ -76,7 +75,6 @@ struct MainTabView: View {
 // MARK: - Custom Tab Bar
 
 private struct CustomTabBar: View {
-
     @Binding var selectedTab: MainTabView.Tab
 
     var body: some View {
@@ -96,7 +94,6 @@ private struct CustomTabBar: View {
 }
 
 private struct TabBarItem: View {
-
     let tab: MainTabView.Tab
     let isSelected: Bool
     let action: () -> Void

@@ -1,17 +1,17 @@
 import Foundation
 
-nonisolated struct DrugListResponseDTO: Decodable, Sendable {
+nonisolated struct DrugListResponseDTO: Decodable {
     let body: DrugListBodyDTO
 }
 
-nonisolated struct DrugListBodyDTO: Decodable, Sendable {
+nonisolated struct DrugListBodyDTO: Decodable {
     let items: [DrugItemDTO]?
     let totalCount: Int
     let pageNo: Int
     let numOfRows: Int
 }
 
-nonisolated struct DrugItemDTO: Decodable, Sendable {
+nonisolated struct DrugItemDTO: Decodable {
     let itemSeq: String
     let itemName: String
     let entpName: String

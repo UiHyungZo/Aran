@@ -3,12 +3,11 @@
 //  Aran
 //
 
-import UIKit
 import SwiftData
+import UIKit
 
 @MainActor
 final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencies {
-
     struct Dependencies {
         let modelContext: ModelContext
     }
@@ -19,7 +18,7 @@ final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencie
         HealthRecordRepository(context: dependencies.modelContext)
 
     private lazy var healthRecordUseCase: HealthRecordUseCase =
-        HealthRecordUseCase(repository: healthRecordRepository)
+        .init(repository: healthRecordRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -27,8 +26,32 @@ final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencie
 
     // MARK: - HealthRecordFlowCoordinatorDependencies
 
-    func makeExamListViewController() -> ExamListViewController {
-        ExamListViewController()
+    func makeExamListViewController(actions: ExamListActions) -> ExamListViewController {
+        ExamListViewController(
+            viewModel: HealthRecordViewModel(useCase: healthRecordUseCase),
+            actions: actions
+        )
+    }
+
+    func makeHealthRecordFormViewController(onSaved: @escaping () -> Void) -> UIViewController {
+        HealthRecordFormViewController(
+            viewModel: HealthRecordFormViewModel(useCase: healthRecordUseCase),
+            onSaved: onSaved
+        )
+    }
+
+    func makePGTFormViewController(onSaved: @escaping () -> Void) -> UIViewController {
+        PGTFormViewController(
+            viewModel: PGTFormViewModel(useCase: healthRecordUseCase),
+            onSaved: onSaved
+        )
+    }
+
+    func makeExamHistoryViewController(item: TestItem, actions: ExamHistoryActions) -> ExamHistoryViewController {
+        ExamHistoryViewController(
+            viewModel: ExamHistoryViewModel(useCase: healthRecordUseCase, item: item),
+            actions: actions
+        )
     }
 
     // MARK: - Flow Coordinator

@@ -1,5 +1,5 @@
-import XCTest
 @testable import Aran
+import XCTest
 
 final class MedicationUseCaseTests: XCTestCase {
     private var medicationRepo: MockMedicationRepository!

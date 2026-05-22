@@ -7,7 +7,6 @@ import SwiftData
 
 @MainActor
 final class CalendarSceneDIContainer {
-
     struct Dependencies {
         let modelContext: ModelContext
     }
@@ -18,7 +17,7 @@ final class CalendarSceneDIContainer {
         CycleRecordRepository(context: dependencies.modelContext)
 
     private lazy var cycleRecordUseCase: CycleRecordUseCase =
-        CycleRecordUseCase(repository: cycleRecordRepository)
+        .init(repository: cycleRecordRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies

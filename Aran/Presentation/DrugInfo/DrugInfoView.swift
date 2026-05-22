@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct DrugInfoView: View {
-
     @StateObject private var viewModel: DrugInfoViewModel
     let onAddDrug: (Drug) -> Void
 
@@ -102,11 +101,11 @@ struct DrugInfoView: View {
     @ViewBuilder
     private var contentView: some View {
         switch viewModel.viewState {
-        case .initial:   initialView
-        case .loading:   loadingView
-        case .results(let drugs): resultsView(drugs: drugs)
-        case .empty:     emptyView
-        case .error(let message): errorView(message: message)
+        case .initial: initialView
+        case .loading: loadingView
+        case let .results(drugs): resultsView(drugs: drugs)
+        case .empty: emptyView
+        case let .error(message): errorView(message: message)
         }
     }
 
@@ -246,7 +245,7 @@ struct DrugInfoView: View {
 
     // MARK: Error
 
-    private func errorView(message: String) -> some View {
+    private func errorView(message _: String) -> some View {
         VStack {
             Spacer()
             VStack(spacing: 10) {
@@ -262,7 +261,6 @@ struct DrugInfoView: View {
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Color.red)
                 }
-
             }
             .padding(20)
             .background(Color.red.opacity(0.07))

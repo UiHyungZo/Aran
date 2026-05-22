@@ -2,14 +2,15 @@ import SwiftUI
 import UIKit
 
 struct MedicationFormSheet: UIViewControllerRepresentable {
-
     let drugName: String
     let container: MedicationSceneDIContainer
     @Environment(\.dismiss) private var dismiss
 
     final class Coordinator {
         let dismiss: DismissAction
-        init(dismiss: DismissAction) { self.dismiss = dismiss }
+        init(dismiss: DismissAction) {
+            self.dismiss = dismiss
+        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -25,5 +26,5 @@ struct MedicationFormSheet: UIViewControllerRepresentable {
         return UINavigationController(rootViewController: vc)
     }
 
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
+    func updateUIViewController(_: UINavigationController, context _: Context) {}
 }

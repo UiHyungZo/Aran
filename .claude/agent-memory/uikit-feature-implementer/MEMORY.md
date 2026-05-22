@@ -1,0 +1,1 @@
+- [HealthRecord Feature 구현](project-healthrecord-feature.md) — 4개 화면 UIKit+RxSwift 구현 완료 패턴 기록

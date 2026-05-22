@@ -1,6 +1,6 @@
-import UIKit
-import RxSwift
 import RxCocoa
+import RxSwift
+import UIKit
 
 final class MedicationFormViewController: UIViewController {
     private let viewModel: MedicationFormViewModel
@@ -28,7 +28,8 @@ final class MedicationFormViewController: UIViewController {
     init(viewModel: MedicationFormViewModel,
          actions: MedicationFormActions,
          initialDrugName: String = "",
-         initialDosage: String = "") {
+         initialDosage: String = "")
+    {
         self.viewModel = viewModel
         self.actions = actions
         self.initialDrugName = initialDrugName
@@ -36,7 +37,10 @@ final class MedicationFormViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,7 +85,7 @@ final class MedicationFormViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
         contentStack.axis = .vertical
@@ -96,7 +100,7 @@ final class MedicationFormViewController: UIViewController {
             contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
         ])
     }
 
@@ -122,7 +126,7 @@ final class MedicationFormViewController: UIViewController {
         return makeStack(rows: [
             makeFieldRow(label: "약 이름", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
             makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
-            makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false)
+            makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false),
         ])
     }
 

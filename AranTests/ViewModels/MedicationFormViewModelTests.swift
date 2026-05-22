@@ -1,7 +1,7 @@
-import XCTest
-import RxSwift
-import RxCocoa
 @testable import Aran
+import RxCocoa
+import RxSwift
+import XCTest
 
 final class MedicationFormViewModelTests: XCTestCase {
     private var medicationRepo: MockMedicationRepository!

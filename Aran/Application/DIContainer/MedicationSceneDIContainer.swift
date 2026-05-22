@@ -3,12 +3,11 @@
 //  Aran
 //
 
-import UIKit
 import SwiftData
+import UIKit
 
 @MainActor
 final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
-
     struct Dependencies {
         let modelContext: ModelContext
         let drugServiceKey: String
@@ -24,7 +23,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         NotificationManager()
 
     private lazy var medicationUseCase: MedicationUseCase =
-        MedicationUseCase(
+        .init(
             medicationRepository: medicationRepository,
             notificationRepository: notificationRepository
         )
@@ -33,7 +32,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         DrugRepository(serviceKey: dependencies.drugServiceKey, baseURL: dependencies.drugAPIEndpoint)
 
     private lazy var searchDrugUseCase: SearchDrugUseCase =
-        SearchDrugUseCase(repository: drugRepository)
+        .init(repository: drugRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies

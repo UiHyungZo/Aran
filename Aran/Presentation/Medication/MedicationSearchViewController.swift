@@ -19,7 +19,10 @@ final class MedicationSearchViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +82,7 @@ final class MedicationSearchViewController: UIViewController {
             stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
             fallbackButton.heightAnchor.constraint(equalToConstant: 44),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
 
@@ -127,7 +130,7 @@ extension MedicationSearchViewController: UISearchBarDelegate {
 }
 
 extension MedicationSearchViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         drugs.count
     }
 
@@ -163,7 +166,10 @@ private final class SearchResultCell: UITableViewCell {
         setupUI()
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError()
+    }
 
     private func setupUI() {
         selectionStyle = .default
@@ -197,7 +203,7 @@ private final class SearchResultCell: UITableViewCell {
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             addLabel.widthAnchor.constraint(equalToConstant: 96),
-            addLabel.heightAnchor.constraint(equalToConstant: 24)
+            addLabel.heightAnchor.constraint(equalToConstant: 24),
         ])
     }
 

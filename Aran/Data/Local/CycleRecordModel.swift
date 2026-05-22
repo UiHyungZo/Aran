@@ -5,7 +5,7 @@ import SwiftData
 final class CycleRecordModel {
     @Attribute(.unique) var id: UUID
     var date: Date
-    var eventsData: Data   // JSON-encoded [DayEventDTO]
+    var eventsData: Data // JSON-encoded [DayEventDTO]
     var diaryEmoji: String?
     var diaryText: String?
 
@@ -24,7 +24,7 @@ final class CycleRecordModel {
     }
 }
 
-// Codable intermediate for DayEvent serialization
+/// Codable intermediate for DayEvent serialization
 enum DayEventDTO: Codable {
     case hospitalVisit(note: String?)
     case ovulation

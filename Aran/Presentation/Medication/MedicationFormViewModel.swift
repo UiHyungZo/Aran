@@ -1,6 +1,6 @@
 import Foundation
-import RxSwift
 import RxCocoa
+import RxSwift
 
 final class MedicationFormViewModel {
     struct Input {
@@ -40,7 +40,7 @@ final class MedicationFormViewModel {
         let isSaveEnabled = Observable
             .combineLatest(drugName, dosage) { name, dos in
                 !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-                !dos.trimmingCharacters(in: .whitespaces).isEmpty
+                    !dos.trimmingCharacters(in: .whitespaces).isEmpty
             }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: false)

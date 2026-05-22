@@ -6,6 +6,7 @@ struct HealthRecord: Identifiable {
     var value: Double
     var date: Date
     var note: String?
+    var pgtResult: PGTResult?
 }
 
 enum TestItem: String, CaseIterable {
@@ -30,6 +31,20 @@ enum TestItem: String, CaseIterable {
         case .lh: return "mIU/mL"
         case .beta_hcg: return "mIU/mL"
         case .pgt, .chromosomeCouple, .implantation: return ""
+        }
+    }
+
+    var isNumeric: Bool {
+        switch self {
+        case .pgt, .chromosomeCouple, .implantation: return false
+        default: return true
+        }
+    }
+
+    var category: String {
+        switch self {
+        case .fsh, .amh, .afc, .e2, .progesterone, .lh, .beta_hcg: return "난소 기능 검사"
+        case .pgt, .chromosomeCouple, .implantation: return "유전 / 면역 검사"
         }
     }
 }

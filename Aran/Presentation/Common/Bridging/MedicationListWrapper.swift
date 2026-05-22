@@ -8,7 +8,9 @@ struct MedicationListWrapper: UIViewControllerRepresentable {
         var flowCoordinator: MedicationFlowCoordinator?
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
     func makeUIViewController(context: Context) -> UINavigationController {
         let navController = UINavigationController()
@@ -18,5 +20,5 @@ struct MedicationListWrapper: UIViewControllerRepresentable {
         return navController
     }
 
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
+    func updateUIViewController(_: UINavigationController, context _: Context) {}
 }

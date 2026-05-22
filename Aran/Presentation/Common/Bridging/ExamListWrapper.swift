@@ -5,7 +5,6 @@
 //  Created by Iker Casillas on 5/13/26.
 //
 
-
 import SwiftUI
 import UIKit
 
@@ -16,7 +15,9 @@ struct ExamListWrapper: UIViewControllerRepresentable {
         var flowCoordinator: HealthRecordFlowCoordinator?
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
     func makeUIViewController(context: Context) -> UINavigationController {
         let navController = UINavigationController()
@@ -26,5 +27,5 @@ struct ExamListWrapper: UIViewControllerRepresentable {
         return navController
     }
 
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
+    func updateUIViewController(_: UINavigationController, context _: Context) {}
 }

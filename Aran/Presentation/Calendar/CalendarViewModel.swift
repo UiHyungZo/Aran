@@ -1,10 +1,10 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class CalendarViewModel: ObservableObject {
-    @Published var selectedDate: Date = Date()
-    @Published var currentMonth: Date = Date()
+    @Published var selectedDate: Date = .init()
+    @Published var currentMonth: Date = .init()
     @Published var cycleRecords: [Date: CycleRecord] = [:]
     @Published var selectedRecord: CycleRecord?
     @Published var isDetailSheetPresented = false
