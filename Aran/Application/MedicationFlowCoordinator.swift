@@ -17,7 +17,7 @@ struct MedicationSearchActions {
 protocol MedicationFlowCoordinatorDependencies {
     func makeMedicationListViewController(actions: MedicationListActions) -> MedicationListViewController
     func makeMedicationSearchViewController(actions: MedicationSearchActions) -> MedicationSearchViewController
-    func makeMedicationFormViewController(drugName: String, dosage: String) -> MedicationFormViewController
+    func makeMedicationFormViewController(drugName: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController
 }
 
 final class MedicationFlowCoordinator {
@@ -47,7 +47,18 @@ final class MedicationFlowCoordinator {
     }
 
     private func showForm(drugName: String, dosage: String) {
-        let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage)
+        let actions = MedicationFormActions(close: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
+        let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage, actions: actions)
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func startFormSheet(drugName: String, dosage: String) {
+        let actions = MedicationFormActions(close: { [weak self] in
+            self?.navigationController?.dismiss(animated: true)
+        })
+        let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage, actions: actions)
+        navigationController?.setViewControllers([vc], animated: false)
     }
 }

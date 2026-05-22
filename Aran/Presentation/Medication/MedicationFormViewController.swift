@@ -2,8 +2,13 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+struct MedicationFormActions {
+    let close: () -> Void
+}
+
 final class MedicationFormViewController: UIViewController {
     private let viewModel: MedicationFormViewModel
+    private let actions: MedicationFormActions
     private let initialDrugName: String
     private let initialDosage: String
     private let disposeBag = DisposeBag()
@@ -24,8 +29,9 @@ final class MedicationFormViewController: UIViewController {
     private let saveButton = UIButton(type: .system)
     private let saveTappedRelay = PublishRelay<Void>()
 
-    init(viewModel: MedicationFormViewModel, initialDrugName: String = "", initialDosage: String = "") {
+    init(viewModel: MedicationFormViewModel, actions: MedicationFormActions, initialDrugName: String = "", initialDosage: String = "") {
         self.viewModel = viewModel
+        self.actions = actions
         self.initialDrugName = initialDrugName
         self.initialDosage = initialDosage
         super.init(nibName: nil, bundle: nil)
@@ -318,7 +324,7 @@ final class MedicationFormViewController: UIViewController {
 
         output.saveCompleted
             .drive(onNext: { [weak self] in
-                self?.dismissSelf()
+                self?.actions.close()
             })
             .disposed(by: disposeBag)
 
@@ -337,14 +343,6 @@ final class MedicationFormViewController: UIViewController {
     }
 
     @objc private func cancelTapped() {
-        dismissSelf()
-    }
-
-    private func dismissSelf() {
-        if let nav = navigationController, nav.viewControllers.first !== self {
-            nav.popViewController(animated: true)
-        } else {
-            dismiss(animated: true)
-        }
+        actions.close()
     }
 }
