@@ -23,7 +23,7 @@ final class DrugAPIClient {
     func fetchDrugDetail(itemSeq: String) async throws -> Drug {
         let response = try await session
             .request(DrugRouter.detail(itemSeq: itemSeq, serviceKey: serviceKey, baseURL: baseURL))
-            .serializingDecodable(DrugDetailResponseDTO.self)
+            .serializingDecodable(DrugListResponseDTO.self)
             .value
         guard let item = response.body.items?.first else {
             throw AppError.emptyResult

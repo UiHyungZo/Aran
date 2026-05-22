@@ -14,10 +14,15 @@ struct MedicationSearchActions {
     let close: () -> Void
 }
 
+struct MedicationFormActions {
+    let onCancel: () -> Void
+    let onSaveCompleted: () -> Void
+}
+
 protocol MedicationFlowCoordinatorDependencies {
     func makeMedicationListViewController(actions: MedicationListActions) -> MedicationListViewController
     func makeMedicationSearchViewController(actions: MedicationSearchActions) -> MedicationSearchViewController
-    func makeMedicationFormViewController(drugName: String, dosage: String) -> MedicationFormViewController
+    func makeMedicationFormViewController(drugName: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController
 }
 
 final class MedicationFlowCoordinator {
@@ -47,7 +52,15 @@ final class MedicationFlowCoordinator {
     }
 
     private func showForm(drugName: String, dosage: String) {
-        let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage)
+        let actions = MedicationFormActions(
+            onCancel: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            },
+            onSaveCompleted: { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+        )
+        let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage, actions: actions)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

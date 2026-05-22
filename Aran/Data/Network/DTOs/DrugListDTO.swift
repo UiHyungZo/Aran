@@ -15,6 +15,13 @@ nonisolated struct DrugItemDTO: Decodable, Sendable {
     let itemSeq: String
     let itemName: String
     let entpName: String
+    let efcyQesitm: String?
+    let useMethodQesitm: String?
+    let atpnWarnQesitm: String?
+    let atpnQesitm: String?
+    let intrcQesitm: String?
+    let seQesitm: String?
+    let depositMethodQesitm: String?
     let itemImage: String?
 
     nonisolated func toDomain() -> Drug {
@@ -22,13 +29,13 @@ nonisolated struct DrugItemDTO: Decodable, Sendable {
             itemSeq: itemSeq,
             itemName: itemName,
             entpName: entpName,
-            efcyQesitm: nil,
-            useMethodQesitm: nil,
-            atpnWarnQesitm: nil,
-            atpnQesitm: nil,
-            intrcQesitm: nil,
-            seQesitm: nil,
-            depositMethodQesitm: nil,
+            efcyQesitm: efcyQesitm,
+            useMethodQesitm: useMethodQesitm,
+            atpnWarnQesitm: atpnWarnQesitm,
+            atpnQesitm: atpnQesitm,
+            intrcQesitm: intrcQesitm,
+            seQesitm: seQesitm,
+            depositMethodQesitm: depositMethodQesitm,
             itemImage: itemImage
         )
     }

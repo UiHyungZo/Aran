@@ -8,7 +8,7 @@ enum DrugRouter: URLRequestConvertible {
     private var path: String {
         switch self {
         case .search: return "/getDrbEasyDrugList"
-        case .detail: return "/getDrbEasyDrugInfo"
+        case .detail: return "/getDrbEasyDrugList"
         }
     }
 
