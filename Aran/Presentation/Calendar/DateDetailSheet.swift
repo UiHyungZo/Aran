@@ -5,6 +5,7 @@ struct DateDetailSheet: View {
     @State private var diaryEmoji = ""
     @State private var diaryText = ""
     @State private var isEditingDiary = false
+    @State private var selectedHealthRecord: HealthRecord?
     @Environment(\.dismiss) private var dismiss
 
     private static let dateFormatter: DateFormatter = {
@@ -34,6 +35,9 @@ struct DateDetailSheet: View {
             }
         }
         .onAppear { loadExistingDiary() }
+        .sheet(item: $selectedHealthRecord) { record in
+            HealthRecordDetailView(record: record)
+        }
     }
 
     // MARK: - 날짜 헤더
@@ -208,10 +212,15 @@ struct DateDetailSheet: View {
                                 .font(AranFont.body())
                                 .foregroundStyle(.secondary)
                         }
+                        Image(systemName: "chevron.right")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture { selectedHealthRecord = record }
                 }
             } header: {
-                SectionHeaderView(title: "검사 수치", buttonTitle: "추가") {}
+                SectionHeaderView(title: "검사 수치")
             }
         }
     }
@@ -230,8 +239,8 @@ struct DateDetailSheet: View {
 
 private struct SectionHeaderView: View {
     let title: String
-    let buttonTitle: String
-    let action: () -> Void
+    var buttonTitle: String? = nil
+    var action: (() -> Void)? = nil
 
     var body: some View {
         HStack {
@@ -239,11 +248,13 @@ private struct SectionHeaderView: View {
                 .font(AranFont.caption())
                 .foregroundStyle(.secondary)
                 .textCase(nil)
-            Spacer()
-            Button(buttonTitle, action: action)
-                .font(AranFont.caption())
-                .foregroundStyle(AranColor.primary)
-                .textCase(nil)
+            if let buttonTitle, let action {
+                Spacer()
+                Button(buttonTitle, action: action)
+                    .font(AranFont.caption())
+                    .foregroundStyle(AranColor.primary)
+                    .textCase(nil)
+            }
         }
     }
 }
@@ -273,6 +284,67 @@ private extension DayEvent {
         case let .embryoRetrieval(count): return "난자 채취 \(count)개"
         case .embryoTransfer: return "배아 이식"
         case .medication: return "약물 복용"
+        }
+    }
+}
+
+// MARK: - 검사 수치 상세보기
+
+private struct HealthRecordDetailView: View {
+    let record: HealthRecord
+    @Environment(\.dismiss) private var dismiss
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "yyyy년 M월 d일"
+        return f
+    }()
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section {
+                    LabeledContent("검사 항목", value: record.testItem.rawValue)
+                    LabeledContent("카테고리", value: record.testItem.category)
+                    LabeledContent("날짜", value: Self.dateFormatter.string(from: record.date))
+                }
+
+                if record.testItem.isNumeric {
+                    Section("수치") {
+                        LabeledContent("결과값") {
+                            Text(String(format: "%.2f", record.value))
+                                .fontWeight(.semibold)
+                            + Text(" \(record.testItem.unit)")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                if let pgt = record.pgtResult {
+                    Section("PGT 결과") {
+                        LabeledContent("정상", value: "\(pgt.normal)개")
+                        LabeledContent("비정상", value: "\(pgt.abnormal)개")
+                        LabeledContent("모자이크", value: "\(pgt.mosaic)개")
+                    }
+                }
+
+                if let note = record.note, !note.isEmpty {
+                    Section("메모") {
+                        Text(note)
+                            .font(AranFont.body())
+                            .foregroundStyle(.primary)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle(record.testItem.rawValue)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("닫기") { dismiss() }
+                }
+            }
         }
     }
 }
