@@ -26,6 +26,28 @@ struct DateDetailSheet: View {
                     }
                 }
 
+                Section("검사 수치") {
+                    let records = viewModel.healthRecordsForDate(viewModel.selectedDate)
+                    if records.isEmpty {
+                        Text("기록된 수치가 없어요")
+                            .foregroundStyle(.secondary)
+                            .font(AranFont.body())
+                    } else {
+                        ForEach(records) { record in
+                            HStack {
+                                Text(record.testItem.rawValue)
+                                    .font(AranFont.body())
+                                Spacer()
+                                if record.testItem.isNumeric {
+                                    Text(String(format: "%.2f %@", record.value, record.testItem.unit))
+                                        .font(AranFont.body())
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Section("감정 일기") {
                     TextField("이모지", text: $diaryEmoji)
                         .font(AranFont.body(24))

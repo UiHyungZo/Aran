@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol CycleRecordRepositoryProtocol {
     func fetchAll() async throws -> [CycleRecord]
     func fetch(date: Date) async throws -> CycleRecord?

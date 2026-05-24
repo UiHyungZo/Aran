@@ -6,15 +6,18 @@ final class CalendarViewModel: ObservableObject {
     @Published var selectedDate: Date = .init()
     @Published var currentMonth: Date = .init()
     @Published var cycleRecords: [Date: CycleRecord] = [:]
+    @Published var healthRecords: [Date: [HealthRecord]] = [:]
     @Published var selectedRecord: CycleRecord?
     @Published var isDetailSheetPresented = false
     @Published var errorMessage: String?
 
     private let cycleRecordUseCase: CycleRecordUseCase
+    private let healthRecordUseCase: HealthRecordUseCase
     private var cancellables = Set<AnyCancellable>()
 
-    init(cycleRecordUseCase: CycleRecordUseCase) {
+    init(cycleRecordUseCase: CycleRecordUseCase, healthRecordUseCase: HealthRecordUseCase) {
         self.cycleRecordUseCase = cycleRecordUseCase
+        self.healthRecordUseCase = healthRecordUseCase
         bindSelectedDate()
     }
 
@@ -33,9 +36,21 @@ final class CalendarViewModel: ObservableObject {
             cycleRecords = Dictionary(
                 uniqueKeysWithValues: records.map { (Calendar.current.startOfDay(for: $0.date), $0) }
             )
+
+            let health = try await healthRecordUseCase.fetchAll()
+            var grouped: [Date: [HealthRecord]] = [:]
+            for h in health {
+                let key = Calendar.current.startOfDay(for: h.date)
+                grouped[key, default: []].append(h)
+            }
+            healthRecords = grouped
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
         }
+    }
+
+    func healthRecordsForDate(_ date: Date) -> [HealthRecord] {
+        healthRecords[Calendar.current.startOfDay(for: date)] ?? []
     }
 
     func selectDate(_ date: Date) {

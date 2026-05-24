@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class CycleRecordRepository: CycleRecordRepositoryProtocol {
     private let context: ModelContext
 

@@ -102,6 +102,7 @@ struct CalendarView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .task { await viewModel.loadMonthRecords() }
+        .onAppear { Task { await viewModel.loadMonthRecords() } }
     }
 
     // MARK: - 월 헤더
@@ -229,6 +230,7 @@ struct CalendarView: View {
                         isSelected: isCurrent && Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate),
                         isToday: Calendar.current.isDateInToday(date),
                         events: isCurrent ? viewModel.events(for: date) : [],
+                        hasHealthRecord: isCurrent && !viewModel.healthRecordsForDate(date).isEmpty,
                         cellHeight: cellHeight
                     )
                     .onTapGesture {
@@ -268,6 +270,7 @@ private struct DayCell: View {
     let isSelected: Bool
     let isToday: Bool
     let events: [DayEvent]
+    let hasHealthRecord: Bool
     let cellHeight: CGFloat
 
     var body: some View {
@@ -284,6 +287,11 @@ private struct DayCell: View {
                 ForEach(Array(Set(events.map(\.dotColor)).prefix(3)), id: \.self) { colorName in
                     Circle()
                         .fill(Color(colorName))
+                        .frame(width: 5, height: 5)
+                }
+                if hasHealthRecord {
+                    Circle()
+                        .fill(Color.teal)
                         .frame(width: 5, height: 5)
                 }
             }
