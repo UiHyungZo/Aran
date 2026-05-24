@@ -59,30 +59,25 @@ Aran의 핵심 도메인:
 
 # Entity Overview
 
-| Entity             | Purpose     |
-| ------------------ | ----------- |
-| CycleRecord        | 차수별 IVF 기록  |
-| TransferRecord     | 배아이식 기록     |
-| Medication         | 복용 약        |
-| MedicationSchedule | 복용 시간       |
-| HealthRecord       | 검사 수치       |
-| DiaryEntry         | 감정 기록       |
-| Drug               | 외부 API 약 정보 |
+| Entity             | Purpose                         |
+| ------------------ | ------------------------------- |
+| CycleRecord        | 날짜별 이벤트 기록 (1일 1레코드)             |
+| DayEvent           | CycleRecord 내 이벤트 타입 (6종)        |
+| TransferRecord     | 배아이식 상세 기록 (embryoGrade, result) |
+| Medication         | 복용 약 및 주사                        |
+| MedicationSchedule | 복용 시간 및 기간                        |
+| HealthRecord       | 검사 수치 (10종)                       |
+| DiaryEntry         | 감정 기록 (CycleRecord embedded)      |
+| Drug               | 외부 API 약 정보                       |
 
 ---
 
 # CycleRecord
 
-IVF 차수 기록.
+날짜별 IVF 이벤트 기록.
 
-예시:
-
-```text id="ebyn1p"
-1차 시술
-채취 10개
-수정 7개
-동결 4개
-```
+Calendar Feature 요구사항에 따라 날짜 중심 설계를 채택.
+1개 날짜 = 1개 CycleRecord, 해당 날짜에 발생한 이벤트 목록과 감정 일기를 포함.
 
 ---
 
@@ -90,28 +85,29 @@ IVF 차수 기록.
 
 포함 정보:
 
-* 차수 번호
-* 시작일
-* 채취 개수
-* 수정 개수
-* 동결 개수
-* 배아 등급
-* 이식 기록
+* 날짜
+* 이벤트 목록 (DayEvent 배열)
+* 감정 일기 (embedded DiaryEntry)
 
 ---
 
 ## Domain Entity
 
-```swift id="6wuh79"
-struct CycleRecord {
+```swift
+struct CycleRecord: Identifiable {
     let id: UUID
-    let cycleNumber: Int
-    let startDate: Date
-    let retrievalCount: Int
-    let fertilizedCount: Int
-    let frozenCount: Int
-    let embryoGrades: [String]
-    let transfers: [TransferRecord]
+    var date: Date
+    var events: [DayEvent]
+    var diary: DiaryEntry?
+}
+
+enum DayEvent {
+    case hospitalVisit(note: String?)
+    case ovulation
+    case periodStart
+    case embryoRetrieval(count: Int)
+    case embryoTransfer(transferID: UUID)  // 상세 정보는 TransferRecord 참조
+    case medication(medicationID: UUID)
 }
 ```
 
@@ -121,8 +117,8 @@ struct CycleRecord {
 
 규칙:
 
-* IVF 흐름 중심 모델 유지
-* 계산 로직은 UseCase에서 수행
+* 날짜 중심 모델 유지 (1일 1레코드)
+* 이벤트 목록은 JSON 직렬화 (DayEventDTO)로 저장
 * UI formatting 포함 금지
 
 ---
@@ -147,14 +143,14 @@ struct CycleRecord {
 
 ## Domain Entity
 
-```swift id="jlwmvv"
-struct TransferRecord {
+```swift
+struct TransferRecord: Identifiable {
     let id: UUID
-    let transferDate: Date
-    let embryoGrade: String
-    let embryoCount: Int
-    let isFresh: Bool
-    let result: TransferResult
+    var date: Date
+    var embryoGrade: String
+    var embryoCount: Int
+    var transferType: TransferType  // fresh / frozen
+    var result: TransferResult
 }
 ```
 
@@ -162,15 +158,20 @@ struct TransferRecord {
 
 ## TransferResult
 
-예시:
-
-```swift id="iut4mz"
-enum TransferResult {
-    case pending
-    case success
-    case failed
+```swift
+enum TransferResult: String {
+    case pending = "대기"
+    case success = "성공"
+    case failed = "실패"
 }
 ```
+
+---
+
+## Note
+
+CycleRecord의 `DayEvent.embryoTransfer(transferID:)`가 이 레코드를 UUID로 참조.
+Calendar에서 이벤트 점(dot)을 표시하고, 상세 화면에서 TransferRecord를 별도 로드.
 
 ---
 
@@ -194,16 +195,27 @@ enum TransferResult {
 
 ## Domain Entity
 
-```swift id="zjlwmg"
-struct Medication {
+```swift
+struct Medication: Identifiable {
     let id: UUID
-    let name: String
-    let dosage: String
-    let component: String?
-    let isActive: Bool
-    let schedules: [MedicationSchedule]
+    var drugName: String
+    var dosage: String
+    var type: MedicationType   // 경구 / 주사 / 패치 / 기타
+    var schedule: MedicationSchedule
+    var isEnabled: Bool
+    var notificationIDs: [String]
+    var createdAt: Date
+}
+
+enum MedicationType: String, CaseIterable {
+    case oral = "경구"
+    case injection = "주사"
+    case patch = "패치"
+    case other = "기타"
 }
 ```
+
+> component(성분명)는 Phase 2 확장 예정.
 
 ---
 
@@ -235,15 +247,15 @@ Medication과 MedicationSchedule을 분리한다.
 
 ## Domain Entity
 
-```swift id="t8f6pw"
+```swift
 struct MedicationSchedule {
-    let id: UUID
-    let hour: Int
-    let minute: Int
-    let isNotificationEnabled: Bool
-    let notificationId: String
+    var times: [Date]       // 복용 시간 목록 (날짜 부분 무시, 시간만 사용)
+    var startDate: Date
+    var endDate: Date?
 }
 ```
+
+notificationIDs는 Medication 레벨에서 flat 배열로 관리.
 
 ---
 
@@ -251,9 +263,9 @@ struct MedicationSchedule {
 
 규칙:
 
-* notificationId는 schedule 단위 관리
+* notificationIDs는 Medication 삭제 시 함께 제거
 * 수정 시 기존 notification 제거 후 재등록
-* Medication 삭제 시 schedule 함께 제거
+* schedule별 개별 ON/OFF는 Phase 2에서 구현 예정
 
 ---
 
@@ -276,29 +288,41 @@ struct MedicationSchedule {
 
 ## Domain Entity
 
-```swift id="0e7u0w"
-struct HealthRecord {
+```swift
+struct HealthRecord: Identifiable {
     let id: UUID
-    let recordDate: Date
-    let type: HealthRecordType
-    let value: String
-    let memo: String?
+    var testItem: TestItem
+    var value: Double           // 수치 (수치 연산 가능하도록 Double 사용)
+    var date: Date
+    var note: String?
+    var pgtResult: PGTResult?   // PGT 검사 전용 추가 결과
+}
+
+struct PGTResult {
+    var normal: Int
+    var abnormal: Int
+    var mosaic: Int
 }
 ```
 
 ---
 
-## HealthRecordType
+## TestItem
 
-예시:
+10종 검사 항목 지원.
 
-```swift id="9o2dpr"
-enum HealthRecordType {
-    case fsh
-    case amh
-    case afc
-    case e2
-    case progesterone
+```swift
+enum TestItem: String, CaseIterable {
+    case fsh = "FSH"
+    case amh = "AMH"
+    case afc = "AFC"
+    case e2 = "E2"
+    case progesterone = "P4"
+    case lh = "LH"
+    case beta_hcg = "β-hCG"
+    case pgt = "PGT"
+    case chromosomeCouple = "부부염색체"
+    case implantation = "착상 관련"
 }
 ```
 
@@ -316,7 +340,11 @@ enum HealthRecordType {
 
 # DiaryEntry
 
-감정 기록.
+감정 기록. CycleRecord에 embedded.
+
+날짜별로 1개의 감정 기록을 저장. 독립 Entity가 아니라 CycleRecord 내부 struct로 관리.
+
+이유: 날짜 기준 조회로 충분하고 EmotionType enum보다 자유로운 emoji 입력이 UX에 더 적합.
 
 ---
 
@@ -324,38 +352,21 @@ enum HealthRecordType {
 
 포함 정보:
 
-* 날짜
-* 감정 상태
-* 텍스트 내용
+* 이모지 (선택)
+* 텍스트
 
 ---
 
 ## Domain Entity
 
-```swift id="j8jz5t"
+```swift
 struct DiaryEntry {
-    let id: UUID
-    let date: Date
-    let emotion: EmotionType
-    let content: String
+    var emoji: String?
+    var text: String
 }
 ```
 
----
-
-## EmotionType
-
-예시:
-
-```swift id="d72o5d"
-enum EmotionType {
-    case happy
-    case anxious
-    case sad
-    case hopeful
-    case tired
-}
-```
+날짜 정보는 상위 CycleRecord.date에서 관리.
 
 ---
 
@@ -456,15 +467,16 @@ MedicationSchedule
 
 관계:
 
-```text id="7tl7pa"
-CycleRecord
-1:N
-TransferRecord
+```text
+CycleRecord.events[.embryoTransfer(transferID: UUID)]
+    → TransferRecord (UUID 참조)
 ```
 
 이유:
 
-* 차수별 여러 이식 기록 관리 가능
+* CycleRecord는 날짜 중심 이벤트 모델 (Calendar용)
+* TransferRecord는 배아이식 상세 데이터 저장소
+* 두 모델은 UUID로 느슨하게 연결 (SwiftData 직접 relationship 미사용)
 
 ---
 

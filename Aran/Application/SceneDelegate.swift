@@ -18,10 +18,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        let modelContainer = try! ModelContainer(for:
-            CycleRecordModel.self,
-            MedicationModel.self,
-            HealthRecordModel.self)
+        let modelContainer: ModelContainer
+        do {
+            modelContainer = try ModelContainer(for:
+                CycleRecordModel.self,
+                MedicationModel.self,
+                HealthRecordModel.self,
+                TransferRecordModel.self)
+        } catch {
+            fatalError("ModelContainer 초기화 실패: \(error)")
+        }
 
         let diContainer = AppDIContainer(modelContainer: modelContainer)
         let rootView = MainTabView(container: diContainer)

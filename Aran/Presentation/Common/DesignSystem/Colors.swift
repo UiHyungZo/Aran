@@ -12,6 +12,7 @@ enum AranColor {
     static let dotRetrieval = Color("dotRetrieval")
     static let dotTransfer = Color("dotTransfer")
     static let dotMedication = Color("dotMedication")
+    static let dotHealthRecord = Color("dotHealthRecord")
 
     // UIKit variants
     static let primaryUI = UIColor(named: "primaryColor") ?? .systemPink

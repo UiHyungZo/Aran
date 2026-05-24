@@ -1,6 +1,5 @@
 import Foundation
 
-@MainActor
 protocol HealthRecordRepositoryProtocol {
     func fetchAll() async throws -> [HealthRecord]
     func fetch(item: TestItem) async throws -> [HealthRecord]

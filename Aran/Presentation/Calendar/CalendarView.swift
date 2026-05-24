@@ -18,6 +18,7 @@ struct CalendarView: View {
     private let weekdayHeaderH: CGFloat = 28
     private let dragHandleH: CGFloat = 21
     private let detailRatio: CGFloat = 0.38
+    private let dotLegendH: CGFloat = 22
 
     private static let monthFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -36,7 +37,7 @@ struct CalendarView: View {
     // MARK: - 높이 계산
 
     private var calendarGridHeight: CGFloat {
-        let detailH = isExpanded ? 0 : availableHeight * detailRatio
+        let detailH = isExpanded ? dotLegendH : availableHeight * detailRatio
         let weeks = CGFloat(numberOfWeeks(for: viewModel.currentMonth))
         let minH = weeks * 44 + 4 * (weeks - 1)
         return max(minH, availableHeight - monthHeaderH - weekdayHeaderH - dragHandleH - detailH)
@@ -77,6 +78,10 @@ struct CalendarView: View {
 
             dragHandle
 
+            dotLegend
+                .padding(.horizontal, 16)
+                .padding(.top, 4)
+
             if !isExpanded {
                 inlineDateDetail
                     .transition(.opacity)
@@ -102,7 +107,6 @@ struct CalendarView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .task { await viewModel.loadMonthRecords() }
-        .onAppear { Task { await viewModel.loadMonthRecords() } }
     }
 
     // MARK: - 월 헤더
@@ -163,64 +167,109 @@ struct CalendarView: View {
             )
     }
 
+    // MARK: - 색상 범례
+
+    private var dotLegend: some View {
+        HStack(spacing: 12) {
+            legendItem(color: AranColor.dotHospital, label: "병원")
+            legendItem(color: AranColor.dotTransfer, label: "이식일")
+            legendItem(color: AranColor.dotMedication, label: "약 알림")
+            legendItem(color: AranColor.dotHealthRecord, label: "검사")
+            Spacer()
+        }
+    }
+
+    private func legendItem(color: Color, label: String) -> some View {
+        HStack(spacing: 4) {
+            Circle().fill(color).frame(width: 7, height: 7)
+            Text(label).font(AranFont.caption()).foregroundStyle(.secondary)
+        }
+    }
+
     // MARK: - 인라인 날짜 상세
 
     private var inlineDateDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
-            Text(selectedDateLabel)
-                .font(AranFont.body(15))
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
+                .padding(.top, 8)
+
+            HStack {
+                Text(selectedDateLabel)
+                    .font(AranFont.body(15))
+                    .fontWeight(.medium)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
 
             let dayEvents = viewModel.events(for: viewModel.selectedDate)
-            if dayEvents.isEmpty {
+            let meds = viewModel.medications(for: viewModel.selectedDate)
+            let healthRecs = viewModel.healthRecords(for: viewModel.selectedDate)
+            let hasAny = !dayEvents.isEmpty || !meds.isEmpty || !healthRecs.isEmpty
+
+            if hasAny {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(Array(dayEvents.enumerated()), id: \.offset) { _, event in
+                            inlineEventRow(event)
+                        }
+                        if !meds.isEmpty {
+                            HStack(spacing: 8) {
+                                Circle()
+                                    .fill(AranColor.dotMedication)
+                                    .frame(width: 7, height: 7)
+                                Text("약물 복용 \(meds.count)개")
+                                    .font(AranFont.body(14))
+                            }
+                        }
+                        if !healthRecs.isEmpty {
+                            HStack(spacing: 8) {
+                                Circle()
+                                    .fill(AranColor.dotHealthRecord)
+                                    .frame(width: 7, height: 7)
+                                Text("검사 수치 \(healthRecs.count)건")
+                                    .font(AranFont.body(14))
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+                }
+            } else {
                 Text("일정이 없습니다.")
                     .font(AranFont.caption())
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 16)
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 6) {
-                        ForEach(Array(dayEvents.enumerated()), id: \.offset) { _, event in
-                            HStack(spacing: 8) {
-                                Circle()
-                                    .fill(Color(event.dotColor))
-                                    .frame(width: 8, height: 8)
-                                Text(eventLabel(for: event))
-                                    .font(AranFont.body(14))
-                            }
-                            .padding(.horizontal, 16)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
             }
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .onTapGesture { viewModel.isDetailSheetPresented = true }
+    }
+
+    private func inlineEventRow(_ event: DayEvent) -> some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(Color(event.dotColor))
+                .frame(width: 7, height: 7)
+            Text(event.inlineTitle)
+                .font(AranFont.body(14))
+                .lineLimit(1)
+        }
     }
 
     private var selectedDateLabel: String {
         Self.detailDateFormatter.string(from: viewModel.selectedDate)
     }
 
-    private func eventLabel(for event: DayEvent) -> String {
-        switch event {
-        case let .hospitalVisit(note): return "병원 방문" + (note.map { " - \($0)" } ?? "")
-        case .ovulation: return "배란일"
-        case .periodStart: return "생리 시작"
-        case let .embryoRetrieval(n): return "난자 채취 \(n)개"
-        case let .embryoTransfer(n, t): return "\(t.rawValue) 배아 이식 \(n)개"
-        case .medication: return "약물 복용"
-        }
-    }
-
     // MARK: - 캘린더 그리드 (요일 헤더 제외)
 
     private func calendarPageGrid(monthOffset: Int) -> some View {
-        let month = Calendar.current.date(byAdding: .month, value: monthOffset, to: viewModel.currentMonth)!
+        let month = Calendar.current.date(byAdding: .month, value: monthOffset, to: viewModel.currentMonth) ?? viewModel.currentMonth
         let isCurrent = monthOffset == 0
         return LazyVGrid(columns: columns, spacing: 4) {
             ForEach(Array(daysInMonth(for: month).enumerated()), id: \.offset) { _, date in
@@ -230,7 +279,7 @@ struct CalendarView: View {
                         isSelected: isCurrent && Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate),
                         isToday: Calendar.current.isDateInToday(date),
                         events: isCurrent ? viewModel.events(for: date) : [],
-                        hasHealthRecord: isCurrent && !viewModel.healthRecordsForDate(date).isEmpty,
+                        hasHealthRecord: isCurrent && !viewModel.healthRecords(for: date).isEmpty,
                         cellHeight: cellHeight
                     )
                     .onTapGesture {
@@ -253,8 +302,9 @@ struct CalendarView: View {
 
     private func daysInMonth(for month: Date) -> [Date?] {
         let calendar = Calendar.current
-        let range = calendar.range(of: .day, in: .month, for: month)!
-        let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
+        guard let range = calendar.range(of: .day, in: .month, for: month),
+              let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: month))
+        else { return [] }
         let weekdayOffset = calendar.component(.weekday, from: firstDay) - 1
 
         var days: [Date?] = Array(repeating: nil, count: weekdayOffset)
@@ -291,12 +341,25 @@ private struct DayCell: View {
                 }
                 if hasHealthRecord {
                     Circle()
-                        .fill(Color.teal)
+                        .fill(AranColor.dotHealthRecord)
                         .frame(width: 5, height: 5)
                 }
             }
             .frame(height: 6)
         }
         .frame(height: cellHeight)
+    }
+}
+
+private extension DayEvent {
+    var inlineTitle: String {
+        switch self {
+        case let .hospitalVisit(note): return "병원 방문" + (note.map { " — \($0)" } ?? "")
+        case .ovulation: return "배란일"
+        case .periodStart: return "생리 시작"
+        case let .embryoRetrieval(n): return "난자 채취 \(n)개"
+        case .embryoTransfer: return "배아 이식"
+        case .medication: return "약물 복용"
+        }
     }
 }

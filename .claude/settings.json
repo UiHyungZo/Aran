@@ -1,16 +1,5 @@
 {
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "mkdir -p .claude/logs && (git diff --name-only | grep -E '\\.swift$' | grep -q . && nohup bash -lc 'swiftformat . && swiftlint' > .claude/logs/post-tool-use.log 2>&1 &)"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "*",
