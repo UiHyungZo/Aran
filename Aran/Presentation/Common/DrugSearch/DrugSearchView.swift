@@ -33,6 +33,21 @@ struct DrugSearchView: View {
                 Divider()
                 contentView
             }
+            .safeAreaInset(edge: .bottom) {
+                if mode == .register {
+                    Button {
+                        onRegisterDrug("", "")
+                    } label: {
+                        Text("찾는 약이 없나요? 직접 입력하기")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundStyle(AranColor.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(.regularMaterial)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -194,7 +209,7 @@ struct DrugSearchView: View {
     private func resultsView(drugs: [Drug]) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("검색 결과 \(drugs.count)건 · e약은요 API")
+                Text("검색 결과 \(drugs.count)건")
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 20)
@@ -224,26 +239,16 @@ struct DrugSearchView: View {
     private var emptyView: some View {
         VStack {
             Spacer()
-            VStack(spacing: 10) {
-                Text("전문의약품은 검색 안 될 수 있어요")
-                    .font(.system(size: 15))
+            VStack(spacing: 8) {
+                Text("검색 결과가 없어요")
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(Color.secondary)
+                Text("전문의약품은 검색이 안 될 수 있어요")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.secondary.opacity(0.7))
                     .multilineTextAlignment(.center)
-
-                if mode == .register {
-                    Button {
-                        onRegisterDrug("", "")
-                    } label: {
-                        Text("직접 입력하기")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(AranColor.primary)
-                    }
-                } else {
-                    Text("다른 검색어를 입력해보세요")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(AranColor.primary)
-                }
             }
+            .frame(maxWidth: .infinity)
             .padding(20)
             .background(Color(.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -269,15 +274,6 @@ struct DrugSearchView: View {
                         .foregroundStyle(Color.red)
                 }
 
-                if mode == .register {
-                    Button {
-                        onRegisterDrug("", "")
-                    } label: {
-                        Text("직접 입력하기")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(AranColor.primary)
-                    }
-                }
             }
             .padding(20)
             .background(Color.red.opacity(0.07))
@@ -304,35 +300,34 @@ private struct DrugResultCell: View {
 
     var body: some View {
         Button(action: onSelect) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text(drug.itemName)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Color.primary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(drug.entpName)
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
 
                 if let efcy = drug.efcyQesitm {
-                    Text(efcy.prefix(40))
+                    Text(efcy.prefix(50))
                         .font(.system(size: 12))
-                        .foregroundStyle(AranColor.primary)
+                        .foregroundStyle(Color.secondary)
                         .lineLimit(1)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(AranColor.primary.opacity(0.1))
-                        .clipShape(Capsule())
                 }
 
-                HStack {
-                    Spacer()
-                    Text(actionTitle)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(AranColor.primary)
-                }
+                Text(actionTitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(AranColor.primary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .overlay(Capsule().stroke(AranColor.primary, lineWidth: 1))
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(.plain)
     }
