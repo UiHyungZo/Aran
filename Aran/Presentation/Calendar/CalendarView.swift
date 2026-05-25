@@ -280,6 +280,7 @@ struct CalendarView: View {
                         isToday: Calendar.current.isDateInToday(date),
                         events: isCurrent ? viewModel.events(for: date) : [],
                         hasHealthRecord: isCurrent && !viewModel.healthRecords(for: date).isEmpty,
+                        hasMedication: isCurrent && !viewModel.medications(for: date).isEmpty,
                         cellHeight: cellHeight
                     )
                     .onTapGesture {
@@ -321,6 +322,7 @@ private struct DayCell: View {
     let isToday: Bool
     let events: [DayEvent]
     let hasHealthRecord: Bool
+    let hasMedication: Bool
     let cellHeight: CGFloat
 
     var body: some View {
@@ -337,6 +339,11 @@ private struct DayCell: View {
                 ForEach(Array(Set(events.map(\.dotColor)).prefix(3)), id: \.self) { colorName in
                     Circle()
                         .fill(Color(colorName))
+                        .frame(width: 5, height: 5)
+                }
+                if hasMedication {
+                    Circle()
+                        .fill(AranColor.dotMedication)
                         .frame(width: 5, height: 5)
                 }
                 if hasHealthRecord {

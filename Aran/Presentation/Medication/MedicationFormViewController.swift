@@ -17,6 +17,12 @@ final class MedicationFormViewController: UIViewController {
         items: MedicationType.allCases.map { $0.rawValue }
     )
     private let dosageField = UITextField()
+    private let startDatePicker = UIDatePicker()
+    private let startDateRelay = BehaviorRelay<Date>(value: Date())
+    private let endDatePicker = UIDatePicker()
+    private let endDateSwitch = UISwitch()
+    private let endDateRelay = BehaviorRelay<Date?>(value: nil)
+
     private let timePickerContainer = UIStackView()
     private var timePickers: [UIDatePicker] = []
     private let timesRelay = BehaviorRelay<[Date]>(value: [])
@@ -62,6 +68,7 @@ final class MedicationFormViewController: UIViewController {
 
         setupScrollView()
         contentStack.addArrangedSubview(makeInfoFields())
+        contentStack.addArrangedSubview(makeDateRangeSection())
         contentStack.addArrangedSubview(makeTimeRows())
         contentStack.addArrangedSubview(makeNotificationRow())
         contentStack.addArrangedSubview(saveButton)
@@ -128,6 +135,47 @@ final class MedicationFormViewController: UIViewController {
             makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
             makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false),
         ])
+    }
+
+    private func makeDateRangeSection() -> UIView {
+        startDatePicker.datePickerMode = .date
+        startDatePicker.preferredDatePickerStyle = .compact
+        startDatePicker.tintColor = AranColor.primaryUI
+        startDatePicker.locale = Locale(identifier: "ko_KR")
+
+        endDatePicker.datePickerMode = .date
+        endDatePicker.preferredDatePickerStyle = .compact
+        endDatePicker.tintColor = AranColor.primaryUI
+        endDatePicker.locale = Locale(identifier: "ko_KR")
+        endDatePicker.isEnabled = false
+        endDatePicker.alpha = 0.4
+
+        endDateSwitch.onTintColor = AranColor.primaryUI
+
+        let startLabel = UILabel()
+        startLabel.text = "시작일"
+        startLabel.font = AranFont.bodyUI()
+
+        let startRow = UIStackView(arrangedSubviews: [startLabel, startDatePicker])
+        startRow.axis = .horizontal
+        startRow.alignment = .center
+        startRow.distribution = .equalSpacing
+        startRow.isLayoutMarginsRelativeArrangement = true
+        startRow.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+
+        let endLabel = UILabel()
+        endLabel.text = "종료일"
+        endLabel.font = AranFont.bodyUI()
+
+        let endRow = UIStackView(arrangedSubviews: [endLabel, endDatePicker, endDateSwitch])
+        endRow.axis = .horizontal
+        endRow.alignment = .center
+        endRow.distribution = .equalSpacing
+        endRow.isLayoutMarginsRelativeArrangement = true
+        endRow.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+
+        let title = sectionTitle("복용 기간")
+        return makeStack(rows: [title, startRow, endRow])
     }
 
     private func makeTimeRows() -> UIView {
@@ -304,12 +352,32 @@ final class MedicationFormViewController: UIViewController {
         let typeSelected = typeSegment.rx.selectedSegmentIndex
             .map { MedicationType.allCases[$0] }
 
+        startDatePicker.rx.date
+            .bind(to: startDateRelay)
+            .disposed(by: disposeBag)
+
+        endDateSwitch.rx.isOn
+            .subscribe(onNext: { [weak self] isOn in
+                guard let self else { return }
+                endDatePicker.isEnabled = isOn
+                endDatePicker.alpha = isOn ? 1.0 : 0.4
+                endDateRelay.accept(isOn ? endDatePicker.date : nil)
+            })
+            .disposed(by: disposeBag)
+
+        endDatePicker.rx.date
+            .filter { [weak self] _ in self?.endDateSwitch.isOn == true }
+            .map { Optional($0) }
+            .bind(to: endDateRelay)
+            .disposed(by: disposeBag)
+
         let input = MedicationFormViewModel.Input(
             drugNameChanged: drugNameField.rx.text.orEmpty.asObservable(),
             typeSelected: typeSelected.asObservable(),
             dosageChanged: dosageField.rx.text.orEmpty.asObservable(),
             timesChanged: timesRelay.asObservable(),
-            startDateChanged: Observable.just(Date()),
+            startDateChanged: startDateRelay.asObservable(),
+            endDateChanged: endDateRelay.asObservable(),
             isNotificationEnabled: notificationSwitch.rx.isOn.asObservable(),
             saveTapped: saveTappedRelay.asObservable()
         )

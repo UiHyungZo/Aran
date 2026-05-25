@@ -9,6 +9,7 @@ final class MedicationFormViewModel {
         let dosageChanged: Observable<String>
         let timesChanged: Observable<[Date]>
         let startDateChanged: Observable<Date>
+        let endDateChanged: Observable<Date?>
         let isNotificationEnabled: Observable<Bool>
         let saveTapped: Observable<Void>
     }
@@ -35,6 +36,7 @@ final class MedicationFormViewModel {
         let dosage = input.dosageChanged.startWith("")
         let times = input.timesChanged.startWith([])
         let startDate = input.startDateChanged.startWith(Date())
+        let endDate = input.endDateChanged.startWith(nil)
         let isNotificationEnabled = input.isNotificationEnabled.startWith(false)
 
         let isSaveEnabled = Observable
@@ -47,22 +49,22 @@ final class MedicationFormViewModel {
 
         let formState = Observable.combineLatest(
             Observable.combineLatest(drugName, type, dosage),
-            Observable.combineLatest(times, startDate, isNotificationEnabled)
+            Observable.combineLatest(times, startDate, endDate, isNotificationEnabled)
         )
 
         input.saveTapped
             .withLatestFrom(formState)
             .flatMapLatest { [weak self] combined -> Observable<Void> in
                 guard let self else { return .empty() }
-                let (nameTypeDosage, timesStartNotif) = combined
+                let (nameTypeDosage, timesStartEndNotif) = combined
                 let (name, medicationType, dosage) = nameTypeDosage
-                let (times, startDate, notificationsEnabled) = timesStartNotif
+                let (times, startDate, endDate, notificationsEnabled) = timesStartEndNotif
 
                 let defaultTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: startDate) ?? startDate
                 let schedule = MedicationSchedule(
                     times: times.isEmpty ? [defaultTime] : times,
                     startDate: startDate,
-                    endDate: nil
+                    endDate: endDate
                 )
                 let medication = Medication(
                     id: UUID(),
