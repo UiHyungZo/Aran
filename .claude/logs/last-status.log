@@ -1,0 +1,10 @@
+ M .claude/settings.json
+?? .claude/commands/
+?? .claude/logs/
+?? HARNESS_README.md
+?? docs/ADR.md
+?? docs/PRD.md
+?? docs/UI_GUIDE.md
+?? phases/
+?? scripts/execute.py
+?? scripts/hooks/
