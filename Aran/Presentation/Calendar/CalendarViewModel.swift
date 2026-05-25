@@ -105,6 +105,43 @@ final class CalendarViewModel: ObservableObject {
         do {
             try await cycleRecordUseCase.saveDiary(emoji: emoji, text: text, for: selectedDate)
             await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
+    func saveRetrieval(count: Int) async {
+        do {
+            try await cycleRecordUseCase.addEvent(.embryoRetrieval(count: count), to: selectedDate)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
+    func saveTransfer(
+        cycleNumber: Int,
+        embryoGrade: String,
+        embryoCount: Int,
+        transferType: TransferType,
+        result: TransferResult
+    ) async {
+        do {
+            let record = TransferRecord(
+                id: UUID(),
+                cycleNumber: cycleNumber,
+                date: selectedDate,
+                embryoGrade: embryoGrade,
+                embryoCount: embryoCount,
+                transferType: transferType,
+                result: result
+            )
+            try await transferRecordUseCase.save(record)
+            try await cycleRecordUseCase.addEvent(.embryoTransfer(transferID: record.id), to: selectedDate)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
         }

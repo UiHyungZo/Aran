@@ -2,14 +2,24 @@ import Foundation
 
 final class MedicationUseCase {
     private let medicationRepository: MedicationRepositoryProtocol
-    private let notificationRepository: NotificationRepositoryProtocol
+    private let notificationUseCase: MedicationNotificationUseCase
 
     init(
         medicationRepository: MedicationRepositoryProtocol,
-        notificationRepository: NotificationRepositoryProtocol
+        notificationUseCase: MedicationNotificationUseCase
     ) {
         self.medicationRepository = medicationRepository
-        self.notificationRepository = notificationRepository
+        self.notificationUseCase = notificationUseCase
+    }
+
+    convenience init(
+        medicationRepository: MedicationRepositoryProtocol,
+        notificationRepository: NotificationRepositoryProtocol
+    ) {
+        self.init(
+            medicationRepository: medicationRepository,
+            notificationUseCase: MedicationNotificationUseCase(notificationRepository: notificationRepository)
+        )
     }
 
     func fetchAll() async throws -> [Medication] {
@@ -17,29 +27,22 @@ final class MedicationUseCase {
     }
 
     func save(_ medication: Medication) async throws {
-        var updated = medication
-        if medication.isEnabled {
-            let ids = try await notificationRepository.schedule(for: medication)
-            updated.notificationIDs = ids
-        }
+        let updated = try await notificationUseCase.prepareForSave(medication)
         try await medicationRepository.save(updated)
     }
 
     func toggle(medication: Medication) async throws {
-        var updated = medication
-        updated.isEnabled = !medication.isEnabled
-        if updated.isEnabled {
-            let ids = try await notificationRepository.schedule(for: updated)
-            updated.notificationIDs = ids
+        let updated: Medication
+        if medication.isEnabled {
+            updated = try await notificationUseCase.disable(medication)
         } else {
-            try await notificationRepository.cancel(notificationIDs: medication.notificationIDs)
-            updated.notificationIDs = []
+            updated = try await notificationUseCase.enable(medication)
         }
         try await medicationRepository.update(updated)
     }
 
     func delete(medication: Medication) async throws {
-        try await notificationRepository.cancel(notificationIDs: medication.notificationIDs)
+        try await notificationUseCase.cancel(for: medication)
         try await medicationRepository.delete(id: medication.id)
     }
 }

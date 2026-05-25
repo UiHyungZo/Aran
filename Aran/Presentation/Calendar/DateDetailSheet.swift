@@ -5,6 +5,7 @@ struct DateDetailSheet: View {
     @State private var diaryEmoji = ""
     @State private var diaryText = ""
     @State private var isEditingDiary = false
+    @State private var isTransferFormPresented = false
     @State private var selectedHealthRecord: HealthRecord?
     @Environment(\.dismiss) private var dismiss
 
@@ -35,6 +36,9 @@ struct DateDetailSheet: View {
             }
         }
         .onAppear { loadExistingDiary() }
+        .sheet(isPresented: $isTransferFormPresented) {
+            TransferRecordFormView(viewModel: viewModel)
+        }
         .sheet(item: $selectedHealthRecord) { record in
             HealthRecordDetailView(record: record)
         }
@@ -60,8 +64,8 @@ struct DateDetailSheet: View {
     @ViewBuilder
     private var transferSection: some View {
         let transfers = viewModel.selectedDateTransferRecords
-        if !transfers.isEmpty {
-            Section {
+        Section {
+            if !transfers.isEmpty {
                 ForEach(transfers) { record in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
@@ -89,8 +93,14 @@ struct DateDetailSheet: View {
                     }
                     .padding(.vertical, 4)
                 }
-            } header: {
-                SectionHeaderView(title: "채취 / 이식", buttonTitle: "편집") {}
+            } else {
+                Text("채취/이식 기록이 없습니다.")
+                    .font(AranFont.body())
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            SectionHeaderView(title: "채취 / 이식", buttonTitle: "추가") {
+                isTransferFormPresented = true
             }
         }
     }
@@ -254,6 +264,84 @@ private struct SectionHeaderView: View {
                     .font(AranFont.caption())
                     .foregroundStyle(AranColor.primary)
                     .textCase(nil)
+            }
+        }
+    }
+}
+
+// MARK: - 채취 / 이식 입력
+
+private struct TransferRecordFormView: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var mode: FormMode = .transfer
+    @State private var retrievalCount = 1
+    @State private var cycleNumber = 1
+    @State private var embryoGrade = ""
+    @State private var embryoCount = 1
+    @State private var transferType: TransferType = .fresh
+    @State private var result: TransferResult = .pending
+
+    enum FormMode: String, CaseIterable, Identifiable {
+        case retrieval = "채취"
+        case transfer = "이식"
+
+        var id: String { rawValue }
+    }
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Picker("기록 종류", selection: $mode) {
+                    ForEach(FormMode.allCases) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                if mode == .retrieval {
+                    Stepper("채취 \(retrievalCount)개", value: $retrievalCount, in: 1 ... 50)
+                } else {
+                    Stepper("\(cycleNumber)차 시술", value: $cycleNumber, in: 1 ... 20)
+                    TextField("배아 등급 예: 3AA", text: $embryoGrade)
+                    Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1 ... 10)
+                    Picker("이식 유형", selection: $transferType) {
+                        Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
+                        Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
+                    }
+                    Picker("결과", selection: $result) {
+                        Text(TransferResult.pending.rawValue).tag(TransferResult.pending)
+                        Text(TransferResult.success.rawValue).tag(TransferResult.success)
+                        Text(TransferResult.failed.rawValue).tag(TransferResult.failed)
+                    }
+                }
+            }
+            .navigationTitle("채취 / 이식 기록")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("저장") {
+                        Task {
+                            if mode == .retrieval {
+                                await viewModel.saveRetrieval(count: retrievalCount)
+                            } else {
+                                let grade = embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
+                                await viewModel.saveTransfer(
+                                    cycleNumber: cycleNumber,
+                                    embryoGrade: grade.isEmpty ? "미입력" : grade,
+                                    embryoCount: embryoCount,
+                                    transferType: transferType,
+                                    result: result
+                                )
+                            }
+                            dismiss()
+                        }
+                    }
+                }
             }
         }
     }

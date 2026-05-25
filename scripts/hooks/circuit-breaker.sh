@@ -9,7 +9,7 @@ THRESHOLD="${CIRCUIT_THRESHOLD:-5}"
 NOW=$(date +%s)
 MESSAGE="${1:-$(cat 2>/dev/null || true)}"
 
-if echo "$MESSAGE" | grep -Eiq 'error|failed|exception|fatal'; then
+if echo "$MESSAGE" | grep -qE '(^error:|^fatal error:|^Build FAILED$|FAILED \(|xcodebuild: error)'; then
   echo "$NOW $MESSAGE" >> "$LOG_FILE"
 fi
 
