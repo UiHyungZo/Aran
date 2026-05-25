@@ -7,16 +7,17 @@
 - [x] Medication — 목록, 등록, 복용 체크, Swipe Action (중단/삭제)
 - [x] Notification — 등록, 수정, 삭제, ON/OFF
 - [x] Health Record — 수치 입력, 목록, 트렌드 표시 (↑↓)
-- [ ] UseCase Unit Test — MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase
+- [x] UseCase Unit Test — MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase
 
 ---
 
 ## 버그 / 구조 개선
 
-- [ ] SceneDelegate.swift: `.modelContainer` 중복 제거 커밋
-- [ ] MedicationFormViewController: `dismissSelf()` → `MedicationFormActions` 패턴 교체
-- [ ] MedicationFormSheet: `UIViewControllerRepresentable.Coordinator` + `@Environment(\.dismiss)` 연결
-- [ ] ExamListViewController: 구현 상태 확인 및 완성
+- [x] CalendarView: 약/주사 저장 시 캘린더 도트 미표시 버그 수정 (`hasMedication` 파라미터 추가)
+- [x] SceneDelegate.swift: `.modelContainer` 중복 제거 커밋
+- [x] MedicationFormViewController: `dismissSelf()` → `MedicationFormActions` 패턴 교체
+- [x] MedicationFormSheet: `UIViewControllerRepresentable.Coordinator` + `@Environment(\.dismiss)` 연결
+- [x] ExamListViewController: 구현 상태 확인 및 완성
 
 ---
 
