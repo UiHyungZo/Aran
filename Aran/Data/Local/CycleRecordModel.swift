@@ -30,7 +30,7 @@ enum DayEventDTO: Codable {
     case ovulation
     case periodStart
     case embryoRetrieval(count: Int)
-    case embryoTransfer(count: Int, type: String)
+    case embryoTransfer(transferID: UUID)
     case medication(medicationID: UUID)
 
     func toDomain() -> DayEvent {
@@ -39,7 +39,7 @@ enum DayEventDTO: Codable {
         case .ovulation: return .ovulation
         case .periodStart: return .periodStart
         case let .embryoRetrieval(count): return .embryoRetrieval(count: count)
-        case let .embryoTransfer(count, type): return .embryoTransfer(count: count, type: TransferType(rawValue: type) ?? .fresh)
+        case let .embryoTransfer(id): return .embryoTransfer(transferID: id)
         case let .medication(id): return .medication(medicationID: id)
         }
     }

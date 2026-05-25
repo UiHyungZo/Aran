@@ -12,7 +12,7 @@ enum DayEvent {
     case ovulation
     case periodStart
     case embryoRetrieval(count: Int)
-    case embryoTransfer(count: Int, type: TransferType)
+    case embryoTransfer(transferID: UUID)
     case medication(medicationID: UUID)
 
     var dotColor: String {

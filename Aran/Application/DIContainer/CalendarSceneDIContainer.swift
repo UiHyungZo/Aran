@@ -19,11 +19,37 @@ final class CalendarSceneDIContainer {
     private lazy var cycleRecordUseCase: CycleRecordUseCase =
         .init(repository: cycleRecordRepository)
 
+    private lazy var healthRecordRepository: HealthRecordRepositoryProtocol =
+        HealthRecordRepository(context: dependencies.modelContext)
+
+    private lazy var healthRecordUseCase: HealthRecordUseCase =
+        .init(repository: healthRecordRepository)
+
+    private lazy var transferRecordRepository: TransferRecordRepositoryProtocol =
+        TransferRecordRepository(context: dependencies.modelContext)
+
+    private lazy var transferRecordUseCase: TransferRecordUseCase =
+        .init(repository: transferRecordRepository)
+
+    private lazy var medicationRepository: MedicationRepositoryProtocol =
+        MedicationRepository(context: dependencies.modelContext)
+
+    private lazy var notificationRepository: NotificationRepositoryProtocol =
+        NotificationManager()
+
+    private lazy var medicationUseCase: MedicationUseCase =
+        .init(medicationRepository: medicationRepository, notificationRepository: notificationRepository)
+
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
     }
 
     func makeCalendarViewModel() -> CalendarViewModel {
-        CalendarViewModel(cycleRecordUseCase: cycleRecordUseCase)
+        CalendarViewModel(
+            cycleRecordUseCase: cycleRecordUseCase,
+            healthRecordUseCase: healthRecordUseCase,
+            transferRecordUseCase: transferRecordUseCase,
+            medicationUseCase: medicationUseCase
+        )
     }
 }

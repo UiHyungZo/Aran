@@ -19,12 +19,22 @@ enum CycleRecordMapper {
     }
 
     private static func decodeEvents(from data: Data) -> [DayEvent] {
-        (try? JSONDecoder().decode([DayEventDTO].self, from: data))?.map { $0.toDomain() } ?? []
+        do {
+            return try JSONDecoder().decode([DayEventDTO].self, from: data).map { $0.toDomain() }
+        } catch {
+            print("[CycleRecordMapper] 이벤트 역직렬화 실패: \(error)")
+            return []
+        }
     }
 
     private static func encodeEvents(_ events: [DayEvent]) -> Data {
         let dtos = events.map { DayEventDTO(from: $0) }
-        return (try? JSONEncoder().encode(dtos)) ?? Data()
+        do {
+            return try JSONEncoder().encode(dtos)
+        } catch {
+            print("[CycleRecordMapper] 이벤트 직렬화 실패: \(error)")
+            return Data()
+        }
     }
 }
 
@@ -35,7 +45,7 @@ private extension DayEventDTO {
         case .ovulation: self = .ovulation
         case .periodStart: self = .periodStart
         case let .embryoRetrieval(count): self = .embryoRetrieval(count: count)
-        case let .embryoTransfer(count, type): self = .embryoTransfer(count: count, type: type.rawValue)
+        case let .embryoTransfer(transferID): self = .embryoTransfer(transferID: transferID)
         case let .medication(id): self = .medication(medicationID: id)
         }
     }
