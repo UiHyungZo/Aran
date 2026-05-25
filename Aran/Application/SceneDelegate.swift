@@ -31,7 +31,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let diContainer = AppDIContainer(modelContainer: modelContainer)
         let rootView = MainTabView(container: diContainer)
-            .modelContainer(modelContainer)
 
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = UIHostingController(rootView: rootView)
