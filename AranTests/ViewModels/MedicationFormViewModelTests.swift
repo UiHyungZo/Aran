@@ -150,6 +150,7 @@ private extension MedicationFormViewModelTests {
             dosageChanged: .just(dosage),
             timesChanged: .just([Date()]),
             startDateChanged: .just(Date()),
+            endDateChanged: .just(nil),
             isNotificationEnabled: .just(false),
             saveTapped: saveTapped
         )
