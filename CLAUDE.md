@@ -11,7 +11,6 @@ Claude Code는 작업 시작 전에 반드시 이 파일을 먼저 읽는다.
 * 항상 한국어로 응답한다.
 * 비사소한 수정 전에는 반드시 구현 계획과 변경 예정 파일을 먼저 설명한다.
 * 사용자 승인 없이 다음 작업을 수행하지 않는다:
-
   * 파일 삭제
   * 파일/타입 이름 변경
   * Bundle Identifier 변경
@@ -45,11 +44,12 @@ Aran은 IVF 치료 관리용 iOS 포트폴리오 앱이다.
 
 # 기술 스택
 
-* Swift
+* Swift 6
 * UIKit + RxSwift
 * SwiftUI + Combine
 * Clean Architecture + MVVM
 * SwiftData
+* Swift Charts
 * Alamofire
 * async/await
 * UserNotifications
@@ -76,7 +76,6 @@ Data -> Infrastructure
 * ViewModel은 UseCase를 통해서만 비즈니스 로직을 실행한다.
 * Repository 구현체는 Data Layer에만 존재한다.
 * DTO와 Domain Entity는 반드시 분리한다.
-* Infrastructure는 외부 기술 세부사항을 캡슐화한다.
 * Presentation은 Repository 구현체를 직접 참조하지 않는다.
 * 사용 사례가 1개뿐인 과도한 추상화는 지양한다.
 * 포트폴리오 목적상 readability와 explicit naming을 우선한다.
@@ -85,37 +84,25 @@ Data -> Infrastructure
 
 # Feature Stack 규칙
 
-## SwiftUI Feature
-
-* Combine 사용
-* 상태 기반 UI 구성
-* View 내부 API 호출 금지
+## SwiftUI Feature (Combine 사용)
 
 대상:
 
-* Calendar
-* Drug Information
+* 📅 캘린더
+* 🗂 시술 기록 — Swift Charts 포함
+* 🔍 약 정보
 
-## UIKit Feature
-
-* RxSwift 사용
-* Driver 기반 UI 바인딩 우선
-* ViewController 내부 비즈니스 로직 금지
+## UIKit Feature (RxSwift 사용)
 
 대상:
 
-* Medication / Injection
-* Health Record
+* 💊 약/주사
+* 🧪 검사
 
 ## Reactive 규칙
 
 * Feature 내부에서 RxSwift와 Combine을 혼합하지 않는다.
-* 브리징은 명확한 목적이 있을 때만 허용한다.
-
-허용 예시:
-
-* UIHostingController
-* UIViewRepresentable
+* 브리징은 UIHostingController / UIViewRepresentable처럼 명확한 목적이 있을 때만 허용한다.
 
 ---
 
@@ -131,82 +118,36 @@ Data -> Infrastructure
 
 # API 규칙
 
-외부 API:
-
-* MFDS e약은요 OpenAPI
-
-Base URL:
-
-* https://apis.data.go.kr/1471000/DrbEasyDrugInfoService
-
-규칙:
-
 * Router는 Alamofire `URLRequestConvertible` 사용
 * API Key는 configuration으로 관리
 * DTO는 Data Layer에서 decode
 * DTO → Domain Entity 변환 후 반환
 * Empty Result는 정상 UX Case로 처리
-* Network Error는 retry/fallback 상태 제공
+* Network Error는 retry 1회 → fallback 상태 제공
 
----
-
-# 도메인 우선순위
-
-핵심 도메인:
-
-* IVF Cycle
-* Medication Schedule
-* Injection Record
-* Lab Result
-* Embryo Transfer
-* Retrieval Record
-* Emotional Diary
-
-우선순위:
-
-1. 치료 일정
-2. 약물 추적
-3. 검사 기록
-4. IVF 치료 흐름 시각화
-
-범용 건강관리 기능은 우선순위가 낮다.
+Base URL: `https://apis.data.go.kr/1471000/DrbEasyDrugInfoService`
 
 ---
 
 # 테스트 원칙
 
-목표:
-
 Clean Architecture 선택 이유를 테스트 가능성으로 증명한다.
 
-우선 테스트 대상:
-
-* UseCase
-* ViewModel
-* Repository
-
-테스트 스타일:
-
-```text
-given -> when -> then
-```
-
-Mock Repository 기반 테스트를 우선한다.
+* 스타일: `given → when → then`
+* Mock Repository 기반 UseCase 테스트 우선
+* 전 레이어 테스트: UseCase / Repository / Network / ViewModel / UI
 
 ---
 
 # 빌드 / 테스트
 
-## Build
-
 ```bash
-xcodebuild -scheme Aran
-```
+# 빌드
+bash scripts/build-debug.sh
 
-## Test
-
-```bash
-xcodebuild test -scheme Aran
+# 테스트
+xcodebuild test -scheme Aran \
+  -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
 ```
 
 ---
@@ -215,43 +156,41 @@ xcodebuild test -scheme Aran
 
 작업 시작 전 반드시 `docs/`를 확인한다.
 
-* docs/architecture.md
-* docs/features.md
-* docs/api.md
-* docs/coding-style.md
-* docs/testing.md
-* docs/concurrency.md
-* docs/data-model.md
-* docs/roadmap.md
-* docs/decisions.md
+* `docs/architecture.md`
+* `docs/features.md`
+* `docs/api.md`
+* `docs/coding-style.md`
+* `docs/testing.md`
+* `docs/concurrency.md`
+* `docs/data-model.md`
+* `docs/roadmap.md`
+* `docs/decisions.md`
+* `docs/UI_GUIDE.md`
 
+---
 
-## 트리거
+# 트리거
 
 ### Build
-
 - "build the app"
-  → `xcodebuild -scheme Aran` 실행 후 결과 리포트
+  → `bash scripts/build-debug.sh` 실행 후 결과 리포트
 
 ### Test
-
 - "run tests"
-  → `xcodebuild test -scheme Aran` 실행 후 실패 원인 분석
+  → `xcodebuild test -scheme Aran -destination ...` 실행 후 실패 원인 분석
 
 ### Next Task
+- "next task" / "다음 작업 진행해줘" / "TODO 다음 거 해줘"
+  → `TODO.md` 미완료 항목 확인 후 구현 계획과 변경 파일 제시
 
-- "next task"
-- "다음 작업 진행해줘"
-- "TODO 다음 거 해줘"
-  → `TODO.md`의 최상단 미완료 작업 확인 후 구현 계획과 변경 파일 제시
-
-### Feature
-
-- "약 검색 구현해줘"
-- "Calendar 구현해줘"
-  → 관련 `docs/` 확인 후 계획 제시, 승인 후 구현
+### Feature 구현
+- "감정 일기 구현해줘" / "병원 일정 구현해줘" / "생리 주기 구현해줘"
+  → `docs/features.md`, `docs/data-model.md` 확인 후 계획 제시, 승인 후 구현
+- "시술 기록 구현해줘" / "CycleRecord 구현해줘"
+  → `docs/features.md`, `docs/architecture.md`, `docs/UI_GUIDE.md` 확인 후 계획 제시
+- "Swift Charts 추가해줘"
+  → `docs/features.md`, `docs/UI_GUIDE.md` 확인 후 계획 제시
 
 ### Scope Check
-
-- "이거 MVP 범위야?"
-  → `docs/roadmap.md`, `docs/features.md` 기준으로 MVP / Backlog / Phase 2 판단
+- "이거 PRD 범위야?"
+  → `docs/PRD.md`, `docs/features.md` 기준으로 판단
