@@ -7,7 +7,11 @@
 - [x] Medication / Injection — 목록, 등록, 복용 체크, Swipe Action (중단/삭제)
 - [x] Notification — 등록, 수정, 삭제, ON/OFF
 - [x] Health Record — 수치 입력, 목록, 트렌드 표시 (↑↓)
-- [x] UseCase Unit Test — MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase
+- [x] UseCase Unit Test — MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase, SearchDrugUseCase, MedicationNotificationUseCase
+- [x] Repository Test — MedicationRepository, HealthRecordRepository, DrugRepository
+- [x] Network Test — DrugAPIClient, DrugRouter
+- [x] Mapper Test — MedicationMapper, DrugMapper
+- [x] ViewModel Test — MedicationFormViewModel
 - [x] CalendarView: 약/주사 저장 시 캘린더 도트 미표시 버그 수정
 - [x] SceneDelegate: `.modelContainer` 중복 제거
 - [x] MedicationFormViewController: `MedicationFormActions` 패턴 교체
@@ -41,8 +45,9 @@
 - [ ] 최근 검색어 — UserDefaults 저장/표시
 
 ### 테스트
-- [ ] Repository Test — CycleRecord, Medication, HealthRecord, Diary, HospitalVisit, MenstrualCycle
-- [ ] ViewModel Test — CalendarViewModel, MedicationListViewModel, MedicationFormViewModel, ExamViewModel, DrugSearchViewModel, CycleRecordViewModel
+- [ ] UseCase Test — TransferRecordUseCase
+- [ ] Repository Test — CycleRecordRepository, TransferRecordRepository (Diary·HospitalVisit·MenstrualCycle은 해당 기능 구현 후)
+- [ ] ViewModel Test — CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel, PGTFormViewModel
 - [ ] UI Test — 캘린더 플로우, 약 등록 플로우, 약 검색 플로우, 채취/이식 입력 플로우, 검사 수치 입력 플로우
 
 ### 앱 완성도
