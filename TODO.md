@@ -17,15 +17,13 @@
 - [x] MedicationFormViewController: `MedicationFormActions` 패턴 교체
 - [x] MedicationFormSheet: Coordinator + `@Environment(\.dismiss)` 연결
 - [x] ExamListViewController: 구현 완성
+- [x] 감정 일기 입력 시트 — 이모지 선택 + 텍스트 입력 (최대 500자), SwiftData 저장
+- [x] 병원 일정 입력 시트 — 일정 종류 (내원/채혈/초음파) + 메모, SwiftData 저장
+- [x] 생리 주기 입력 시트 — 시작일 + cycleLength (기본 28일) → 배란 예정일 자동 계산
 
 ---
 
 ## 미완료
-
-### 캘린더 탭
-- [ ] 감정 일기 입력 시트 — 이모지 선택 + 텍스트 입력 (최대 500자), SwiftData 저장
-- [ ] 병원 일정 입력 시트 — 일정 종류 (내원/채혈/초음파) + 메모, SwiftData 저장
-- [ ] 생리 주기 입력 시트 — 시작일 + cycleLength (기본 28일) → 배란 예정일 자동 계산
 
 ### 시술 기록 탭 (Domain + Data 계층 완료 / Presentation 미구현)
 - [ ] 차수 목록 화면 — 차수별 카드 (채취/수정/동결 개수, 이식 결과)

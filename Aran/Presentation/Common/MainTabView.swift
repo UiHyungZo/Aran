@@ -13,13 +13,14 @@ struct MainTabView: View {
     @State private var drugToAdd: Drug?
 
     enum Tab: CaseIterable {
-        case calendar, medication, exam, drugInfo
+        case calendar, medication, exam, procedureRecord, drugInfo
 
         var icon: String {
             switch self {
             case .calendar: return "calendar"
             case .medication: return "pill.fill"
             case .exam: return "waveform.path.ecg"
+            case .procedureRecord: return "chart.bar.fill"
             case .drugInfo: return "magnifyingglass"
             }
         }
@@ -29,6 +30,7 @@ struct MainTabView: View {
             case .calendar: return "캘린더"
             case .medication: return "약/주사"
             case .exam: return "검사"
+            case .procedureRecord: return "시술 기록"
             case .drugInfo: return "약 정보"
             }
         }
@@ -55,6 +57,8 @@ struct MainTabView: View {
             MedicationListWrapper(container: container.medicationScene)
         case .exam:
             ExamListWrapper(container: container.healthRecordScene)
+        case .procedureRecord:
+            ProcedureRecordView(viewModel: container.procedureRecordScene.makeProcedureRecordViewModel())
         case .drugInfo:
             DrugInfoView(
                 viewModel: container.drugInfoScene.makeDrugInfoViewModel(),

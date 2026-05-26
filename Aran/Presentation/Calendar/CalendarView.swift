@@ -8,6 +8,8 @@ struct CalendarView: View {
     @State private var isDiaryEditing: Bool = false
     @State private var diaryEmoji: String = ""
     @State private var diaryText: String = ""
+    @State private var isHospitalFormPresented: Bool = false
+    @State private var isMenstrualSheetPresented: Bool = false
 
     init(viewModel: CalendarViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -85,6 +87,12 @@ struct CalendarView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isDiaryEditing)
             }
+        }
+        .sheet(isPresented: $isHospitalFormPresented) {
+            CalendarHospitalVisitFormSheet(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isMenstrualSheetPresented) {
+            MenstrualCycleFormSheet(viewModel: viewModel)
         }
         .alert("오류", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -236,7 +244,9 @@ struct CalendarView: View {
 
             ScrollView {
                 VStack(spacing: 0) {
-                    summaryRow(title: "병원 일정", subtitle: hospitalSubtitle, actionLabel: "편집") { }
+                    summaryRow(title: "병원 일정", subtitle: hospitalSubtitle, actionLabel: "추가") {
+                        isHospitalFormPresented = true
+                    }
                     Divider().padding(.leading, 16)
 
                     summaryRow(title: "복용 약", subtitle: medicationSubtitle) { }
@@ -254,7 +264,7 @@ struct CalendarView: View {
                     Divider().padding(.leading, 16)
 
                     summaryRow(title: "생리 시작일", subtitle: periodSubtitle) {
-                        Task { await viewModel.addEvent(.periodStart, to: viewModel.selectedDate) }
+                        isMenstrualSheetPresented = true
                     }
                 }
             }
@@ -509,6 +519,122 @@ struct CalendarView: View {
             days.append(calendar.date(byAdding: .day, value: day - 1, to: firstDay))
         }
         return days
+    }
+}
+
+// MARK: - 병원 일정 입력 시트 (CalendarView용)
+
+private struct CalendarHospitalVisitFormSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var visitType = "내원"
+    @State private var memo = ""
+
+    private let visitTypes = ["내원", "채혈", "초음파"]
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("방문 유형") {
+                    Picker("방문 유형", selection: $visitType) {
+                        ForEach(visitTypes, id: \.self) { type in
+                            Text(type).tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Section("메모 (선택)") {
+                    TextField("예: 담당 의사 면담", text: $memo)
+                }
+            }
+            .navigationTitle("병원 일정 추가")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("저장") {
+                        Task {
+                            let note = memo.trimmingCharacters(in: .whitespacesAndNewlines)
+                            let fullNote = note.isEmpty ? visitType : "\(visitType) — \(note)"
+                            await viewModel.addEvent(.hospitalVisit(note: fullNote), to: viewModel.selectedDate)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - 생리 주기 입력 시트
+
+private struct MenstrualCycleFormSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var startDate: Date
+    @State private var cycleLength: Int = 28
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "M월 d일"
+        return f
+    }()
+
+    init(viewModel: CalendarViewModel) {
+        self.viewModel = viewModel
+        _startDate = State(initialValue: viewModel.selectedDate)
+    }
+
+    private var ovulationDate: Date {
+        Calendar.current.date(byAdding: .day, value: cycleLength / 2, to: startDate) ?? startDate
+    }
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("생리 시작일") {
+                    DatePicker("시작일", selection: $startDate, displayedComponents: .date)
+                        .environment(\.locale, Locale(identifier: "ko_KR"))
+                }
+
+                Section("주기 설정") {
+                    Stepper("\(cycleLength)일 주기", value: $cycleLength, in: 21 ... 42)
+                }
+
+                Section("배란 예정일") {
+                    HStack {
+                        Text("예상 배란일")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(Self.dateFormatter.string(from: ovulationDate))
+                            .fontWeight(.medium)
+                            .foregroundStyle(AranColor.dotOvulation)
+                    }
+                }
+            }
+            .navigationTitle("생리 주기 기록")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("저장") {
+                        Task {
+                            await viewModel.addEvent(.periodStart, to: startDate)
+                            await viewModel.addEvent(.ovulation, to: ovulationDate)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
