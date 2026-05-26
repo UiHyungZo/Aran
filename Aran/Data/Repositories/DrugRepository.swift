@@ -1,10 +1,14 @@
 import Foundation
 
 final class DrugRepository: DrugRepositoryProtocol {
-    private let apiClient: DrugAPIClient
+    private let apiClient: any DrugAPIClientProtocol
 
-    init(serviceKey: String, baseURL: String) {
-        apiClient = DrugAPIClient(serviceKey: serviceKey, baseURL: baseURL)
+    init(apiClient: any DrugAPIClientProtocol) {
+        self.apiClient = apiClient
+    }
+
+    convenience init(serviceKey: String, baseURL: String) {
+        self.init(apiClient: DrugAPIClient(serviceKey: serviceKey, baseURL: baseURL))
     }
 
     func search(keyword: String, pageNo: Int) async throws -> [Drug] {

@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 
-final class DrugAPIClient {
+final class DrugAPIClient: DrugAPIClientProtocol {
     private let session: Session
     private let serviceKey: String
     private let baseURL: String
