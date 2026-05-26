@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"작업 확인 필요\" with title \"Claude Code\"'"
+            "command": "osascript -e 'display notification \"작업 확인 필요\" with title \"Claude Code\"' 2>/dev/null || true"
           }
         ]
       }

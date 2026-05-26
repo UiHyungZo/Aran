@@ -3,8 +3,8 @@
 ## 현재 상태
 
 - **활성 브랜치**: `feat/drugInjection`
-- **전체 진행도**: MVP 1순위 기능 구현 완료 + 안정화 완료
-- **다음 단계**: MVP 2순위 기능 (감정 일기, 병원 일정 등)
+- **전체 진행도**: 캘린더/약주사/검사/약정보 탭 완료. 시술 기록 탭 Presentation 미구현.
+- **다음 단계**: 캘린더 탭 나머지 입력 시트 + 시술 기록 탭 Presentation 계층
 
 ---
 
@@ -16,7 +16,9 @@
 | Medication / Injection | UIKit + RxSwift | ✅ 완료 |
 | Health Record | UIKit + RxSwift | ✅ 완료 |
 | Drug Information | SwiftUI + Combine | ✅ 완료 |
-| Transfer / Retrieval Record | Domain + Data 계층 | ✅ 완료 (Calendar에 표시) |
+| CycleRecord / TransferRecord / PGTRecord | Domain + Data 계층 | ⚠️ Presentation 미구현 |
+
+> ⚠️ **중요**: 시술 기록 탭은 Domain Entity, Repository, UseCase, SwiftData 모델까지는 구현되어 있으나 Presentation 계층(화면, ViewModel, DIContainer)은 미구현 상태입니다.
 
 ---
 
@@ -25,7 +27,7 @@
 | 항목 | 내용 |
 |------|------|
 | CalendarView 약 도트 버그 | `DayCell`에 `hasMedication: Bool` 추가로 수정 |
-| MedicationFormViewController | `MedicationFormActions` 패턴 적용 (onCancel, onSaveCompleted) |
+| MedicationFormViewController | `MedicationFormActions` 패턴 적용 |
 | MedicationFormSheet Coordinator | `UIViewControllerRepresentable.Coordinator` + `@Environment(\.dismiss)` 연결 |
 | SceneDelegate | `.modelContainer` 중복 제거 |
 | ExamListViewController | 구현 완성 확인 |
@@ -52,17 +54,18 @@
 
 ---
 
-## 다음 작업 순서 (MVP 2순위)
+## 다음 작업
 
-```
-1. 감정 일기 — 이모지 선택 + 텍스트 입력, 날짜별 저장
-2. 병원 일정 — 일정 추가/삭제
-3. 알림 미리보기
-4. 최근 검색어 (DrugInfo)
-5. Health Record History View — 항목별 날짜순 히스토리
-```
+`TODO.md` 미완료 항목 참고. 우선순위 순서:
 
-→ 자세한 목록은 `TODO.md` 참고
+1. 캘린더 탭 — 감정 일기 / 병원 일정 / 생리 주기 입력 시트
+2. 시술 기록 탭 — Presentation 계층 전체 (SwiftUI + Combine + Swift Charts)
+3. 검사 탭 — Swift Charts Line Chart, 수치 히스토리 화면
+4. 약/주사 탭 — 알림 미리보기
+5. 약 정보 탭 — 최근 검색어
+6. 테스트 — Repository / ViewModel / UI Test 전 레이어
+7. 앱 완성도 — 다크모드, 앱 아이콘, 스플래시
+8. 앱스토어 배포
 
 ---
 
@@ -70,8 +73,9 @@
 
 ```bash
 # 빌드
-xcodebuild -scheme Aran
+bash scripts/build-debug.sh
 
 # 테스트
-xcodebuild test -scheme Aran
+xcodebuild test -scheme Aran \
+  -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
 ```
