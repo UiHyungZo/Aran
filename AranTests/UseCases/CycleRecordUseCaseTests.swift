@@ -85,35 +85,15 @@ final class CycleRecordUseCaseTests: XCTestCase {
         XCTAssertEqual(repo.savedRecords.first?.events.count, 1)
     }
 
-    // MARK: - removeTransferEvent
-
-    func testRemoveTransferEvent_whenRecordContainsTransfer_updatesRecordWithoutTransferEvent() async throws {
+    func testAddEvent_whenNoRecordAndCycleNumberProvided_savesCycleNumber() async throws {
         // given
-        let transferID = UUID()
-        let record = makeCycleRecord(events: [
-            .hospitalVisit(note: "내원"),
-            .embryoTransfer(transferID: transferID)
-        ])
-        repo.fetchAllResult = [record]
+        repo.fetchDateResult = nil
 
         // when
-        try await sut.removeTransferEvent(transferID: transferID)
+        try await sut.addEvent(.embryoTransfer(transferID: UUID()), to: Date(), cycleNumber: 3)
 
         // then
-        XCTAssertEqual(repo.updatedRecords.count, 1)
-        XCTAssertEqual(repo.updatedRecords.first?.events.count, 1)
-    }
-
-    func testRemoveTransferEvent_whenTransferDoesNotExist_doesNotUpdateRecord() async throws {
-        // given
-        let record = makeCycleRecord(events: [.ovulation])
-        repo.fetchAllResult = [record]
-
-        // when
-        try await sut.removeTransferEvent(transferID: UUID())
-
-        // then
-        XCTAssertTrue(repo.updatedRecords.isEmpty)
+        XCTAssertEqual(repo.savedRecords.first?.cycleNumber, 3)
     }
 
     // MARK: - saveDiary

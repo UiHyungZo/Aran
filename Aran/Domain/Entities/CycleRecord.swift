@@ -2,7 +2,12 @@ import Foundation
 
 struct CycleRecord: Identifiable {
     let id: UUID
+    var cycleNumber: Int = 1
     var date: Date
+    var retrievalCount: Int = 0
+    var fertilizedCount: Int = 0
+    var frozenCount: Int = 0
+    var embryoGrades: [String] = []
     var events: [DayEvent]
     var diary: DiaryEntry?
 }

@@ -9,32 +9,42 @@ struct TransferInputFormView: View {
     @ObservedObject var viewModel: ProcedureRecordViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var inputType: ProcedureInputType = .retrieval
-    @State private var cycleNumber = 1
+    @State private var cycleNumber: Int
     @State private var date = Date()
     @State private var retrievedCount = 1
     @State private var embryoGrade = ""
     @State private var embryoCount = 1
     @State private var transferType: TransferType = .frozen
-    @State private var result: TransferResult = .pending
+
+    init(viewModel: ProcedureRecordViewModel, initialCycleNumber: Int = 1) {
+        self.viewModel = viewModel
+        _cycleNumber = State(initialValue: initialCycleNumber)
+    }
 
     private var isValid: Bool {
-        switch inputType {
-        case .retrieval:
-            return retrievedCount > 0
-        case .transfer:
-            return !embryoGrade.trimmingCharacters(in: .whitespaces).isEmpty && embryoCount > 0
-        }
+        !embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && embryoCount > 0
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("기본 정보") {
-                    Picker("기록 종류", selection: $inputType) {
-                        ForEach(ProcedureInputType.allCases, id: \.self) { type in
-                            Text(type.title).tag(type)
-                        }
+                    Stepper("\(cycleNumber)차", value: $cycleNumber, in: 1...20)
+                    DatePicker("이식일", selection: $date, displayedComponents: .date)
+                }
+
+                Section("배아 정보") {
+                    HStack {
+                        Text("등급")
+                        Spacer()
+                        TextField("예: 3AA", text: $embryoGrade)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1...5)
+
+                    Picker("종류", selection: $transferType) {
+                        Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
+                        Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
                     }
                     .pickerStyle(.segmented)
 
@@ -84,7 +94,13 @@ struct TransferInputFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            await save()
+                            await viewModel.saveTransfer(
+                                cycleNumber: cycleNumber,
+                                date: date,
+                                embryoGrade: embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines),
+                                embryoCount: embryoCount,
+                                transferType: transferType
+                            )
                             dismiss()
                         }
                     }

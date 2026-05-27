@@ -282,7 +282,11 @@ final class CalendarViewModel: ObservableObject {
                 result: result
             )
             try await transferRecordUseCase.save(record)
-            try await cycleRecordUseCase.addEvent(.embryoTransfer(transferID: record.id), to: selectedDate)
+            try await cycleRecordUseCase.addEvent(
+                .embryoTransfer(transferID: record.id),
+                to: selectedDate,
+                cycleNumber: cycleNumber
+            )
             await loadMonthRecords()
             await loadRecord(for: selectedDate)
         } catch {

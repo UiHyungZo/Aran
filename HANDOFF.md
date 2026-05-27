@@ -2,9 +2,9 @@
 
 ## 현재 상태
 
-- **활성 브랜치**: `feat/test`
-- **전체 진행도**: Domain·Data·Application 계층 완료. Presentation 4탭 기본 구현. CycleRecord 탭 UI·캘린더 2단계 시트 미구현.
-- **다음 단계**: 캘린더 탭 나머지 입력 시트 + 시술 기록 탭 Presentation 계층
+- **활성 브랜치**: `feat/record`
+- **전체 진행도**: Domain·Data·Application 계층 완료. Presentation 4탭 기본 구현. CycleRecord 탭 UI 전체 미구현.
+- **현재 작업**: 시술 기록 탭 Presentation 계층 구현
 
 ### 레이어별 진척율
 
@@ -15,7 +15,7 @@
 | Application 계층 | 100% |
 | 📅 Calendar 탭 UI | 60% |
 | 💊 Medication 탭 UI | 100% |
-| 🧪 HealthRecord 탭 UI | 75% |
+| 🏥 HealthRecord 탭 UI | 85% |
 | 🔍 DrugInfo 탭 UI | 95% |
 | 🗂 CycleRecord 탭 UI | 0% (Domain / Data는 100%) |
 | 단위 테스트 | 60% |
@@ -23,422 +23,216 @@
 
 ---
 
-## 캘린더 탭 PRD Gap 분석 (2026-05-27)
-
-> PRD v14.0 업데이트 후 확인된 미구현 항목. Codex가 이 섹션을 참고해 구현한다.
-
-### Gap 1 — 신규 Entity 4개 미존재
-
-아래 4개 Entity와 각각의 Repository / UseCase / SwiftData Model / Mapper가 **모두 없음**.
-
-#### 1-A. `HospitalVisit`
-```swift
-// Domain/Entities/HospitalVisit.swift
-struct HospitalVisit: Identifiable {
-    let id: UUID
-    var visitDate: Date
-    var visitTypes: [String]   // ["내원", "채혈", "초음파"] 복수 선택
-    var memo: String?
-}
-```
-- 현재 코드: `DayEvent.hospitalVisit(note: String?)` — visitTypes 배열 없음
-- 필요 파일:
-  - `Domain/Entities/HospitalVisit.swift`
-  - `Domain/Repositories/HospitalVisitRepositoryProtocol.swift`
-  - `Domain/UseCases/HospitalVisitUseCase.swift`
-  - `Data/Local/HospitalVisitModel.swift` (SwiftData `@Model`)
-  - `Data/Local/Mappers/HospitalVisitMapper.swift`
-  - `Data/Repositories/HospitalVisitRepository.swift`
-
-#### 1-B. `MenstrualCycle`
-```swift
-// Domain/Entities/MenstrualCycle.swift
-struct MenstrualCycle: Identifiable {
-    let id: UUID
-    var startDate: Date
-    var cycleLength: Int   // 기본 28
-    // 배란 예정일 = startDate + (cycleLength - 14) — UseCase에서 계산
-}
-```
-- 현재 코드: `DayEvent.periodStart` 이벤트만 존재 — cycleLength 없음
-- `CycleRecordUseCase.estimateOvulation()` 고정 14일 사용 → cycleLength 반영하도록 수정
-- 필요 파일: HospitalVisit과 동일 구조 (5파일)
-
-#### 1-C. `MedicationLog`
-```swift
-// Domain/Entities/MedicationLog.swift
-struct MedicationLog: Identifiable {
-    let id: UUID
-    var medicationId: UUID
-    var logDate: Date    // 날짜만 사용, 시간 무시
-    var isTaken: Bool
-}
-```
-- 현재 코드: 완전 미존재
-- 규칙: (medicationId, logDate) 쌍은 DB에 1개만 존재 — upsert 로직 필요
-- `Medication` 삭제 시 해당 `MedicationLog`도 함께 삭제
-- 필요 파일: 동일 구조 (5파일)
-
-#### 1-D. `DiaryEntry` 독립 분리
-```swift
-// Domain/Entities/DiaryEntry.swift  ← 현재 CycleRecord.swift 안에 embedded
-struct DiaryEntry: Identifiable {
-    let id: UUID
-    var date: Date
-    var emoji: String?
-    var content: String   // 최대 500자
-}
-```
-- 현재 코드: `CycleRecord` 내부 nested struct (id, date 없음)
-- `CycleRecord.diary: DiaryEntry?` 제거 → 별도 Repository로 관리
-- 필요 파일: 동일 구조 (5파일)
-
----
-
-### ✅ Gap 1 — 구현 완료 (2026-05-27)
-
-아래 4개 Entity 세트는 **모두 생성 완료**. Codex는 재구현하지 않는다.
-
-| Entity | Domain | Data | 상태 |
-|--------|--------|------|------|
-| `HospitalVisit` | Entity + Protocol + UseCase | SwiftData Model + Mapper + Repository | ✅ |
-| `MenstrualCycle` | Entity + Protocol + UseCase | SwiftData Model + Mapper + Repository | ✅ |
-| `MedicationLog` | Entity + Protocol + UseCase | SwiftData Model + Mapper + Repository | ✅ |
-| `DiaryEntry` | Entity + Protocol + UseCase | SwiftData Model + Mapper + Repository | ✅ |
-
----
-
-### ✅ Gap 2 — 1단계 시트 구현 완료 (2026-05-27)
-
-`CalendarView.swift` 내 `dateSummaryPanel`이 PRD 5섹션 구조로 완성되어 있음.
-
-| 섹션 | 현재 상태 |
-|------|-----------|
-| 병원 일정 | 요약 표시 (`visitTypes` joined) + "추가" 탭 시 `CalendarHospitalVisitFormSheet` 열림 ✅ |
-| 복용 약 체크박스 | 각 약 옆 체크박스, `toggleMedicationLog` 연결 ✅ |
-| 감정 일기 | 이모지 + 텍스트 인라인 오버레이 패널 (`diaryEditPanel`) ✅ |
-| 검사 수치 | 요약 표시 + "추가" 탭 시 `CalendarHealthRecordInputSheet` 열림 ✅ |
-| 생리 시작일 | 요약 표시 + "기록" 탭 시 `MenstrualCycleFormSheet` 열림 ✅ |
-
----
-
-### ✅ Gap 3 — 2단계 시트 구현 완료 (2026-05-27)
-
-모두 `CalendarView.swift` 내 `private struct`로 구현됨.
-
-| 시트 | struct 이름 | 상태 |
-|------|-------------|------|
-| 병원 일정 추가/수정/삭제 | `CalendarHospitalVisitFormSheet` | ✅ |
-| 검사 수치 입력 | `CalendarHealthRecordInputSheet` | ✅ |
-| 생리 주기 입력 | `MenstrualCycleFormSheet` | ✅ (cycleLength + 배란 예정일 계산 포함) |
-
----
-
-### ✅ Gap 6 — 병원 일정 수정/삭제 플로우 구현 완료 (2026-05-27)
-
-> PRD: "2단계 시트 — 수정 가능 · 삭제 가능"  
-> 기존 일정이 있으면 수정 모드로 열리고, 수정 모드에서는 삭제 버튼을 제공한다.
-
-#### 6-A. `HospitalVisitUseCase` — 메서드 추가
-
-파일: `Domain/UseCases/HospitalVisitUseCase.swift`
-
-```swift
-func update(_ visit: HospitalVisit) async throws {
-    let types = visit.visitTypes.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-    guard !types.isEmpty else {
-        throw AppError.invalidInput("방문 유형을 1개 이상 선택해주세요.")
-    }
-    try await repository.update(visit)
-}
-
-func delete(id: UUID) async throws {
-    try await repository.delete(id: id)
-}
-```
-
-> `repository.update`와 `repository.delete`는 이미 `HospitalVisitRepository`에 구현되어 있음.  
-> Protocol(`HospitalVisitRepositoryProtocol`)에도 선언되어 있음.
-
----
-
-#### 6-B. `CalendarViewModel` — 메서드 추가
-
-파일: `Presentation/Calendar/CalendarViewModel.swift`
-
-```swift
-func updateHospitalVisit(_ visit: HospitalVisit) async {
-    do {
-        try await hospitalVisitUseCase.update(visit)
-        await loadMonthRecords()
-        await loadRecord(for: selectedDate)
-    } catch {
-        errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
-    }
-}
-
-func deleteHospitalVisit(id: UUID) async {
-    do {
-        try await hospitalVisitUseCase.delete(id: id)
-        await loadMonthRecords()
-        await loadRecord(for: selectedDate)
-    } catch {
-        errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
-    }
-}
-```
-
----
-
-#### 6-C. `CalendarHospitalVisitFormSheet` — 추가/수정 모드 통합
-
-파일: `Presentation/Calendar/CalendarView.swift` 내 `private struct CalendarHospitalVisitFormSheet`
-
-**현재 시그니처:**
-```swift
-private struct CalendarHospitalVisitFormSheet: View {
-    @ObservedObject var viewModel: CalendarViewModel
-    @Environment(\.dismiss) private var dismiss
-    @State private var selectedTypes: Set<String> = ["내원"]
-    @State private var memo = ""
-    ...
-```
-
-**변경 후 시그니처:**
-```swift
-private struct CalendarHospitalVisitFormSheet: View {
-    @ObservedObject var viewModel: CalendarViewModel
-    @Environment(\.dismiss) private var dismiss
-    let existingVisit: HospitalVisit?   // nil = 추가 모드, non-nil = 수정 모드
-
-    @State private var selectedTypes: Set<String> = []
-    @State private var memo = ""
-
-    init(viewModel: CalendarViewModel, existingVisit: HospitalVisit? = nil) {
-        self.viewModel = viewModel
-        self.existingVisit = existingVisit
-        _selectedTypes = State(initialValue: existingVisit.map { Set($0.visitTypes) } ?? ["내원"])
-        _memo = State(initialValue: existingVisit?.memo ?? "")
-    }
-```
-
-**저장 버튼 동작:**
-```swift
-Button("저장") {
-    Task {
-        let note = memo.trimmingCharacters(in: .whitespacesAndNewlines)
-        let memoValue = note.isEmpty ? nil : note
-        if var visit = existingVisit {
-            visit.visitTypes = Array(selectedTypes).sorted()
-            visit.memo = memoValue
-            await viewModel.updateHospitalVisit(visit)
-        } else {
-            await viewModel.saveHospitalVisit(
-                visitTypes: Array(selectedTypes).sorted(),
-                memo: memoValue
-            )
-        }
-        dismiss()
-    }
-}
-```
-
-**삭제 버튼 — 수정 모드에서만 표시:**
-```swift
-// Form 마지막 Section에 추가
-if let visit = existingVisit {
-    Section {
-        Button(role: .destructive) {
-            Task {
-                await viewModel.deleteHospitalVisit(id: visit.id)
-                dismiss()
-            }
-        } label: {
-            Text("일정 삭제")
-                .frame(maxWidth: .infinity, alignment: .center)
-        }
-    }
-}
-```
-
-**navigationTitle 분기:**
-```swift
-.navigationTitle(existingVisit == nil ? "병원 일정 추가" : "병원 일정 수정")
-```
-
----
-
-#### 6-D. `CalendarView.dateSummaryPanel` — 1단계 시트 병원 일정 섹션 수정
-
-파일: `Presentation/Calendar/CalendarView.swift`
-
-**추가할 State:**
-```swift
-@State private var editingVisit: HospitalVisit? = nil
-```
-
-**summaryRow 탭 액션 변경 (현재 → 수정 후):**
-
-현재:
-```swift
-summaryRow(title: "병원 일정", subtitle: hospitalSubtitle, actionLabel: "추가") {
-    isHospitalFormPresented = true
-}
-```
-
-수정 후:
-```swift
-let visits = viewModel.hospitalVisits(for: viewModel.selectedDate)
-summaryRow(
-    title: "병원 일정",
-    subtitle: hospitalSubtitle,
-    actionLabel: visits.isEmpty ? "추가" : "수정 >"
-) {
-    editingVisit = visits.first   // 없으면 nil → 추가 모드, 있으면 첫 번째 일정 → 수정 모드
-    isHospitalFormPresented = true
-}
-```
-
-**sheet 바인딩 변경:**
-
-현재:
-```swift
-.sheet(isPresented: $isHospitalFormPresented) {
-    CalendarHospitalVisitFormSheet(viewModel: viewModel)
-}
-```
-
-수정 후:
-```swift
-.sheet(isPresented: $isHospitalFormPresented, onDismiss: { editingVisit = nil }) {
-    CalendarHospitalVisitFormSheet(viewModel: viewModel, existingVisit: editingVisit)
-}
-```
-
----
-
-### Gap 2 — 1단계 시트 (`DateDetailSheet`) UI 수정 (기존 메모)
-
-> ✅ 완료됨 — 위 Gap 2 완료 현황 참고.
-
-#### 2-B. 복용 약 체크박스 구현 상세
-```swift
-// 체크박스 외관
-// 미선택: 회색 테두리 원
-// 선택:   AranColor.dotMedication(Purple) fill + 흰색 내부 원
-// 탭 시:  MedicationLogUseCase.toggle(medicationId:, date:) 호출
-```
-
----
-
-### Gap 3 — 2단계 시트 보완 (기존 메모)
-
-> ✅ 완료됨 — 위 Gap 3 완료 현황 참고.
-
-#### 3-A. 검사 수치 입력 시트
-- 저장: `HealthRecordUseCase.save()` 재사용
-- 삭제: `HealthRecordUseCase.delete(id:)` 재사용 (현재 미연결)
-
-#### 3-C. 병원 일정 시트
-- `visitTypes: [String]` chip 복수 선택 ✅ 구현됨
-- 수정/삭제: ✅ 구현됨
-
----
-
-### Gap 4 — 캘린더 도트 로직 업데이트
-
-`CalendarView.swift` 내 `DayCell` 도트 표시 로직 수정 필요.
-
-| 도트 | 색상 Asset | 현재 데이터 소스 | 변경 후 데이터 소스 |
-|------|-----------|----------------|------------------|
-| 병원 ● | `dotHospital` (Pink) | `DayEvent.hospitalVisit` | `HospitalVisit` entity |
-| 약 ● | `dotMedication` (Purple) | Medication 스케줄 | 동일 유지 (MedicationLog 반영 불필요) |
-| 이식 ● | `dotTransfer` (Teal) | `TransferRecord` ✅ | 변경 없음 |
-| 배란 ● | `dotOvulation` (Amber) | 고정 14일 계산 | `MenstrualCycle.cycleLength` 기반 계산 |
-| 생리 ■ | `dotPeriod` (Pink 50%) | periodStart 1일만 | startDate~startDate+cycleLength 기간 전체 |
-
-`CalendarViewModel`에 `HospitalVisitUseCase`, `MenstrualCycleUseCase` 의존성 추가 필요.
-
----
-
-### Gap 5 — DI Container 업데이트
-
-`Application/DIContainer/CalendarSceneDIContainer.swift` 수정:
-- `HospitalVisitUseCase` 인스턴스 생성 + `CalendarViewModel` 주입
-- `MenstrualCycleUseCase` 인스턴스 생성 + `CalendarViewModel` 주입
-- `MedicationLogUseCase` 인스턴스 생성 + `CalendarViewModel` 주입
-- `DiaryUseCase` (DiaryEntry 분리 후) 인스턴스 생성 + 주입
-
----
-
-### 구현 순서 (Codex 참고, 2026-05-27 기준)
-
-> ✅ = 완료, ❌ = 미구현
-
-1. ✅ **Entity + Repository + UseCase + SwiftData Model** 4세트 신규 파일 생성
-2. ✅ `CalendarViewModel` — UseCase 8개 의존성 추가, save/toggle 메서드
-3. ✅ `CalendarSceneDIContainer` — UseCase 주입
-4. ✅ `dateSummaryPanel` (1단계 시트) — 5섹션 구조
-5. ✅ `CalendarHospitalVisitFormSheet` — visitTypes chip 선택 + 수정/삭제 모드
-6. ✅ `CalendarHealthRecordInputSheet` — 검사 수치 입력
-7. ✅ `MenstrualCycleFormSheet` — cycleLength stepper + 배란 예정일
-8. ✅ **Gap 6 — 병원 일정 수정/삭제** (상세 내용은 Gap 6 섹션 참고)
-   - `HospitalVisitUseCase.update / delete` 추가
-   - `CalendarViewModel.updateHospitalVisit / deleteHospitalVisit` 추가
-   - `CalendarHospitalVisitFormSheet` 수정/삭제 모드 추가
-   - `CalendarView.dateSummaryPanel` 병원 일정 탭 액션 분기
-
----
-
-## 완료된 기능
-
-| Feature | 스택 | 진척율 | 상태 |
-|---------|------|--------|------|
-| Calendar | SwiftUI + Combine | 65% | ⚠️ 도트/남은 PRD Gap 정리 필요 |
-| Medication / Injection | UIKit + RxSwift | 100% | ✅ 완료 |
-| Health Record | UIKit + RxSwift | 75% | ⚠️ 수정·커스텀 항목·Swift Charts·캘린더 연동 미구현 |
-| Drug Information | SwiftUI + Combine | 95% | ⚠️ 최근 검색어 미구현 |
-| CycleRecord / TransferRecord / PGTRecord | Domain + Data 계층 | 0% UI | ❌ Presentation 전체 미구현 |
+## PRD v14.0 시술기록 변경사항
 
 > ⚠️ **중요**: 시술 기록 탭은 Domain Entity, Repository, UseCase, SwiftData 모델까지는 구현되어 있으나 Presentation 계층(화면, ViewModel, DIContainer)은 미구현 상태입니다.
+이번 구현에서 반드시 반영해야 할 3가지 변경:
+
+| # | 변경 내용 | 영향 |
+|---|-----------|------|
+| 1 | **PGT / 염색체 / 반착검사** → 검사 탭에서 시술 기록 탭으로 완전 이동 | PGT 입력 폼을 시술 기록 탭에서 구현. 검사 탭에서는 제거 |
+| 2 | **차수 상세 화면 신규 추가** | 차수 카드 탭 → 상세 화면 (채취→수정→동결→이식→PGT 흐름 한눈에) |
+| 3 | **이식 결과 별도 입력 화면 추가** | 이식 기록 저장 후 나중에 결과(성공/실패/진행중)만 별도 업데이트 가능 |
 
 ---
 
-## 🧪 검사 탭 — PRD 기준 미구현 항목
+## 구현 목표: 시술 기록 탭 (TAB 4)
 
-`PRD.md` / `features.md` 요구사항과 현재 구현 상태 대조 결과.
+**기술 스택**: SwiftUI + Combine + Swift Charts
 
-| # | PRD 요구사항 | 현재 상태 | 우선순위 |
-|---|------------|---------|---------|
-| 1 | 수치 **수정** | ❌ `ExamListViewController` swipe-to-delete만 구현, 수정 없음 | 1순위 |
-| 2 | 커스텀 검사 항목 추가 (이름·단위 직접 입력) | ❌ `TestItem` 고정 enum (10개), 커스텀 추가 UI/로직 없음 | 1순위 |
-| 3 | Swift Charts **Line Chart** (수치 변화) | ❌ `ExamHistoryViewController` 내 커스텀 `BarChartView(draw())` 사용 중 | 2순위 |
-| 4 | 차트 **정상 범위 레퍼런스 라인** | ❌ 미구현 (FSH·AMH 등 항목별 기준값 없음) | 2순위 |
-| 5 | 수치 **히스토리 화면** 완성 | ⚠️ `ExamHistoryViewController` 존재하나 Swift Charts 미적용, TODO 미완으로 마킹 | 2순위 |
-| 6 | **캘린더 연동** (검사 수치) | ❌ 캘린더 2단계 시트 미구현 — 1단계 수치 요약·2단계 입력/수정 시트 모두 없음 | 2순위 |
+### 화면 구조
 
-### 관련 파일
-
-| 파일 | 역할 |
-|------|------|
-| `Presentation/HealthRecord/ExamListViewController.swift` | 목록 화면 — 수정 진입점 추가 필요 |
-| `Presentation/HealthRecord/HealthRecordFormViewController.swift` | 입력 폼 — 수정 모드(기존 record 주입) 지원 필요 |
-| `Presentation/HealthRecord/ExamHistoryViewController.swift` | 히스토리 + 차트 — Swift Charts Line Chart로 교체 필요 |
-| `Domain/Entities/HealthRecord.swift` | `TestItem` enum — 커스텀 항목 지원을 위한 `.custom(String)` 케이스 추가 필요 |
-| `Application/HealthRecordFlowCoordinator.swift` | 수정 플로우 추가 필요 |
+```
+CycleRecordListView          ← 탭 루트 화면
+├── CycleRecordDetailView    ← 차수 카드 탭 시 진입
+│   ├── TransferFormView     ← 이식 기록 입력
+│   ├── TransferResultView   ← 이식 결과 업데이트
+│   └── PGTFormView          ← PGT/염색체/반착검사 입력
+├── CycleRecordFormView      ← 새 차수(채취) 등록
+└── CycleChartView           ← Swift Charts Bar Chart
+```
 
 ---
 
-## 완료된 개선 사항
+## 구현할 파일 목록
 
-| 항목 | 내용 |
+모두 `Aran/Presentation/CycleRecord/` 경로에 생성한다.
+
+### 1. `CycleRecordListView.swift`
+
+**역할**: 탭 루트. 차수별 카드 목록.
+
+구현 내용:
+- `NavigationStack` 루트
+- 차수별 카드 리스트 (`List` 또는 `ScrollView + LazyVStack`)
+- 각 카드: 차수 번호, 채취/수정/동결 개수 요약, 이식 결과 배지
+- 상태 배지: 진행중(황색 `#F59E0B`), 성공(녹색 `#1D9E75`), 실패(적색 `#EF4444`)
+- toolbar `+` 버튼 → `CycleRecordFormView` sheet 표시
+- Empty 상태: "첫 번째 차수를 기록해보세요" 안내
+- 카드 탭 → `CycleRecordDetailView` NavigationLink
+
+### 2. `CycleRecordDetailView.swift`
+
+**역할**: 차수 상세. 해당 차수 전체 이력 타임라인 표시.
+
+구현 내용:
+- 상단: 차수 번호 + 시작일
+- 섹션 1 — 채취/수정/동결: retrievalCount / fertilizedCount / frozenCount 수치 표시
+- 섹션 2 — 이식 기록 목록: TransferRecord 리스트 (이식일, 등급, 신선/동결, 결과 배지)
+  - 각 이식 행 탭 → `TransferResultView` sheet (결과 업데이트)
+  - 이식 추가 버튼 → `TransferFormView` sheet
+- 섹션 3 — PGT/검사 기록 목록: PGTRecord 리스트 (검사일, 종류, 정상/비정상/모자이크 개수)
+  - PGT 추가 버튼 → `PGTFormView` sheet
+- 하단: `CycleChartView` 삽입
+
+### 3. `CycleRecordFormView.swift`
+
+**역할**: 새 차수(채취) 등록 폼.
+
+입력 필드:
+- 차수 번호 (`Stepper`, 1~20)
+- 시작일 (`DatePicker`)
+- 채취 개수 (`Stepper`, 0~50)
+- 수정 개수 (`Stepper`, 0~50)
+- 동결 개수 (`Stepper`, 0~50)
+- 배아 등급 목록 (`TextField`, 쉼표 구분 입력 → `[String]` 변환)
+- 저장 / 취소 버튼
+
+저장 시: `CycleRecordViewModel.saveCycleRecord(...)` 호출
+
+### 4. `TransferFormView.swift`
+
+**역할**: 이식 기록 입력 폼.
+
+입력 필드:
+- 이식일 (`DatePicker`)
+- 배아 등급 (`TextField`, 예: "3AA")
+- 이식 개수 (`Stepper`, 1~5)
+- 신선/동결 (`Picker`: 신선 / 동결)
+- 초기 결과: 기본값 `.pending` (대기)
+- 저장 / 취소
+
+저장 시: `CycleRecordViewModel.saveTransferRecord(cycleRecordId:, ...)` 호출
+
+### 5. `TransferResultView.swift`
+
+**역할**: 이식 결과만 업데이트하는 전용 화면.
+
+PRD v14.0 신규. 이식 후 나중에 결과를 기록할 때 사용.
+
+구현 내용:
+- 이식 정보 요약 표시 (읽기 전용: 이식일, 등급, 개수)
+- 결과 선택 (`Picker` 또는 세그먼트): 대기 / 성공 / 실패
+- 저장 버튼
+
+저장 시: `CycleRecordViewModel.updateTransferResult(id:, result:)` 호출
+
+### 6. `PGTFormView.swift`
+
+**역할**: PGT / 염색체 / 반착검사 결과 입력.
+
+PRD v14.0: 검사 탭에서 이동. PGTRecord 도메인 엔티티 사용.
+
+입력 필드:
+- 검사 종류 (`Picker`): PGT-A / PGT-M / 부부염색체 / 반착검사
+  - `PGTType` enum: `.pgtA`, `.pgtM`, `.chromosomeCouple`, `.implantation`
+- 검사일 (`DatePicker`)
+- 정상 개수 (`Stepper`, 0~30) — PGT-A/M일 때만 표시
+- 비정상 개수 (`Stepper`, 0~30) — PGT-A/M일 때만 표시
+- 모자이크 개수 (`Stepper`, 0~30) — PGT-A/M일 때만 표시
+- 메모 (`TextField`, 선택)
+- 저장 / 취소
+
+저장 시: `CycleRecordViewModel.savePGTRecord(cycleRecordId:, ...)` 호출
+
+### 7. `CycleChartView.swift`
+
+**역할**: 차수별 채취→수정→동결→이식 흐름 Bar Chart.
+
+구현 내용:
+- Swift Charts `BarMark`
+- X축: 차수 번호 (1차, 2차, ...)
+- Y축: 개수
+- 시리즈: 채취(mint) / 수정(teal) / 동결(blue) / 이식(purple)
+- 범례 표시
+- 데이터 없을 때 Empty 상태
+
+---
+
+## ViewModel
+
+### `CycleRecordViewModel.swift`
+
+경로: `Aran/Presentation/CycleRecord/CycleRecordViewModel.swift`
+
+```swift
+@MainActor
+final class CycleRecordViewModel: ObservableObject {
+    @Published var cycleRecords: [CycleRecord] = []
+    @Published var transferRecords: [TransferRecord] = []
+    @Published var pgtRecords: [PGTRecord] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+
+    private let cycleRecordUseCase: CycleRecordUseCase
+    private let transferRecordUseCase: TransferRecordUseCase
+    private let pgtRecordUseCase: PGTRecordUseCase
+
+    // 주요 메서드
+    func loadAll() async { ... }
+    func saveCycleRecord(cycleNumber:, startDate:, retrievalCount:, fertilizedCount:, frozenCount:, embryoGrades:) async { ... }
+    func saveTransferRecord(cycleRecordId:, transferDate:, embryoGrade:, embryoCount:, isFresh:) async { ... }
+    func updateTransferResult(id:, result: TransferResult) async { ... }
+    func savePGTRecord(cycleRecordId:, testDate:, type: PGTType, normalCount:, abnormalCount:, mosaicCount:, memo:) async { ... }
+    func deleteCycleRecord(id:) async { ... }
+
+    // 차트용 집계
+    func chartData() -> [CycleChartEntry] { ... }
+}
+```
+
+---
+
+## 재사용할 기존 코드
+
+Domain / Data 계층은 **건드리지 않는다**. 아래 파일들이 이미 완성되어 있다.
+
+| 파일 | 경로 |
 |------|------|
-| CalendarView 약 도트 버그 | `DayCell`에 `hasMedication: Bool` 추가로 수정 |
-| MedicationFormViewController | `MedicationFormActions` 패턴 적용 |
-| MedicationFormSheet Coordinator | `UIViewControllerRepresentable.Coordinator` + `@Environment(\.dismiss)` 연결 |
-| SceneDelegate | `.modelContainer` 중복 제거 |
-| ExamListViewController | 구현 완성 확인 |
-| UseCase Unit Tests | MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase |
+| `CycleRecordUseCase` | `Aran/Domain/UseCases/CycleRecordUseCase.swift` |
+| `TransferRecordUseCase` | `Aran/Domain/UseCases/TransferRecordUseCase.swift` |
+| `PGTRecordUseCase` | `Aran/Domain/UseCases/PGTRecordUseCase.swift` |
+| `CycleRecord` entity | `Aran/Domain/Entities/CycleRecord.swift` |
+| `TransferRecord` entity | `Aran/Domain/Entities/TransferRecord.swift` |
+| `PGTRecord` entity | `Aran/Domain/Entities/PGTRecord.swift` |
+| `CycleRecordRepository` | `Aran/Data/Repositories/CycleRecordRepository.swift` |
+| `TransferRecordRepository` | `Aran/Data/Repositories/TransferRecordRepository.swift` |
+| `ProcedureRecordSceneDIContainer` | `Aran/Application/DIContainer/ProcedureRecordSceneDIContainer.swift` |
+
+DIContainer에 `PGTRecordUseCase` 주입이 빠져 있으면 추가한다.
+
+---
+
+## 아키텍처 규칙
+
+1. **SwiftUI + Combine만 사용** — RxSwift 임포트 절대 금지
+2. **Domain 레이어 변경 없음** — Presentation 파일만 신규 추가
+3. **ViewModel → UseCase 경유** — Repository 직접 참조 금지
+4. **UI 색상**: 시술 기록 탭 대표색 Teal `#1D9E75` (`AranColor.teal` 또는 `.procedureRecord`)
+5. **Empty / Loading / Error 상태 필수** — 각 화면에 3가지 상태 구현
+6. **삭제 시 확인 단계** — `confirmationDialog` 사용
+7. **@MainActor** — ViewModel 전체에 선언
+
+---
+
+## 완료된 기능 (변경 없음)
+
+| Feature | 스택 | 상태 |
+|---------|------|------|
+| Medication / Injection | UIKit + RxSwift | ✅ 완료 |
+| Calendar (일부) | SwiftUI + Combine | ⚠️ 2단계 시트 미구현 |
+| Health Record | UIKit + RxSwift | ⚠️ Swift Charts 미구현 |
+| Drug Information | SwiftUI + Combine | ⚠️ 최근 검색어 미구현 |
 
 ---
 
@@ -446,17 +240,11 @@ summaryRow(
 
 **71개 PASS (2026-05-26 기준)**
 
-| 분류 | 파일 | 상태 |
-|------|------|------|
-| UseCase | MedicationUseCase, HealthRecordUseCase, CycleRecordUseCase, SearchDrugUseCase, MedicationNotificationUseCase | ✅ |
-| ViewModel | MedicationFormViewModel (6개) | ✅ |
-| Repository | MedicationRepository, HealthRecordRepository, DrugRepository | ✅ |
-| Network | DrugAPIClient, DrugRouter | ✅ |
-| Mapper | MedicationMapper, DrugMapper | ✅ |
-| UseCase | TransferRecordUseCase | ❌ 미구현 |
-| Repository | CycleRecordRepository, TransferRecordRepository | ❌ 미구현 |
-| ViewModel | CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel, PGTFormViewModel | ❌ 미구현 |
-| UI Test | AranUITests 전체 | ❌ 템플릿만 존재 |
+구현 완료 후 추가해야 할 테스트:
+- `TransferRecordUseCaseTests` (Domain)
+- `CycleRecordRepositoryTests` (Data)
+- `TransferRecordRepositoryTests` (Data)
+- `CycleRecordViewModelTests` (Presentation)
 
 ---
 
@@ -482,36 +270,7 @@ summaryRow(
 
 ## 알려진 이슈
 
-### 🟡 IDE 진단 경고 (CalendarView.swift)
-
-- SourceKit 오류 다수 (`CalendarViewModel`, `AranFont`, `AranColor` 스코프 인식 실패)
-- 빌드 및 테스트 자체는 정상 (`xcodebuild test` → TEST SUCCEEDED)
-- 타겟 멤버십 또는 모듈 임포트 문제일 가능성 — Xcode에서 직접 확인 필요
-
----
-
-## 브랜치 현황
-
-| 브랜치 | 역할 | 상태 |
-|--------|------|------|
-| `feat/test` | 현재 작업 브랜치 | 진행 중 |
-| `develop` | 통합 브랜치 | `dfdd6fc` 기준 |
-
----
-
-## 다음 작업
-
-`TODO.md` 미완료 항목 참고. 우선순위 순서:
-
-1. 캘린더 탭 — 감정 일기 / 병원 일정 / 생리 주기 입력 시트
-2. 시술 기록 탭 — Presentation 계층 전체 (SwiftUI + Combine + Swift Charts)
-3. 검사 탭 — Swift Charts Line Chart, 수치 히스토리 화면
-4. 약/주사 탭 — 약 셀 탭 → 수정 화면 (v14.0 신규, 미구현)
-5. 약/주사 탭 — 알림 미리보기
-6. 약 정보 탭 — 최근 검색어
-7. 테스트 — Repository / ViewModel / UI Test 전 레이어
-8. 앱 완성도 — 다크모드, 앱 아이콘, 스플래시
-9. 앱스토어 배포
+- CalendarView.swift: SourceKit 경고 다수 — 빌드/테스트는 정상. 무시해도 됨.
 
 ---
 
@@ -525,3 +284,15 @@ bash scripts/build-debug.sh
 xcodebuild test -scheme Aran \
   -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
 ```
+
+---
+
+## 다음 작업 우선순위
+
+1. **[현재]** 시술 기록 탭 Presentation 전체 구현 (이 HANDOFF)
+2. 캘린더 탭 — 2단계 입력 시트 나머지
+3. 검사 탭 — Swift Charts Line Chart, 수치 히스토리 화면
+4. 약/주사 탭 — 알림 미리보기
+5. 약 정보 탭 — 최근 검색어
+6. 테스트 — Repository / ViewModel / UI Test
+7. 앱 완성도 — 다크모드, 앱 아이콘, 스플래시
