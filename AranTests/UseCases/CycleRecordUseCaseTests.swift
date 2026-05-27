@@ -85,6 +85,17 @@ final class CycleRecordUseCaseTests: XCTestCase {
         XCTAssertEqual(repo.savedRecords.first?.events.count, 1)
     }
 
+    func testAddEvent_whenNoRecordAndCycleNumberProvided_savesCycleNumber() async throws {
+        // given
+        repo.fetchDateResult = nil
+
+        // when
+        try await sut.addEvent(.embryoTransfer(transferID: UUID()), to: Date(), cycleNumber: 3)
+
+        // then
+        XCTAssertEqual(repo.savedRecords.first?.cycleNumber, 3)
+    }
+
     // MARK: - saveDiary
 
     func testSaveDiary_whenRecordExists_updatesExistingRecord() async throws {

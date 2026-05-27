@@ -19,11 +19,17 @@ final class ProcedureRecordSceneDIContainer {
     private lazy var cycleRecordRepository: CycleRecordRepositoryProtocol =
         CycleRecordRepository(context: dependencies.modelContext)
 
+    private lazy var pgtRecordRepository: PGTRecordRepositoryProtocol =
+        PGTRecordRepository(context: dependencies.modelContext)
+
     private lazy var transferRecordUseCase: TransferRecordUseCase =
         .init(repository: transferRecordRepository)
 
     private lazy var cycleRecordUseCase: CycleRecordUseCase =
         .init(repository: cycleRecordRepository)
+
+    private lazy var pgtRecordUseCase: PGTRecordUseCase =
+        .init(repository: pgtRecordRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -32,7 +38,8 @@ final class ProcedureRecordSceneDIContainer {
     func makeProcedureRecordViewModel() -> ProcedureRecordViewModel {
         ProcedureRecordViewModel(
             transferRecordUseCase: transferRecordUseCase,
-            cycleRecordUseCase: cycleRecordUseCase
+            cycleRecordUseCase: cycleRecordUseCase,
+            pgtRecordUseCase: pgtRecordUseCase
         )
     }
 }

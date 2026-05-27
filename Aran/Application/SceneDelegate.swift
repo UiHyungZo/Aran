@@ -24,7 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 CycleRecordModel.self,
                 MedicationModel.self,
                 HealthRecordModel.self,
-                TransferRecordModel.self)
+                TransferRecordModel.self,
+                PGTRecordModel.self)
         } catch {
             fatalError("ModelContainer 초기화 실패: \(error)")
         }
