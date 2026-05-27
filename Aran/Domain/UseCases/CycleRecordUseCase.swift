@@ -26,7 +26,7 @@ final class CycleRecordUseCase {
     }
 
     func saveDiary(emoji: String?, text: String, for date: Date) async throws {
-        let diary = DiaryEntry(emoji: emoji, text: text)
+        let diary = DiaryEntry(date: date, emoji: emoji, content: text)
         if var existing = try await repository.fetch(date: date) {
             existing.diary = diary
             try await repository.update(existing)
@@ -36,8 +36,7 @@ final class CycleRecordUseCase {
         }
     }
 
-    func estimateOvulation(from periodStart: Date) -> Date {
-        // 표준 28일 주기 기준 14일째 배란 추정
-        Calendar.current.date(byAdding: .day, value: 14, to: periodStart) ?? periodStart
+    func estimateOvulation(from periodStart: Date, cycleLength: Int = 28) -> Date {
+        Calendar.current.date(byAdding: .day, value: cycleLength - 14, to: periodStart) ?? periodStart
     }
 }

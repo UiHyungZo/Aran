@@ -44,6 +44,12 @@ final class MedicationRepository: MedicationRepositoryProtocol {
             predicate: #Predicate { $0.id == id }
         )
         if let model = try context.fetch(descriptor).first {
+            let logDescriptor = FetchDescriptor<MedicationLogModel>(
+                predicate: #Predicate { $0.medicationId == id }
+            )
+            for log in try context.fetch(logDescriptor) {
+                context.delete(log)
+            }
             context.delete(model)
             try context.save()
         }

@@ -27,11 +27,6 @@ enum DayEvent {
     }
 }
 
-struct DiaryEntry {
-    var emoji: String?
-    var text: String
-}
-
 enum TransferType: String {
     case fresh = "신선"
     case frozen = "동결"

@@ -40,6 +40,30 @@ final class CalendarSceneDIContainer {
     private lazy var medicationUseCase: MedicationUseCase =
         .init(medicationRepository: medicationRepository, notificationRepository: notificationRepository)
 
+    private lazy var hospitalVisitRepository: HospitalVisitRepositoryProtocol =
+        HospitalVisitRepository(context: dependencies.modelContext)
+
+    private lazy var hospitalVisitUseCase: HospitalVisitUseCase =
+        .init(repository: hospitalVisitRepository)
+
+    private lazy var menstrualCycleRepository: MenstrualCycleRepositoryProtocol =
+        MenstrualCycleRepository(context: dependencies.modelContext)
+
+    private lazy var menstrualCycleUseCase: MenstrualCycleUseCase =
+        .init(repository: menstrualCycleRepository)
+
+    private lazy var medicationLogRepository: MedicationLogRepositoryProtocol =
+        MedicationLogRepository(context: dependencies.modelContext)
+
+    private lazy var medicationLogUseCase: MedicationLogUseCase =
+        .init(repository: medicationLogRepository)
+
+    private lazy var diaryEntryRepository: DiaryEntryRepositoryProtocol =
+        DiaryEntryRepository(context: dependencies.modelContext)
+
+    private lazy var diaryEntryUseCase: DiaryEntryUseCase =
+        .init(repository: diaryEntryRepository)
+
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
     }
@@ -49,7 +73,11 @@ final class CalendarSceneDIContainer {
             cycleRecordUseCase: cycleRecordUseCase,
             healthRecordUseCase: healthRecordUseCase,
             transferRecordUseCase: transferRecordUseCase,
-            medicationUseCase: medicationUseCase
+            medicationUseCase: medicationUseCase,
+            hospitalVisitUseCase: hospitalVisitUseCase,
+            menstrualCycleUseCase: menstrualCycleUseCase,
+            medicationLogUseCase: medicationLogUseCase,
+            diaryEntryUseCase: diaryEntryUseCase
         )
     }
 }

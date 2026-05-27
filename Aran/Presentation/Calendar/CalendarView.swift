@@ -9,7 +9,9 @@ struct CalendarView: View {
     @State private var diaryEmoji: String = ""
     @State private var diaryText: String = ""
     @State private var isHospitalFormPresented: Bool = false
+    @State private var editingVisit: HospitalVisit?
     @State private var isMenstrualSheetPresented: Bool = false
+    @State private var isHealthRecordSheetPresented: Bool = false
 
     init(viewModel: CalendarViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -88,11 +90,14 @@ struct CalendarView: View {
                     .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isDiaryEditing)
             }
         }
-        .sheet(isPresented: $isHospitalFormPresented) {
-            CalendarHospitalVisitFormSheet(viewModel: viewModel)
+        .sheet(isPresented: $isHospitalFormPresented, onDismiss: { editingVisit = nil }) {
+            CalendarHospitalVisitFormSheet(viewModel: viewModel, existingVisit: editingVisit)
         }
         .sheet(isPresented: $isMenstrualSheetPresented) {
             MenstrualCycleFormSheet(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isHealthRecordSheetPresented) {
+            CalendarHealthRecordInputSheet(viewModel: viewModel)
         }
         .alert("오류", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -244,12 +249,18 @@ struct CalendarView: View {
 
             ScrollView {
                 VStack(spacing: 0) {
-                    summaryRow(title: "병원 일정", subtitle: hospitalSubtitle, actionLabel: "추가") {
+                    let visits = viewModel.hospitalVisits(for: viewModel.selectedDate)
+                    summaryRow(
+                        title: "병원 일정",
+                        subtitle: hospitalSubtitle,
+                        actionLabel: visits.isEmpty ? "추가" : "수정 >"
+                    ) {
+                        editingVisit = visits.first
                         isHospitalFormPresented = true
                     }
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "복용 약", subtitle: medicationSubtitle) { }
+                    medicationSummaryRows
                     Divider().padding(.leading, 16)
 
                     summaryRow(title: "감정 일기", subtitle: diarySubtitle, actionLabel: diaryActionLabel) {
@@ -260,10 +271,12 @@ struct CalendarView: View {
                     }
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "검사 수치", subtitle: healthSubtitle, actionLabel: "추가") { }
+                    summaryRow(title: "검사 수치", subtitle: healthSubtitle, actionLabel: "추가") {
+                        isHealthRecordSheetPresented = true
+                    }
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "생리 시작일", subtitle: periodSubtitle) {
+                    summaryRow(title: "생리 시작일", subtitle: periodSubtitle, actionLabel: "기록") {
                         isMenstrualSheetPresented = true
                     }
                 }
@@ -308,16 +321,69 @@ struct CalendarView: View {
         .buttonStyle(.plain)
     }
 
+    @ViewBuilder
+    private var medicationSummaryRows: some View {
+        let meds = viewModel.medications(for: viewModel.selectedDate)
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("복용 약")
+                        .font(AranFont.body(15))
+                        .foregroundStyle(.primary)
+                    Text(meds.isEmpty ? "복용 약 없음" : "탭해서 복용 체크")
+                        .font(AranFont.caption())
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, meds.isEmpty ? 12 : 6)
+
+            ForEach(meds) { med in
+                Button {
+                    Task { await viewModel.toggleMedicationLog(medicationId: med.id, date: viewModel.selectedDate) }
+                } label: {
+                    HStack {
+                        medicationCheckmark(isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate))
+                        Text(med.drugName)
+                            .font(AranFont.body())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(med.dosage)
+                            .font(AranFont.caption())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func medicationCheckmark(isTaken: Bool) -> some View {
+        ZStack {
+            Circle()
+                .stroke(isTaken ? AranColor.dotMedication : Color.gray.opacity(0.5), lineWidth: 1.5)
+                .background(Circle().fill(isTaken ? AranColor.dotMedication : Color.clear))
+                .frame(width: 20, height: 20)
+            if isTaken {
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 7, height: 7)
+            }
+        }
+    }
+
     // MARK: - 요약 패널 서브타이틀
 
     private var hospitalSubtitle: String {
-        let events = viewModel.events(for: viewModel.selectedDate).filter { event in
-            if case .hospitalVisit = event { return true }
-            return false
-        }
-        guard !events.isEmpty else { return "일정 없음" }
-        if case let .hospitalVisit(note) = events[0] { return note ?? "내원 예정" }
-        return "내원 예정"
+        let visits = viewModel.hospitalVisits(for: viewModel.selectedDate)
+        guard !visits.isEmpty else { return "일정 없음" }
+        return visits.prefix(2)
+            .map { $0.visitTypes.joined(separator: ", ") }
+            .joined(separator: " · ")
     }
 
     private var medicationSubtitle: String {
@@ -327,13 +393,13 @@ struct CalendarView: View {
     }
 
     private var diarySubtitle: String {
-        guard let diary = viewModel.selectedRecord?.diary, !diary.text.isEmpty else { return "기록 없음" }
+        guard let diary = viewModel.diary(for: viewModel.selectedDate), !diary.text.isEmpty else { return "기록 없음" }
         let prefix = diary.emoji.map { $0 + " " } ?? ""
         return prefix + diary.text
     }
 
     private var diaryActionLabel: String {
-        viewModel.selectedRecord?.diary != nil ? "편집" : "작성"
+        viewModel.diary(for: viewModel.selectedDate) != nil ? "편집" : "작성 >"
     }
 
     private var healthSubtitle: String {
@@ -345,10 +411,7 @@ struct CalendarView: View {
     }
 
     private var periodSubtitle: String {
-        let hasPeriod = viewModel.events(for: viewModel.selectedDate).contains { event in
-            if case .periodStart = event { return true }
-            return false
-        }
+        let hasPeriod = viewModel.menstrualCycleStarting(on: viewModel.selectedDate) != nil
         return hasPeriod ? "생리 시작일로 기록됨" : "오늘로 기록하기"
     }
 
@@ -462,7 +525,7 @@ struct CalendarView: View {
     }
 
     private func loadExistingDiary() {
-        if let diary = viewModel.selectedRecord?.diary {
+        if let diary = viewModel.diary(for: viewModel.selectedDate) {
             diaryEmoji = diary.emoji ?? ""
             diaryText = diary.text
         } else {
@@ -527,29 +590,46 @@ struct CalendarView: View {
 private struct CalendarHospitalVisitFormSheet: View {
     @ObservedObject var viewModel: CalendarViewModel
     @Environment(\.dismiss) private var dismiss
+    let existingVisit: HospitalVisit?
 
-    @State private var visitType = "내원"
+    @State private var selectedTypes: Set<String>
     @State private var memo = ""
 
     private let visitTypes = ["내원", "채혈", "초음파"]
+
+    init(viewModel: CalendarViewModel, existingVisit: HospitalVisit? = nil) {
+        self.viewModel = viewModel
+        self.existingVisit = existingVisit
+        _selectedTypes = State(initialValue: existingVisit.map { Set($0.visitTypes) } ?? ["내원"])
+        _memo = State(initialValue: existingVisit?.memo ?? "")
+    }
 
     var body: some View {
         NavigationView {
             Form {
                 Section("방문 유형") {
-                    Picker("방문 유형", selection: $visitType) {
-                        ForEach(visitTypes, id: \.self) { type in
-                            Text(type).tag(type)
-                        }
-                    }
-                    .pickerStyle(.segmented)
+                    FlowChipLayout(items: visitTypes, selectedItems: $selectedTypes)
                 }
 
                 Section("메모 (선택)") {
                     TextField("예: 담당 의사 면담", text: $memo)
                 }
+
+                if let visit = existingVisit {
+                    Section {
+                        Button(role: .destructive) {
+                            Task {
+                                await viewModel.deleteHospitalVisit(id: visit.id)
+                                dismiss()
+                            }
+                        } label: {
+                            Text("일정 삭제")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
+                }
             }
-            .navigationTitle("병원 일정 추가")
+            .navigationTitle(existingVisit == nil ? "병원 일정 추가" : "병원 일정 수정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -559,17 +639,140 @@ private struct CalendarHospitalVisitFormSheet: View {
                     Button("저장") {
                         Task {
                             let note = memo.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let fullNote = note.isEmpty ? visitType : "\(visitType) — \(note)"
-                            await viewModel.addEvent(.hospitalVisit(note: fullNote), to: viewModel.selectedDate)
+                            let memoValue = note.isEmpty ? nil : note
+                            if var visit = existingVisit {
+                                visit.visitTypes = Array(selectedTypes).sorted()
+                                visit.memo = memoValue
+                                await viewModel.updateHospitalVisit(visit)
+                            } else {
+                                await viewModel.saveHospitalVisit(
+                                    visitTypes: Array(selectedTypes).sorted(),
+                                    memo: memoValue
+                                )
+                            }
                             dismiss()
                         }
                     }
+                    .disabled(selectedTypes.isEmpty)
                 }
             }
         }
     }
 }
 
+private struct FlowChipLayout: View {
+    let items: [String]
+    @Binding var selectedItems: Set<String>
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(items, id: \.self) { item in
+                Button {
+                    if selectedItems.contains(item) {
+                        selectedItems.remove(item)
+                    } else {
+                        selectedItems.insert(item)
+                    }
+                } label: {
+                    Text(item)
+                        .font(AranFont.body(14))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(selectedItems.contains(item) ? Color(hex: 0x1A1A1A) : Color(hex: 0xF5F5F5))
+                        .foregroundStyle(selectedItems.contains(item) ? .white : Color(hex: 0x888888))
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private extension Color {
+    init(hex: UInt, alpha: Double = 1) {
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xFF) / 255,
+            green: Double((hex >> 8) & 0xFF) / 255,
+            blue: Double(hex & 0xFF) / 255,
+            opacity: alpha
+        )
+    }
+}
+
+// MARK: - 검사 수치 입력 시트
+
+private struct CalendarHealthRecordInputSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var selectedItem: TestItem = .fsh
+    @State private var valueText = ""
+    @State private var date: Date
+    @State private var note = ""
+
+    private let items: [TestItem] = [.fsh, .amh, .afc, .e2, .progesterone, .lh, .beta_hcg]
+
+    init(viewModel: CalendarViewModel) {
+        self.viewModel = viewModel
+        _date = State(initialValue: viewModel.selectedDate)
+    }
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("검사 항목") {
+                    Picker("항목", selection: $selectedItem) {
+                        ForEach(items, id: \.self) { item in
+                            Text(item.rawValue).tag(item)
+                        }
+                    }
+                }
+
+                Section("수치") {
+                    HStack {
+                        TextField("수치", text: $valueText)
+                            .keyboardType(.decimalPad)
+                        Text(selectedItem.unit)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section("측정일") {
+                    DatePicker("측정일", selection: $date, displayedComponents: .date)
+                        .environment(\.locale, Locale(identifier: "ko_KR"))
+                }
+
+                Section("메모 (선택)") {
+                    TextField("메모", text: $note)
+                }
+            }
+            .navigationTitle("검사 수치 추가")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("저장") {
+                        Task {
+                            let value = Double(valueText.replacingOccurrences(of: ",", with: ".")) ?? 0
+                            let memo = note.trimmingCharacters(in: .whitespacesAndNewlines)
+                            await viewModel.saveHealthRecord(
+                                item: selectedItem,
+                                value: value,
+                                date: date,
+                                note: memo.isEmpty ? nil : memo
+                            )
+                            dismiss()
+                        }
+                    }
+                    .disabled(Double(valueText.replacingOccurrences(of: ",", with: ".")) == nil)
+                }
+            }
+        }
+    }
+}
 // MARK: - 생리 주기 입력 시트
 
 private struct MenstrualCycleFormSheet: View {
@@ -592,7 +795,7 @@ private struct MenstrualCycleFormSheet: View {
     }
 
     private var ovulationDate: Date {
-        Calendar.current.date(byAdding: .day, value: cycleLength / 2, to: startDate) ?? startDate
+        viewModel.ovulationDate(startDate: startDate, cycleLength: cycleLength)
     }
 
     var body: some View {
@@ -627,8 +830,7 @@ private struct MenstrualCycleFormSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            await viewModel.addEvent(.periodStart, to: startDate)
-                            await viewModel.addEvent(.ovulation, to: ovulationDate)
+                            await viewModel.saveMenstrualCycle(startDate: startDate, cycleLength: cycleLength)
                             dismiss()
                         }
                     }

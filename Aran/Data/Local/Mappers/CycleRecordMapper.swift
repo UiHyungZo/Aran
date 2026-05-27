@@ -3,7 +3,9 @@ import Foundation
 enum CycleRecordMapper {
     static func toDomain(_ model: CycleRecordModel) -> CycleRecord {
         let events = decodeEvents(from: model.eventsData)
-        let diary: DiaryEntry? = model.diaryText.map { DiaryEntry(emoji: model.diaryEmoji, text: $0) }
+        let diary: DiaryEntry? = model.diaryText.map {
+            DiaryEntry(id: model.id, date: model.date, emoji: model.diaryEmoji, content: $0)
+        }
         return CycleRecord(id: model.id, date: model.date, events: events, diary: diary)
     }
 
