@@ -3,6 +3,8 @@ import SwiftUI
 struct DrugDetailView: View {
     let drug: Drug
     let onAddDrug: (Drug) -> Void
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
 
     var body: some View {
         ScrollView {
@@ -22,6 +24,16 @@ struct DrugDetailView: View {
         }
         .navigationTitle("약 상세")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    onToggleFavorite()
+                } label: {
+                    Image(systemName: isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(isFavorite ? Color.yellow : Color.secondary)
+                }
+            }
+        }
         .safeAreaInset(edge: .bottom) { addButton }
     }
 

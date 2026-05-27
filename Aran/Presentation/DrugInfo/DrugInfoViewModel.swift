@@ -18,14 +18,17 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var isDetailLoading: Bool = false
     @Published var showDebugChip: Bool = false
     @Published var detailError: String?
+    @Published var favoriteItemSeqs: Set<String> = []
 
     private let searchDrugUseCase: SearchDrugUseCase
     private var cancellables = Set<AnyCancellable>()
     private let recentSearchesKey = "recentDrugSearches"
+    private let favoritesKey = "favoriteDrugItemSeqs"
 
     init(searchDrugUseCase: SearchDrugUseCase) {
         self.searchDrugUseCase = searchDrugUseCase
         loadRecentSearches()
+        loadFavorites()
         bindSearch()
     }
 
@@ -127,5 +130,23 @@ final class DrugInfoViewModel: ObservableObject {
         if searches.count > 10 { searches = Array(searches.prefix(10)) }
         recentSearches = searches
         UserDefaults.standard.set(searches, forKey: recentSearchesKey)
+    }
+
+    func isFavorite(_ drug: Drug) -> Bool {
+        favoriteItemSeqs.contains(drug.itemSeq)
+    }
+
+    func toggleFavorite(_ drug: Drug) {
+        if favoriteItemSeqs.contains(drug.itemSeq) {
+            favoriteItemSeqs.remove(drug.itemSeq)
+        } else {
+            favoriteItemSeqs.insert(drug.itemSeq)
+        }
+        UserDefaults.standard.set(Array(favoriteItemSeqs), forKey: favoritesKey)
+    }
+
+    private func loadFavorites() {
+        let saved = UserDefaults.standard.stringArray(forKey: favoritesKey) ?? []
+        favoriteItemSeqs = Set(saved)
     }
 }

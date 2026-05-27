@@ -62,7 +62,12 @@ struct DrugSearchView: View {
                 set: { if !$0 { viewModel.selectedDrug = nil } }
             )) {
                 if let drug = viewModel.selectedDrug {
-                    DrugDetailView(drug: drug, onAddDrug: onAddDrug)
+                    DrugDetailView(
+                        drug: drug,
+                        onAddDrug: onAddDrug,
+                        isFavorite: viewModel.isFavorite(drug),
+                        onToggleFavorite: { viewModel.toggleFavorite(drug) }
+                    )
                 }
             }
         }
@@ -200,7 +205,7 @@ struct DrugSearchView: View {
             Spacer()
             ProgressView()
                 .scaleEffect(1.2)
-            Text("로딩 상태")
+            Text("검색 중...")
                 .font(.system(size: 14))
                 .foregroundStyle(Color.secondary)
             Spacer()
@@ -226,6 +231,18 @@ struct DrugSearchView: View {
                     Divider()
                         .padding(.horizontal, 20)
                 }
+
+                Button {
+                    onRegisterDrug("", "")
+                } label: {
+                    Text("직접 입력하기")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(AranColor.primary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
             }
         }
         .overlay {
@@ -261,25 +278,47 @@ struct DrugSearchView: View {
     private func errorView(message _: String) -> some View {
         VStack {
             Spacer()
-            VStack(spacing: 10) {
-                Text("네트워크 연결을 확인해주세요")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Color.red)
-                    .multilineTextAlignment(.center)
+            VStack(spacing: 16) {
+                Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color.secondary)
+
+                VStack(spacing: 6) {
+                    Text("검색 결과를 불러올 수 없어요")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(Color.primary)
+                    Text("네트워크 연결을 확인해주세요")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.secondary)
+                }
+                .multilineTextAlignment(.center)
 
                 Button {
                     Task { await viewModel.search(keyword: viewModel.searchText) }
                 } label: {
                     Text("다시 시도")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.red)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 11)
+                        .background(AranColor.primary)
+                        .clipShape(Capsule())
                 }
 
+                VStack(spacing: 4) {
+                    Text("검색이 안 되나요?")
+                        .font(.system(size: 13))
+                        .foregroundStyle(Color.secondary)
+                    Button {
+                        onRegisterDrug("", "")
+                    } label: {
+                        Text("직접 입력하기")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(AranColor.primary)
+                    }
+                }
             }
-            .padding(20)
-            .background(Color.red.opacity(0.07))
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.red.opacity(0.25), lineWidth: 1))
-            .padding(.horizontal, 32)
+            .padding(.horizontal, 40)
             Spacer()
         }
     }
