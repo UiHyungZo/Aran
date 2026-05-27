@@ -2,13 +2,13 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-struct TestItemSummary {
-    let item: TestItem
+struct HealthRecordSummary {
+    let type: String
     let latestRecord: HealthRecord
     let trend: Double?
 }
 
-typealias ExamSection = (title: String, summaries: [TestItemSummary])
+typealias ExamSection = (title: String, summaries: [HealthRecordSummary])
 
 final class HealthRecordViewModel {
     struct Input {
@@ -94,28 +94,36 @@ final class HealthRecordViewModel {
         )
     }
 
-    private func buildSections(from grouped: [TestItem: [HealthRecord]]) -> [ExamSection] {
-        let categories: [(String, [TestItem])] = [
-            ("난소 기능 검사", [.fsh, .amh, .afc, .e2, .progesterone, .lh, .beta_hcg]),
-            ("유전 / 면역 검사", [.pgt, .chromosomeCouple, .implantation]),
+    private func buildSections(from grouped: [String: [HealthRecord]]) -> [ExamSection] {
+        let categories: [(String, [String])] = [
+            ("난소 기능 검사", [HealthRecordType.fsh, HealthRecordType.amh, HealthRecordType.afc]),
+            ("호르몬 검사", [HealthRecordType.e2, HealthRecordType.p4, HealthRecordType.lh, HealthRecordType.betaHCG]),
         ]
 
         var result: [ExamSection] = []
+        var displayedTypes = Set<String>()
         for (title, items) in categories {
-            var summaries: [TestItemSummary] = []
-            for item in items {
-                guard let records = grouped[item], let latest = records.first else { continue }
-                let trend: Double?
-                if item.isNumeric, records.count >= 2 {
-                    trend = latest.value - records[1].value
-                } else {
-                    trend = nil
-                }
-                summaries.append(TestItemSummary(item: item, latestRecord: latest, trend: trend))
+            var summaries: [HealthRecordSummary] = []
+            for type in items {
+                guard let records = grouped[type], let latest = records.first else { continue }
+                let trend = records.count >= 2 ? latest.value - records[1].value : nil
+                summaries.append(HealthRecordSummary(type: type, latestRecord: latest, trend: trend))
+                displayedTypes.insert(type)
             }
             if !summaries.isEmpty {
                 result.append((title: title, summaries: summaries))
             }
+        }
+        let customSummaries = grouped.keys
+            .filter { !displayedTypes.contains($0) && !HealthRecordType.defaults.contains($0) }
+            .sorted()
+            .compactMap { type -> HealthRecordSummary? in
+                guard let records = grouped[type], let latest = records.first else { return nil }
+                let trend = records.count >= 2 ? latest.value - records[1].value : nil
+                return HealthRecordSummary(type: type, latestRecord: latest, trend: trend)
+            }
+        if !customSummaries.isEmpty {
+            result.append((title: "직접 추가", summaries: customSummaries))
         }
         return result
     }

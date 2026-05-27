@@ -122,7 +122,7 @@ final class ExamListViewController: UIViewController {
         actions.showAddForm()
     }
 
-    private func summary(at indexPath: IndexPath) -> TestItemSummary {
+    private func summary(at indexPath: IndexPath) -> HealthRecordSummary {
         sections[indexPath.section].summaries[indexPath.row]
     }
 }
@@ -160,7 +160,7 @@ extension ExamListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let s = summary(at: indexPath)
-        actions.showHistory(s.item)
+        actions.showEditForm(s.latestRecord)
     }
 
     func tableView(

@@ -10,6 +10,7 @@ final class TransferRecordModel {
     var embryoCount: Int
     var transferTypeRawValue: String
     var resultRawValue: String
+    var memo: String?
 
     init(
         id: UUID = UUID(),
@@ -18,7 +19,8 @@ final class TransferRecordModel {
         embryoGrade: String,
         embryoCount: Int,
         transferTypeRawValue: String,
-        resultRawValue: String
+        resultRawValue: String,
+        memo: String? = nil
     ) {
         self.id = id
         self.cycleNumber = cycleNumber
@@ -27,5 +29,6 @@ final class TransferRecordModel {
         self.embryoCount = embryoCount
         self.transferTypeRawValue = transferTypeRawValue
         self.resultRawValue = resultRawValue
+        self.memo = memo
     }
 }

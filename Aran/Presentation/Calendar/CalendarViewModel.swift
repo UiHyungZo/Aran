@@ -70,7 +70,7 @@ final class CalendarViewModel: ObservableObject {
             let health = try await healthRecordUseCase.fetchAll()
             var grouped: [Date: [HealthRecord]] = [:]
             for h in health {
-                let key = Calendar.current.startOfDay(for: h.date)
+                let key = Calendar.current.startOfDay(for: h.recordDate)
                 grouped[key, default: []].append(h)
             }
             healthRecords = grouped
@@ -244,9 +244,9 @@ final class CalendarViewModel: ObservableObject {
         }
     }
 
-    func saveHealthRecord(item: TestItem, value: Double, date: Date, note: String?) async {
+    func saveHealthRecord(type: String, value: Double, unit: String, date: Date, memo: String?) async {
         do {
-            try await healthRecordUseCase.save(item: item, value: value, date: date, note: note)
+            try await healthRecordUseCase.save(type: type, value: value, unit: unit, recordDate: date, memo: memo)
             await loadMonthRecords()
             await loadRecord(for: selectedDate)
         } catch {
@@ -279,7 +279,8 @@ final class CalendarViewModel: ObservableObject {
                 embryoGrade: embryoGrade,
                 embryoCount: embryoCount,
                 transferType: transferType,
-                result: result
+                result: result,
+                memo: nil
             )
             try await transferRecordUseCase.save(record)
             try await cycleRecordUseCase.addEvent(

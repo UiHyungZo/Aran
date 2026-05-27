@@ -51,6 +51,7 @@ final class TransferRecordRepository: TransferRecordRepositoryProtocol {
         model.embryoCount = record.embryoCount
         model.transferTypeRawValue = record.transferType.rawValue
         model.resultRawValue = record.result.rawValue
+        model.memo = record.memo
         try context.save()
     }
 

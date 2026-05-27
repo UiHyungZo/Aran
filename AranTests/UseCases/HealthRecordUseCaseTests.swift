@@ -17,148 +17,128 @@ final class HealthRecordUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - fetchAll
-
-    func testFetchAll_returnsAllRecords() async throws {
+    func test_fetchAll_whenRepositoryReturnsRecords_thenReturnsAllRecords() async throws {
         // given
-        let expected = [makeRecord(item: .fsh, value: 5.2), makeRecord(item: .amh, value: 1.1)]
+        let expected = [makeRecord(type: HealthRecordType.fsh), makeRecord(type: HealthRecordType.amh)]
         repo.fetchAllResult = expected
 
         // when
         let result = try await sut.fetchAll()
 
         // then
-        XCTAssertEqual(result.map(\.testItem), expected.map(\.testItem))
+        XCTAssertEqual(result.map(\.type), expected.map(\.type))
     }
 
-    // MARK: - fetch(item:)
-
-    func testFetch_sortsByDateDescending() async throws {
+    func test_fetch_whenRecordsAreUnsorted_thenSortsByDateDescending() async throws {
         // given
-        let older = makeRecord(item: .fsh, value: 4.0, date: Date(timeIntervalSinceNow: -86400))
-        let newer = makeRecord(item: .fsh, value: 6.0, date: Date())
-        repo.fetchItemResult = [older, newer]
+        let older = makeRecord(value: 4.0, date: Date(timeIntervalSinceNow: -86400))
+        let newer = makeRecord(value: 6.0, date: Date())
+        repo.fetchTypeResult = [older, newer]
 
         // when
-        let result = try await sut.fetch(item: .fsh)
+        let result = try await sut.fetch(type: HealthRecordType.fsh)
 
         // then
         XCTAssertEqual(result.first?.value, newer.value)
         XCTAssertEqual(result.last?.value, older.value)
     }
 
-    // MARK: - save(item:value:date:note:)
-
-    func testSave_withValidValue_savesToRepository() async throws {
+    func test_save_whenInputIsValid_thenSavesToRepository() async throws {
         // given / when
-        try await sut.save(item: .fsh, value: 5.2, date: Date(), note: nil)
+        try await sut.save(type: HealthRecordType.fsh, value: 5.2, unit: "mIU/mL", recordDate: Date(), memo: nil)
 
         // then
         XCTAssertEqual(repo.savedRecords.count, 1)
-        XCTAssertEqual(repo.savedRecords.first?.value, 5.2)
+        XCTAssertEqual(repo.savedRecords.first?.type, HealthRecordType.fsh)
+        XCTAssertEqual(repo.savedRecords.first?.unit, "mIU/mL")
     }
 
-    func testSave_whenValueIsZero_throwsInvalidInput() async throws {
+    func test_save_whenCustomTypeIsValid_thenSavesToRepository() async throws {
+        // given / when
+        try await sut.save(type: "비타민D", value: 31, unit: "ng/mL", recordDate: Date(), memo: "외부 검사")
+
+        // then
+        XCTAssertEqual(repo.savedRecords.first?.type, "비타민D")
+        XCTAssertEqual(repo.savedRecords.first?.memo, "외부 검사")
+    }
+
+    func test_save_whenTypeIsEmpty_thenThrowsInvalidInput() async throws {
         // given / when / then
         do {
-            try await sut.save(item: .fsh, value: 0, date: Date(), note: nil)
+            try await sut.save(type: " ", value: 5.2, unit: "mIU/mL", recordDate: Date(), memo: nil)
             XCTFail("기대한 에러가 발생하지 않았습니다.")
         } catch AppError.invalidInput {
-            // 정상
+            // expected
         } catch {
             XCTFail("예상치 못한 에러 타입: \(error)")
         }
     }
 
-    func testSave_whenValueIsNegative_throwsInvalidInput() async throws {
+    func test_save_whenValueIsZero_thenThrowsInvalidInput() async throws {
         // given / when / then
         do {
-            try await sut.save(item: .amh, value: -1.0, date: Date(), note: nil)
+            try await sut.save(type: HealthRecordType.fsh, value: 0, unit: "mIU/mL", recordDate: Date(), memo: nil)
             XCTFail("기대한 에러가 발생하지 않았습니다.")
         } catch AppError.invalidInput {
-            // 정상
+            // expected
         } catch {
             XCTFail("예상치 못한 에러 타입: \(error)")
         }
     }
 
-    // MARK: - savePGT
+    func test_save_whenUnitIsEmpty_thenThrowsInvalidInput() async throws {
+        // given / when / then
+        do {
+            try await sut.save(type: HealthRecordType.amh, value: 1.0, unit: "", recordDate: Date(), memo: nil)
+            XCTFail("기대한 에러가 발생하지 않았습니다.")
+        } catch AppError.invalidInput {
+            // expected
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
 
-    func testSavePGT_withValidResult_savesToRepository() async throws {
+    func test_update_whenRecordIsValid_thenUpdatesRepository() async throws {
         // given
-        let result = PGTResult(normal: 3, abnormal: 1, mosaic: 0)
+        let record = makeRecord(value: 7.0)
 
         // when
-        try await sut.savePGT(item: .pgt, result: result, date: Date(), note: nil)
+        try await sut.update(record)
 
         // then
-        XCTAssertEqual(repo.savedRecords.count, 1)
-        XCTAssertEqual(repo.savedRecords.first?.pgtResult?.normal, 3)
+        XCTAssertEqual(repo.updatedRecords.first?.id, record.id)
+        XCTAssertEqual(repo.updatedRecords.first?.value, 7.0)
     }
 
-    func testSavePGT_withNumericItem_throwsInvalidInput() async throws {
+    func test_fetchLatestPerItem_whenMultipleTypes_thenGroupsByType() async throws {
         // given
-        let result = PGTResult(normal: 2, abnormal: 0, mosaic: 0)
-
-        // when / then
-        do {
-            try await sut.savePGT(item: .fsh, result: result, date: Date(), note: nil)
-            XCTFail("기대한 에러가 발생하지 않았습니다.")
-        } catch AppError.invalidInput {
-            // 정상
-        } catch {
-            XCTFail("예상치 못한 에러 타입: \(error)")
-        }
-    }
-
-    func testSavePGT_whenTotalIsZero_throwsInvalidInput() async throws {
-        // given
-        let result = PGTResult(normal: 0, abnormal: 0, mosaic: 0)
-
-        // when / then
-        do {
-            try await sut.savePGT(item: .pgt, result: result, date: Date(), note: nil)
-            XCTFail("기대한 에러가 발생하지 않았습니다.")
-        } catch AppError.invalidInput {
-            // 정상
-        } catch {
-            XCTFail("예상치 못한 에러 타입: \(error)")
-        }
-    }
-
-    // MARK: - fetchLatestPerItem
-
-    func testFetchLatestPerItem_groupsByTestItem() async throws {
-        // given
-        let fsh1 = makeRecord(item: .fsh, value: 5.0, date: Date(timeIntervalSinceNow: -86400))
-        let fsh2 = makeRecord(item: .fsh, value: 6.0, date: Date())
-        let amh = makeRecord(item: .amh, value: 1.5)
+        let fsh1 = makeRecord(type: HealthRecordType.fsh, value: 5.0, date: Date(timeIntervalSinceNow: -86400))
+        let fsh2 = makeRecord(type: HealthRecordType.fsh, value: 6.0, date: Date())
+        let amh = makeRecord(type: HealthRecordType.amh, value: 1.5)
         repo.fetchAllResult = [fsh1, fsh2, amh]
 
         // when
         let result = try await sut.fetchLatestPerItem()
 
         // then
-        XCTAssertEqual(result[.fsh]?.count, 2)
-        XCTAssertEqual(result[.amh]?.count, 1)
+        XCTAssertEqual(result[HealthRecordType.fsh]?.count, 2)
+        XCTAssertEqual(result[HealthRecordType.amh]?.count, 1)
     }
 
-    func testFetchLatestPerItem_sortsByDateDescendingWithinGroup() async throws {
+    func test_fetchLatestPerItem_whenGrouped_thenSortsByDateDescendingWithinGroup() async throws {
         // given
-        let older = makeRecord(item: .fsh, value: 4.0, date: Date(timeIntervalSinceNow: -86400))
-        let newer = makeRecord(item: .fsh, value: 7.0, date: Date())
+        let older = makeRecord(value: 4.0, date: Date(timeIntervalSinceNow: -86400))
+        let newer = makeRecord(value: 7.0, date: Date())
         repo.fetchAllResult = [older, newer]
 
         // when
         let result = try await sut.fetchLatestPerItem()
 
         // then
-        XCTAssertEqual(result[.fsh]?.first?.value, newer.value)
+        XCTAssertEqual(result[HealthRecordType.fsh]?.first?.value, newer.value)
     }
 
-    // MARK: - delete
-
-    func testDelete_callsRepositoryWithCorrectID() async throws {
+    func test_delete_whenIdIsProvided_thenCallsRepositoryWithCorrectID() async throws {
         // given
         let id = UUID()
 
@@ -170,14 +150,14 @@ final class HealthRecordUseCaseTests: XCTestCase {
     }
 }
 
-// MARK: - Helpers
-
 private extension HealthRecordUseCaseTests {
     func makeRecord(
-        item: TestItem = .fsh,
+        type: String = HealthRecordType.fsh,
         value: Double = 5.0,
-        date: Date = Date()
+        unit: String = "mIU/mL",
+        date: Date = Date(),
+        memo: String? = nil
     ) -> HealthRecord {
-        HealthRecord(id: UUID(), testItem: item, value: value, date: date, note: nil, pgtResult: nil)
+        HealthRecord(id: UUID(), type: type, value: value, unit: unit, recordDate: date, memo: memo)
     }
 }

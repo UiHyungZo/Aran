@@ -69,7 +69,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         let cycleRecordNumbers = Set(cycleRecords.map(\.cycleNumber))
         let cycleNumbers = transferCycleNumbers
             .union(cycleRecordNumbers)
-            .sorted()
+            .sorted(by: >)
 
         return cycleNumbers.map { cycleNumber in
             let cycleRecord = cycleRecords.first { $0.cycleNumber == cycleNumber }
@@ -167,7 +167,8 @@ final class ProcedureRecordViewModel: ObservableObject {
             embryoGrade: embryoGrade,
             embryoCount: embryoCount,
             transferType: transferType,
-            result: result
+            result: result,
+            memo: nil
         )
         do {
             try await transferRecordUseCase.save(record)
@@ -182,10 +183,11 @@ final class ProcedureRecordViewModel: ObservableObject {
         }
     }
 
-    func updateTransferResult(id: UUID, result: TransferResult) async {
+    func updateTransferResult(id: UUID, result: TransferResult, memo: String?) async {
         do {
             guard var record = try await transferRecordUseCase.fetch(id: id) else { return }
             record.result = result
+            record.memo = memo
             try await transferRecordUseCase.update(record)
             await load()
         } catch {

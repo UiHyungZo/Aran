@@ -406,7 +406,7 @@ struct CalendarView: View {
         let records = viewModel.healthRecords(for: viewModel.selectedDate)
         guard !records.isEmpty else { return "기록 없음" }
         return records.prefix(2)
-            .map { "\($0.testItem.rawValue) \(String(format: "%.0f", $0.value))" }
+            .map { "\($0.type) \(String(format: "%.0f", $0.value))" }
             .joined(separator: " · ")
     }
 
@@ -706,12 +706,13 @@ private struct CalendarHealthRecordInputSheet: View {
     @ObservedObject var viewModel: CalendarViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var selectedItem: TestItem = .fsh
+    @State private var selectedType = HealthRecordType.fsh
     @State private var valueText = ""
+    @State private var unitText = HealthRecordType.defaultUnits[HealthRecordType.fsh] ?? ""
     @State private var date: Date
     @State private var note = ""
 
-    private let items: [TestItem] = [.fsh, .amh, .afc, .e2, .progesterone, .lh, .beta_hcg]
+    private let items = HealthRecordType.defaults
 
     init(viewModel: CalendarViewModel) {
         self.viewModel = viewModel
@@ -722,10 +723,13 @@ private struct CalendarHealthRecordInputSheet: View {
         NavigationView {
             Form {
                 Section("검사 항목") {
-                    Picker("항목", selection: $selectedItem) {
+                    Picker("항목", selection: $selectedType) {
                         ForEach(items, id: \.self) { item in
-                            Text(item.rawValue).tag(item)
+                            Text(item).tag(item)
                         }
+                    }
+                    .onChange(of: selectedType) { _, newValue in
+                        unitText = HealthRecordType.defaultUnits[newValue] ?? unitText
                     }
                 }
 
@@ -733,8 +737,8 @@ private struct CalendarHealthRecordInputSheet: View {
                     HStack {
                         TextField("수치", text: $valueText)
                             .keyboardType(.decimalPad)
-                        Text(selectedItem.unit)
-                            .foregroundStyle(.secondary)
+                        TextField("단위", text: $unitText)
+                            .multilineTextAlignment(.trailing)
                     }
                 }
 
@@ -759,15 +763,19 @@ private struct CalendarHealthRecordInputSheet: View {
                             let value = Double(valueText.replacingOccurrences(of: ",", with: ".")) ?? 0
                             let memo = note.trimmingCharacters(in: .whitespacesAndNewlines)
                             await viewModel.saveHealthRecord(
-                                item: selectedItem,
+                                type: selectedType,
                                 value: value,
+                                unit: unitText,
                                 date: date,
-                                note: memo.isEmpty ? nil : memo
+                                memo: memo.isEmpty ? nil : memo
                             )
                             dismiss()
                         }
                     }
-                    .disabled(Double(valueText.replacingOccurrences(of: ",", with: ".")) == nil)
+                    .disabled(
+                        Double(valueText.replacingOccurrences(of: ",", with: ".")) == nil
+                            || unitText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    )
                 }
             }
         }

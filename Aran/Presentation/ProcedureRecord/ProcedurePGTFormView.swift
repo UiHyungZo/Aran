@@ -37,7 +37,7 @@ struct ProcedurePGTFormView: View {
                 if selectedType.showsEmbryoCounts {
                     Section("결과") {
                         Stepper("정상 \(normalCount)개", value: $normalCount, in: 0...30)
-                        Stepper("비정상 \(abnormalCount)개", value: $abnormalCount, in: 0...30)
+                        Stepper("이상 \(abnormalCount)개", value: $abnormalCount, in: 0...30)
                         Stepper("모자이크 \(mosaicCount)개", value: $mosaicCount, in: 0...30)
                     }
                 }

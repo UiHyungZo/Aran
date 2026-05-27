@@ -8,12 +8,6 @@ final class ExamListCell: UITableViewCell {
     private let trendLabel = UILabel()
     private let dateLabel = UILabel()
 
-    // PGT 전용 chip 컨테이너
-    private let chipStack = UIStackView()
-    private let normalChip = PGTChipView(title: "정상", color: .systemGreen)
-    private let abnormalChip = PGTChipView(title: "이상", color: .systemRed)
-    private let mosaicChip = PGTChipView(title: "모자이크", color: .systemOrange)
-
     private let trailingStack = UIStackView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -46,14 +40,6 @@ final class ExamListCell: UITableViewCell {
         dateLabel.textColor = .secondaryLabel
         dateLabel.textAlignment = .right
 
-        // PGT chip 스택
-        chipStack.axis = .horizontal
-        chipStack.spacing = 6
-        chipStack.alignment = .center
-        chipStack.addArrangedSubview(normalChip)
-        chipStack.addArrangedSubview(abnormalChip)
-        chipStack.addArrangedSubview(mosaicChip)
-
         // trailing 스택: 수치 or chips + 날짜
         trailingStack.axis = .vertical
         trailingStack.alignment = .trailing
@@ -77,27 +63,21 @@ final class ExamListCell: UITableViewCell {
         ])
     }
 
-    func configure(with summary: TestItemSummary) {
-        itemLabel.text = summary.item.rawValue
+    func configure(with summary: HealthRecordSummary) {
+        itemLabel.text = summary.type
 
         trailingStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
-        if summary.item.isNumeric {
-            configureNumeric(summary: summary)
-        } else {
-            configurePGT(summary: summary)
-        }
-
+        configureNumeric(summary: summary)
         trailingStack.addArrangedSubview(dateLabel)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "MM.dd"
-        dateLabel.text = formatter.string(from: summary.latestRecord.date)
+        dateLabel.text = formatter.string(from: summary.latestRecord.recordDate)
     }
 
-    private func configureNumeric(summary: TestItemSummary) {
-        let unit = summary.item.unit
+    private func configureNumeric(summary: HealthRecordSummary) {
+        let unit = summary.latestRecord.unit
         valueLabel.text = "\(formatValue(summary.latestRecord.value)) \(unit)"
         valueLabel.textColor = .label
 
@@ -123,68 +103,10 @@ final class ExamListCell: UITableViewCell {
         }
     }
 
-    private func configurePGT(summary: TestItemSummary) {
-        if let pgt = summary.latestRecord.pgtResult {
-            normalChip.update(count: pgt.normal)
-            abnormalChip.update(count: pgt.abnormal)
-            mosaicChip.update(count: pgt.mosaic)
-            trailingStack.addArrangedSubview(chipStack)
-        } else {
-            valueLabel.text = "\(Int(summary.latestRecord.value))개"
-            valueLabel.textColor = .label
-            trailingStack.addArrangedSubview(valueLabel)
-        }
-    }
-
     private func formatValue(_ value: Double) -> String {
         if value == value.rounded() && value < 1000 {
             return String(format: "%.0f", value)
         }
         return String(format: "%.2f", value)
-    }
-}
-
-// MARK: - PGTChipView
-
-private final class PGTChipView: UIView {
-    private let label = UILabel()
-    private let countLabel = UILabel()
-    private let chipColor: UIColor
-
-    init(title: String, color: UIColor) {
-        chipColor = color
-        super.init(frame: .zero)
-        layer.cornerRadius = 10
-        backgroundColor = color.withAlphaComponent(0.12)
-
-        label.text = title
-        label.font = .systemFont(ofSize: 10, weight: .medium)
-        label.textColor = color
-
-        countLabel.font = .systemFont(ofSize: 11, weight: .bold)
-        countLabel.textColor = color
-
-        let stack = UIStackView(arrangedSubviews: [label, countLabel])
-        stack.axis = .horizontal
-        stack.spacing = 3
-        stack.alignment = .center
-        addSubview(stack)
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 7),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -7),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
-        ])
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError()
-    }
-
-    func update(count: Int) {
-        countLabel.text = "\(count)"
-        isHidden = count == 0
     }
 }

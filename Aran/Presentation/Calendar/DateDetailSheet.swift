@@ -205,14 +205,12 @@ struct DateDetailSheet: View {
                         Circle()
                             .fill(AranColor.dotHealthRecord)
                             .frame(width: 8, height: 8)
-                        Text(record.testItem.rawValue)
+                        Text(record.type)
                             .font(AranFont.body())
                         Spacer()
-                        if record.testItem.isNumeric {
-                            Text(String(format: "%.2f %@", record.value, record.testItem.unit))
-                                .font(AranFont.body())
-                                .foregroundStyle(.secondary)
-                        }
+                        Text(String(format: "%.2f %@", record.value, record.unit))
+                            .font(AranFont.body())
+                            .foregroundStyle(.secondary)
                         Image(systemName: "chevron.right")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
@@ -536,40 +534,29 @@ private struct HealthRecordDetailView: View {
         NavigationView {
             List {
                 Section {
-                    LabeledContent("검사 항목", value: record.testItem.rawValue)
-                    LabeledContent("카테고리", value: record.testItem.category)
-                    LabeledContent("날짜", value: Self.dateFormatter.string(from: record.date))
+                    LabeledContent("검사 항목", value: record.type)
+                    LabeledContent("날짜", value: Self.dateFormatter.string(from: record.recordDate))
                 }
 
-                if record.testItem.isNumeric {
-                    Section("수치") {
-                        LabeledContent("결과값") {
-                            Text(String(format: "%.2f", record.value))
-                                .fontWeight(.semibold)
-                            + Text(" \(record.testItem.unit)")
-                                .foregroundColor(.secondary)
-                        }
+                Section("수치") {
+                    LabeledContent("결과값") {
+                        Text(String(format: "%.2f", record.value))
+                            .fontWeight(.semibold)
+                        + Text(" \(record.unit)")
+                            .foregroundColor(.secondary)
                     }
                 }
 
-                if let pgt = record.pgtResult {
-                    Section("PGT 결과") {
-                        LabeledContent("정상", value: "\(pgt.normal)개")
-                        LabeledContent("비정상", value: "\(pgt.abnormal)개")
-                        LabeledContent("모자이크", value: "\(pgt.mosaic)개")
-                    }
-                }
-
-                if let note = record.note, !note.isEmpty {
+                if let memo = record.memo, !memo.isEmpty {
                     Section("메모") {
-                        Text(note)
+                        Text(memo)
                             .font(AranFont.body())
                             .foregroundStyle(.primary)
                     }
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle(record.testItem.rawValue)
+            .navigationTitle(record.type)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

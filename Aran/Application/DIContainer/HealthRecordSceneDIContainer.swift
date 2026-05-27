@@ -33,16 +33,20 @@ final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencie
         )
     }
 
-    func makeHealthRecordFormViewController(onSaved: @escaping () -> Void) -> UIViewController {
+    func makeHealthRecordFormViewController(
+        mode: HealthRecordFormViewModel.FormMode,
+        onSaved: @escaping () -> Void
+    ) -> UIViewController {
         HealthRecordFormViewController(
-            viewModel: HealthRecordFormViewModel(useCase: healthRecordUseCase),
+            viewModel: HealthRecordFormViewModel(useCase: healthRecordUseCase, mode: mode),
+            mode: mode,
             onSaved: onSaved
         )
     }
 
-    func makeExamHistoryViewController(item: TestItem, actions: ExamHistoryActions) -> ExamHistoryViewController {
+    func makeExamHistoryViewController(type: String, actions: ExamHistoryActions) -> ExamHistoryViewController {
         ExamHistoryViewController(
-            viewModel: ExamHistoryViewModel(useCase: healthRecordUseCase, item: item),
+            viewModel: ExamHistoryViewModel(useCase: healthRecordUseCase, type: type),
             actions: actions
         )
     }

@@ -17,12 +17,12 @@ final class ExamHistoryViewModel {
     }
 
     private let useCase: HealthRecordUseCase
-    let item: TestItem
+    let type: String
     private let disposeBag = DisposeBag()
 
-    init(useCase: HealthRecordUseCase, item: TestItem) {
+    init(useCase: HealthRecordUseCase, type: String) {
         self.useCase = useCase
-        self.item = item
+        self.type = type
     }
 
     func transform(input: Input) -> Output {
@@ -37,7 +37,7 @@ final class ExamHistoryViewModel {
                 return Observable.create { observer in
                     Task {
                         do {
-                            let result = try await self.useCase.fetch(item: self.item)
+                            let result = try await self.useCase.fetch(type: self.type)
                             observer.onNext(result)
                             observer.onCompleted()
                         } catch {
@@ -56,32 +56,25 @@ final class ExamHistoryViewModel {
             .bind(to: recordsRelay)
             .disposed(by: disposeBag)
 
-        let titleDriver = Driver.just("\(item.rawValue) 히스토리")
+        let titleDriver = Driver.just("\(type) 기록")
 
         let latestSummary = recordsRelay
             .map { records -> String in
                 guard let latest = records.first else { return "-" }
-                if latest.item.isNumeric {
-                    let value = latest.value
-                    let formatted = value == value.rounded() ? String(format: "%.0f", value) : String(format: "%.2f", value)
-                    return "\(formatted) \(latest.testItem.unit)"
-                } else if let pgt = latest.pgtResult {
-                    return "정상 \(pgt.normal) / 이상 \(pgt.abnormal) / 모자이크 \(pgt.mosaic)"
-                } else {
-                    return "\(Int(latest.value))개"
-                }
+                let value = latest.value
+                let formatted = value == value.rounded() ? String(format: "%.0f", value) : String(format: "%.2f", value)
+                return "\(formatted) \(latest.unit)"
             }
             .asDriver(onErrorJustReturn: "-")
 
         let trendText = recordsRelay
             .map { records -> String? in
-                guard records.count >= 2,
-                      records[0].testItem.isNumeric else { return nil }
+                guard records.count >= 2 else { return nil }
                 let diff = records[0].value - records[1].value
                 let formatted = abs(diff) == abs(diff).rounded()
                     ? String(format: "%.0f", abs(diff))
                     : String(format: "%.2f", abs(diff))
-                let unit = records[0].testItem.unit
+                let unit = records[0].unit
                 if diff > 0 {
                     return "↑ \(formatted) \(unit)"
                 } else if diff < 0 {
@@ -100,11 +93,5 @@ final class ExamHistoryViewModel {
             isLoading: isLoadingRelay.asDriver(),
             error: errorRelay.asDriver(onErrorJustReturn: "")
         )
-    }
-}
-
-private extension HealthRecord {
-    var item: TestItem {
-        testItem
     }
 }

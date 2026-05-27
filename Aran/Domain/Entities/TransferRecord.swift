@@ -8,10 +8,11 @@ struct TransferRecord: Identifiable {
     var embryoCount: Int
     var transferType: TransferType
     var result: TransferResult
+    var memo: String?
 }
 
 enum TransferResult: String, Hashable {
-    case pending = "대기"
+    case pending = "진행중"
     case success = "성공"
     case failed = "실패"
 }

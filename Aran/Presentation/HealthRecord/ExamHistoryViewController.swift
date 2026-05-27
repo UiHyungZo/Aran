@@ -108,7 +108,7 @@ final class ExamHistoryViewController: UIViewController {
                 guard let self else { return }
                 self.records = records
                 self.emptyLabel.isHidden = !records.isEmpty
-                self.headerView.updateChart(records: records, item: self.viewModel.item)
+                self.headerView.updateChart(records: records, type: self.viewModel.type)
                 self.layoutHeaderView()
                 self.tableView.reloadData()
             })
@@ -233,13 +233,9 @@ final class ExamHistoryHeaderView: UIView {
         }
     }
 
-    func updateChart(records: [HealthRecord], item: TestItem) {
-        guard item.isNumeric else {
-            chartView.isHidden = true
-            return
-        }
+    func updateChart(records: [HealthRecord], type: String) {
         chartView.isHidden = false
-        chartView.configure(records: records, item: item)
+        chartView.configure(records: records, type: type)
     }
 }
 
@@ -322,40 +318,32 @@ final class ExamHistoryCell: UITableViewCell {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "yyyy.MM.dd"
-        dateLabel.text = formatter.string(from: record.date)
-        noteLabel.text = record.note
-        noteLabel.isHidden = record.note == nil || record.note?.isEmpty == true
+        dateLabel.text = formatter.string(from: record.recordDate)
+        noteLabel.text = record.memo
+        noteLabel.isHidden = record.memo == nil || record.memo?.isEmpty == true
 
-        if record.testItem.isNumeric {
-            let value = record.value
-            let formatted = value == value.rounded() ? String(format: "%.0f", value) : String(format: "%.2f", value)
-            valueLabel.text = "\(formatted) \(record.testItem.unit)"
+        let value = record.value
+        let formatted = value == value.rounded() ? String(format: "%.0f", value) : String(format: "%.2f", value)
+        valueLabel.text = "\(formatted) \(record.unit)"
+        valueLabel.font = .systemFont(ofSize: 16, weight: .semibold)
 
-            if let prev = previous {
-                let diff = record.value - prev.value
-                let diffFormatted = abs(diff) == abs(diff).rounded()
-                    ? String(format: "%.0f", abs(diff))
-                    : String(format: "%.2f", abs(diff))
-                if diff > 0 {
-                    trendLabel.text = "↑ \(diffFormatted)"
-                    trendLabel.textColor = .systemRed
-                } else if diff < 0 {
-                    trendLabel.text = "↓ \(diffFormatted)"
-                    trendLabel.textColor = .systemBlue
-                } else {
-                    trendLabel.text = "→"
-                    trendLabel.textColor = .secondaryLabel
-                }
-                trendLabel.isHidden = false
+        if let prev = previous {
+            let diff = record.value - prev.value
+            let diffFormatted = abs(diff) == abs(diff).rounded()
+                ? String(format: "%.0f", abs(diff))
+                : String(format: "%.2f", abs(diff))
+            if diff > 0 {
+                trendLabel.text = "↑ \(diffFormatted)"
+                trendLabel.textColor = .systemRed
+            } else if diff < 0 {
+                trendLabel.text = "↓ \(diffFormatted)"
+                trendLabel.textColor = .systemBlue
             } else {
-                trendLabel.isHidden = true
+                trendLabel.text = "→"
+                trendLabel.textColor = .secondaryLabel
             }
-        } else if let pgt = record.pgtResult {
-            valueLabel.text = "정상 \(pgt.normal) · 이상 \(pgt.abnormal) · 모자이크 \(pgt.mosaic)"
-            valueLabel.font = .systemFont(ofSize: 13, weight: .medium)
-            trendLabel.isHidden = true
+            trendLabel.isHidden = false
         } else {
-            valueLabel.text = "\(Int(record.value))개"
             trendLabel.isHidden = true
         }
     }

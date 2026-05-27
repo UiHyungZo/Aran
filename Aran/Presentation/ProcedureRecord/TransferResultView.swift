@@ -11,11 +11,13 @@ struct TransferResultView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var result: TransferResult
+    @State private var memo: String
 
     init(viewModel: ProcedureRecordViewModel, transferRecord: TransferRecord) {
         self.viewModel = viewModel
         self.transferRecord = transferRecord
         _result = State(initialValue: transferRecord.result)
+        _memo = State(initialValue: transferRecord.memo ?? "")
     }
 
     var body: some View {
@@ -41,6 +43,11 @@ struct TransferResultView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+
+                Section("메모") {
+                    TextField("추가 메모", text: $memo, axis: .vertical)
+                        .lineLimit(3...6)
+                }
             }
             .navigationTitle("이식 결과")
             .navigationBarTitleDisplayMode(.inline)
@@ -51,7 +58,12 @@ struct TransferResultView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            await viewModel.updateTransferResult(id: transferRecord.id, result: result)
+                            let trimmedMemo = memo.trimmingCharacters(in: .whitespacesAndNewlines)
+                            await viewModel.updateTransferResult(
+                                id: transferRecord.id,
+                                result: result,
+                                memo: trimmedMemo.isEmpty ? nil : trimmedMemo
+                            )
                             dismiss()
                         }
                     }

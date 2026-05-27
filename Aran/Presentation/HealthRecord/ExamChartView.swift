@@ -4,24 +4,22 @@ import UIKit
 
 struct ExamChartView: View {
     let records: [HealthRecord]
-    let item: TestItem
+    let type: String
 
     private var points: [HealthRecord] {
         records
-            .filter { $0.testItem.isNumeric }
-            .sorted { $0.date < $1.date }
+            .sorted { $0.recordDate < $1.recordDate }
     }
 
     private var referenceRange: ClosedRange<Double>? {
-        switch item {
-        case .fsh: return 3...10
-        case .amh: return 1...4
-        case .afc: return 5...20
-        case .e2: return 25...75
-        case .progesterone: return 0...1.5
-        case .lh: return 2...12
-        case .beta_hcg, .pgt, .chromosomeCouple, .implantation:
-            return nil
+        switch type {
+        case HealthRecordType.fsh: return 3...10
+        case HealthRecordType.amh: return 1...4
+        case HealthRecordType.afc: return 5...20
+        case HealthRecordType.e2: return 25...75
+        case HealthRecordType.p4: return 0...1.5
+        case HealthRecordType.lh: return 2...12
+        default: return nil
         }
     }
 
@@ -29,8 +27,8 @@ struct ExamChartView: View {
         Chart {
             if let referenceRange {
                 RectangleMark(
-                    xStart: .value("시작", points.first?.date ?? Date()),
-                    xEnd: .value("종료", points.last?.date ?? Date()),
+                    xStart: .value("시작", points.first?.recordDate ?? Date()),
+                    xEnd: .value("종료", points.last?.recordDate ?? Date()),
                     yStart: .value("정상 하한", referenceRange.lowerBound),
                     yEnd: .value("정상 상한", referenceRange.upperBound)
                 )
@@ -47,15 +45,15 @@ struct ExamChartView: View {
 
             ForEach(points) { record in
                 LineMark(
-                    x: .value("날짜", record.date),
-                    y: .value(item.rawValue, record.value)
+                    x: .value("날짜", record.recordDate),
+                    y: .value(type, record.value)
                 )
                 .foregroundStyle(AranColor.dotHealthRecord)
                 .interpolationMethod(.catmullRom)
 
                 PointMark(
-                    x: .value("날짜", record.date),
-                    y: .value(item.rawValue, record.value)
+                    x: .value("날짜", record.recordDate),
+                    y: .value(type, record.value)
                 )
                 .foregroundStyle(AranColor.dotHealthRecord)
             }
@@ -72,13 +70,13 @@ struct ExamChartView: View {
         .chartLegend(.hidden)
         .frame(height: 160)
         .padding(.top, 8)
-        .accessibilityLabel("\(item.rawValue) 수치 차트")
+        .accessibilityLabel("\(type) 수치 차트")
     }
 }
 
 final class ExamChartHostingView: UIView {
     private let hostingController = UIHostingController(
-        rootView: ExamChartView(records: [], item: .fsh)
+        rootView: ExamChartView(records: [], type: HealthRecordType.fsh)
     )
 
     override init(frame: CGRect) {
@@ -91,8 +89,8 @@ final class ExamChartHostingView: UIView {
         fatalError()
     }
 
-    func configure(records: [HealthRecord], item: TestItem) {
-        hostingController.rootView = ExamChartView(records: records, item: item)
+    func configure(records: [HealthRecord], type: String) {
+        hostingController.rootView = ExamChartView(records: records, type: type)
     }
 
     private func setupUI() {

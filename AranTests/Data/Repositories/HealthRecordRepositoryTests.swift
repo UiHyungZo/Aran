@@ -23,7 +23,7 @@ final class HealthRecordRepositoryTests: XCTestCase {
 
     func test_save_whenRecordIsValid_thenFetchAllContainsIt() async throws {
         // given
-        let record = makeHealthRecord(item: .fsh, value: 10.5)
+        let record = makeHealthRecord(type: HealthRecordType.fsh, value: 10.5)
 
         // when
         try await sut.save(record)
@@ -32,26 +32,43 @@ final class HealthRecordRepositoryTests: XCTestCase {
         // then
         XCTAssertTrue(result.contains { $0.id == record.id })
         XCTAssertEqual(result.first { $0.id == record.id }?.value, 10.5)
+        XCTAssertEqual(result.first { $0.id == record.id }?.unit, "mIU/mL")
     }
 
-    func test_fetch_whenFilteredByItem_thenReturnsOnlyMatchingRecords() async throws {
+    func test_fetch_whenFilteredByType_thenReturnsOnlyMatchingRecords() async throws {
         // given
-        let fshRecord = makeHealthRecord(item: .fsh, value: 10.0)
-        let amhRecord = makeHealthRecord(item: .amh, value: 2.5)
+        let fshRecord = makeHealthRecord(type: HealthRecordType.fsh, value: 10.0)
+        let amhRecord = makeHealthRecord(type: HealthRecordType.amh, value: 2.5, unit: "ng/mL")
         try await sut.save(fshRecord)
         try await sut.save(amhRecord)
 
         // when
-        let result = try await sut.fetch(item: .fsh)
+        let result = try await sut.fetch(type: HealthRecordType.fsh)
 
         // then
-        XCTAssertTrue(result.allSatisfy { $0.testItem == .fsh })
-        XCTAssertFalse(result.contains { $0.testItem == .amh })
+        XCTAssertTrue(result.allSatisfy { $0.type == HealthRecordType.fsh })
+        XCTAssertFalse(result.contains { $0.type == HealthRecordType.amh })
+    }
+
+    func test_update_whenRecordExists_thenUpdatesStoredModel() async throws {
+        // given
+        var record = makeHealthRecord(type: HealthRecordType.e2, value: 300.0, unit: "pg/mL")
+        try await sut.save(record)
+        record.value = 350.0
+        record.memo = "재검"
+
+        // when
+        try await sut.update(record)
+        let result = try await sut.fetch(type: HealthRecordType.e2)
+
+        // then
+        XCTAssertEqual(result.first?.value, 350.0)
+        XCTAssertEqual(result.first?.memo, "재검")
     }
 
     func test_delete_whenRecordExists_thenRemovedFromList() async throws {
         // given
-        let record = makeHealthRecord(item: .e2, value: 300.0)
+        let record = makeHealthRecord(type: HealthRecordType.e2, value: 300.0, unit: "pg/mL")
         try await sut.save(record)
 
         // when
@@ -64,8 +81,8 @@ final class HealthRecordRepositoryTests: XCTestCase {
 
     func test_fetchAll_thenSortedByDateDescending() async throws {
         // given
-        let earlier = makeHealthRecord(item: .fsh, value: 5.0, date: Date(timeIntervalSinceNow: -86400))
-        let later = makeHealthRecord(item: .fsh, value: 8.0, date: Date())
+        let earlier = makeHealthRecord(value: 5.0, date: Date(timeIntervalSinceNow: -86400))
+        let later = makeHealthRecord(value: 8.0, date: Date())
         try await sut.save(earlier)
         try await sut.save(later)
 
@@ -74,25 +91,24 @@ final class HealthRecordRepositoryTests: XCTestCase {
 
         // then
         XCTAssertEqual(result.count, 2)
-        XCTAssertEqual(result.first?.value, 8.0, "가장 최근 기록이 첫 번째여야 한다")
+        XCTAssertEqual(result.first?.value, 8.0)
     }
 }
 
-// MARK: - Helpers
-
 private extension HealthRecordRepositoryTests {
     func makeHealthRecord(
-        item: TestItem,
+        type: String = HealthRecordType.fsh,
         value: Double,
+        unit: String = "mIU/mL",
         date: Date = Date()
     ) -> HealthRecord {
         HealthRecord(
             id: UUID(),
-            testItem: item,
+            type: type,
             value: value,
-            date: date,
-            note: nil,
-            pgtResult: nil
+            unit: unit,
+            recordDate: date,
+            memo: nil
         )
     }
 }

@@ -11,46 +11,55 @@ final class HealthRecordUseCase {
         return try await repository.fetchAll()
     }
 
-    func fetch(item: TestItem) async throws -> [HealthRecord] {
-        let records = try await repository.fetch(item: item)
-        return records.sorted { $0.date > $1.date }
+    func fetch(type: String) async throws -> [HealthRecord] {
+        let records = try await repository.fetch(type: type)
+        return records.sorted { $0.recordDate > $1.recordDate }
     }
 
-    func save(item: TestItem, value: Double, date: Date, note: String?) async throws {
+    func save(type: String, value: Double, unit: String, recordDate: Date, memo: String?) async throws {
+        let normalizedType = type.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedType.isEmpty else {
+            throw AppError.invalidInput("검사 항목을 입력해주세요.")
+        }
         guard value > 0 else {
             throw AppError.invalidInput("유효한 수치를 입력해주세요.")
         }
-        let record = HealthRecord(id: UUID(), testItem: item, value: value, date: date, note: note, pgtResult: nil)
-        try await repository.save(record)
-    }
-
-    func savePGT(item: TestItem, result: PGTResult, date: Date, note: String?) async throws {
-        guard !item.isNumeric else {
-            throw AppError.invalidInput("PGT 항목만 저장할 수 있습니다.")
-        }
-        let total = result.normal + result.abnormal + result.mosaic
-        guard total > 0 else {
-            throw AppError.invalidInput("최소 1개 이상의 배아 결과를 입력해주세요.")
+        guard !normalizedUnit.isEmpty else {
+            throw AppError.invalidInput("단위를 입력해주세요.")
         }
         let record = HealthRecord(
             id: UUID(),
-            testItem: item,
-            value: Double(total),
-            date: date,
-            note: note,
-            pgtResult: result
+            type: normalizedType,
+            value: value,
+            unit: normalizedUnit,
+            recordDate: recordDate,
+            memo: memo
         )
         try await repository.save(record)
     }
 
-    func fetchLatestPerItem() async throws -> [TestItem: [HealthRecord]] {
+    func update(_ record: HealthRecord) async throws {
+        guard !record.type.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw AppError.invalidInput("검사 항목을 입력해주세요.")
+        }
+        guard record.value > 0 else {
+            throw AppError.invalidInput("유효한 수치를 입력해주세요.")
+        }
+        guard !record.unit.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw AppError.invalidInput("단위를 입력해주세요.")
+        }
+        try await repository.update(record)
+    }
+
+    func fetchLatestPerItem() async throws -> [String: [HealthRecord]] {
         let all = try await repository.fetchAll()
-        var grouped: [TestItem: [HealthRecord]] = [:]
+        var grouped: [String: [HealthRecord]] = [:]
         for record in all {
-            grouped[record.testItem, default: []].append(record)
+            grouped[record.type, default: []].append(record)
         }
         for key in grouped.keys {
-            grouped[key] = grouped[key]?.sorted { $0.date > $1.date }
+            grouped[key] = grouped[key]?.sorted { $0.recordDate > $1.recordDate }
         }
         return grouped
     }

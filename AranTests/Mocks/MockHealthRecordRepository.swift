@@ -3,8 +3,9 @@ import Foundation
 
 final class MockHealthRecordRepository: HealthRecordRepositoryProtocol {
     var fetchAllResult: [HealthRecord] = []
-    var fetchItemResult: [HealthRecord] = []
+    var fetchTypeResult: [HealthRecord] = []
     var savedRecords: [HealthRecord] = []
+    var updatedRecords: [HealthRecord] = []
     var deletedIDs: [UUID] = []
     var shouldThrow: Error?
 
@@ -13,14 +14,19 @@ final class MockHealthRecordRepository: HealthRecordRepositoryProtocol {
         return fetchAllResult
     }
 
-    func fetch(item: TestItem) async throws -> [HealthRecord] {
+    func fetch(type: String) async throws -> [HealthRecord] {
         if let error = shouldThrow { throw error }
-        return fetchItemResult
+        return fetchTypeResult
     }
 
     func save(_ record: HealthRecord) async throws {
         if let error = shouldThrow { throw error }
         savedRecords.append(record)
+    }
+
+    func update(_ record: HealthRecord) async throws {
+        if let error = shouldThrow { throw error }
+        updatedRecords.append(record)
     }
 
     func delete(id: UUID) async throws {

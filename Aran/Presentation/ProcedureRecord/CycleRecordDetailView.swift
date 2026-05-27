@@ -229,7 +229,7 @@ private struct PGTRow: View {
             if record.type.showsEmbryoCounts {
                 HStack(spacing: 8) {
                     PGTCountChip(title: "정상", count: record.normalCount)
-                    PGTCountChip(title: "비정상", count: record.abnormalCount)
+                    PGTCountChip(title: "이상", count: record.abnormalCount)
                     PGTCountChip(title: "모자이크", count: record.mosaicCount)
                 }
             }
