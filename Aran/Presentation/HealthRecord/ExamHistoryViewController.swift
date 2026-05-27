@@ -171,7 +171,7 @@ extension ExamHistoryViewController: UITableViewDataSource {
 final class ExamHistoryHeaderView: UIView {
     private let latestLabel = UILabel()
     private let trendLabel = UILabel()
-    private let chartView = BarChartView()
+    private let chartView = ExamChartHostingView()
 
     private(set) var currentLatest: String?
 
@@ -239,72 +239,7 @@ final class ExamHistoryHeaderView: UIView {
             return
         }
         chartView.isHidden = false
-        let recent = Array(records.prefix(5).reversed())
-        let values = recent.map { $0.value }
-        chartView.setValues(values)
-    }
-}
-
-// MARK: - BarChartView
-
-final class BarChartView: UIView {
-    private var values: [Double] = []
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .clear
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError()
-    }
-
-    func setValues(_ values: [Double]) {
-        self.values = values
-        setNeedsDisplay()
-    }
-
-    override func draw(_ rect: CGRect) {
-        guard !values.isEmpty else { return }
-
-        let maxVal = values.max() ?? 1
-        let minVal = values.min() ?? 0
-        let range = maxVal - minVal == 0 ? 1 : maxVal - minVal
-
-        let barCount = values.count
-        let spacing: CGFloat = 6
-        let totalSpacing = spacing * CGFloat(barCount - 1)
-        let barWidth = (rect.width - totalSpacing) / CGFloat(barCount)
-        let maxBarHeight = rect.height - 20
-
-        for (i, value) in values.enumerated() {
-            let normalizedHeight = CGFloat((value - minVal) / range) * maxBarHeight
-            let barHeight = max(normalizedHeight, 8)
-            let x = CGFloat(i) * (barWidth + spacing)
-            let y = rect.height - barHeight - 16
-
-            let isLatest = i == values.count - 1
-            let color = isLatest ? AranColor.primaryUI : UIColor.systemGray4
-
-            let barRect = CGRect(x: x, y: y, width: barWidth, height: barHeight)
-            let path = UIBezierPath(roundedRect: barRect, cornerRadius: 4)
-            color.setFill()
-            path.fill()
-
-            // 값 레이블
-            let formatted = value == value.rounded()
-                ? String(format: "%.0f", value)
-                : String(format: "%.1f", value)
-            let attrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 9, weight: isLatest ? .semibold : .regular),
-                .foregroundColor: isLatest ? AranColor.primaryUI : UIColor.secondaryLabel,
-            ]
-            let str = NSAttributedString(string: formatted, attributes: attrs)
-            let strSize = str.size()
-            let strX = x + (barWidth - strSize.width) / 2
-            str.draw(at: CGPoint(x: strX, y: rect.height - 14))
-        }
+        chartView.configure(records: records, item: item)
     }
 }
 

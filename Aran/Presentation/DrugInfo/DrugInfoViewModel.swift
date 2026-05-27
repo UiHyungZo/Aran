@@ -46,15 +46,20 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func search(keyword: String) async {
+        let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedKeyword.isEmpty else { return }
+
         viewState = .loading
         showDebugChip = false
         do {
-            let drugs = try await searchDrugUseCase.execute(keyword: keyword, pageNo: 1)
+            let drugs = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
             viewState = deduplicated(drugs).isEmpty ? .empty : .results(deduplicated(drugs))
+            saveRecentSearch(trimmedKeyword)
         } catch {
             do {
-                let drugs = try await searchDrugUseCase.execute(keyword: keyword, pageNo: 1)
+                let drugs = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
                 viewState = deduplicated(drugs).isEmpty ? .empty : .results(deduplicated(drugs))
+                saveRecentSearch(trimmedKeyword)
             } catch {
                 let message = (error as? AppError)?.errorDescription ?? error.localizedDescription
                 viewState = .error(message)
@@ -73,7 +78,6 @@ final class DrugInfoViewModel: ObservableObject {
         isDetailLoading = true
         do {
             let detail = try await searchDrugUseCase.detail(itemSeq: drug.itemSeq)
-            saveRecentSearch(searchText)
             selectedDrug = detail
         } catch {
             let message = (error as? AppError)?.errorDescription ?? error.localizedDescription
@@ -93,13 +97,33 @@ final class DrugInfoViewModel: ObservableObject {
         UserDefaults.standard.set(recentSearches, forKey: recentSearchesKey)
     }
 
+    func removeRecentSearch(at offsets: IndexSet) {
+        for index in offsets.sorted(by: >) where recentSearches.indices.contains(index) {
+            recentSearches.remove(at: index)
+        }
+        UserDefaults.standard.set(recentSearches, forKey: recentSearchesKey)
+    }
+
+    func clearRecentSearches() {
+        recentSearches = []
+        UserDefaults.standard.removeObject(forKey: recentSearchesKey)
+    }
+
+    func searchRecentKeyword(_ keyword: String) {
+        searchText = keyword
+        Task { await search(keyword: keyword) }
+    }
+
     private func loadRecentSearches() {
         recentSearches = UserDefaults.standard.stringArray(forKey: recentSearchesKey) ?? []
     }
 
     private func saveRecentSearch(_ keyword: String) {
-        var searches = recentSearches.filter { $0 != keyword }
-        searches.insert(keyword, at: 0)
+        let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedKeyword.isEmpty else { return }
+
+        var searches = recentSearches.filter { $0 != trimmedKeyword }
+        searches.insert(trimmedKeyword, at: 0)
         if searches.count > 10 { searches = Array(searches.prefix(10)) }
         recentSearches = searches
         UserDefaults.standard.set(searches, forKey: recentSearchesKey)

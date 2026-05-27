@@ -119,6 +119,19 @@ struct DrugSearchView: View {
 
     @ViewBuilder
     private var contentView: some View {
+        if shouldShowRecentSearches {
+            recentSearchesView
+        } else {
+            stateContentView
+        }
+    }
+
+    private var shouldShowRecentSearches: Bool {
+        isSearchFocused && viewModel.searchText.isEmpty && !viewModel.recentSearches.isEmpty
+    }
+
+    @ViewBuilder
+    private var stateContentView: some View {
         switch viewModel.viewState {
         case .initial: initialView
         case .loading: loadingView
@@ -129,69 +142,57 @@ struct DrugSearchView: View {
     }
 
     private var initialView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                if !viewModel.recentSearches.isEmpty {
-                    Text("최근 검색")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.secondary)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 20)
-                        .padding(.bottom, 4)
-
-                    ForEach(viewModel.recentSearches, id: \.self) { keyword in
-                        recentSearchRow(keyword)
-                        Divider()
-                            .padding(.horizontal, 20)
-                    }
-                }
-
-                Spacer(minLength: 48)
-
-                VStack(spacing: 6) {
-                    Text(mode == .browse ? "시술 중인 약을 검색해보세요" : "등록할 약을 검색해보세요")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Color.secondary)
-                    Text(mode == .browse ? "효능, 용법, 주의사항을 확인할 수 있어요" : "검색 후 선택하거나 직접 입력할 수 있어요")
-                        .font(.system(size: 13))
-                        .foregroundStyle(Color.secondary.opacity(0.7))
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 32)
-            }
+        VStack(spacing: 6) {
+            Spacer()
+            Text(mode == .browse ? "시술 중인 약을 검색해보세요" : "등록할 약을 검색해보세요")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Color.secondary)
+            Text(mode == .browse ? "효능, 용법, 주의사항을 확인할 수 있어요" : "검색 후 선택하거나 직접 입력할 수 있어요")
+                .font(.system(size: 13))
+                .foregroundStyle(Color.secondary.opacity(0.7))
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
     }
 
-    private func recentSearchRow(_ keyword: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: "clock")
-                .foregroundStyle(Color.gray)
-                .font(.system(size: 14))
-
-            Button {
-                viewModel.searchText = keyword
-            } label: {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(keyword)
-                        .font(.system(size: 15))
-                        .foregroundStyle(Color.primary)
-                    Text("최근 검색어")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.secondary)
+    private var recentSearchesView: some View {
+        List {
+            Section {
+                ForEach(viewModel.recentSearches, id: \.self) { keyword in
+                    Button {
+                        viewModel.searchRecentKeyword(keyword)
+                    } label: {
+                        Label {
+                            Text(keyword)
+                                .foregroundStyle(Color.primary)
+                        } icon: {
+                            Image(systemName: "clock")
+                                .foregroundStyle(Color.gray)
+                        }
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            viewModel.removeRecentSearch(keyword)
+                        } label: {
+                            Label("삭제", systemImage: "trash")
+                        }
+                    }
+                }
+                .onDelete(perform: viewModel.removeRecentSearch)
+            } header: {
+                HStack {
+                    Text("최근 검색")
+                    Spacer()
+                    Button("전체 지우기") {
+                        viewModel.clearRecentSearches()
+                    }
+                    .font(.system(size: 12, weight: .medium))
+                    .textCase(nil)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            Button {
-                viewModel.removeRecentSearch(keyword)
-            } label: {
-                Image(systemName: "xmark")
-                    .foregroundStyle(Color.gray)
-                    .font(.system(size: 12))
-            }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
+        .listStyle(.plain)
     }
 
     private var loadingView: some View {

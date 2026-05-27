@@ -23,24 +23,16 @@
 
 ---
 
+- [x] 시술 기록 탭 Presentation 전체 — 차수 목록, 채취/이식 입력, 이식 결과 기록, PGT/반착검사 화면
+- [x] Swift Charts — 차수별 채취→수정→동결→이식 흐름 Bar Chart
+- [x] 알림 미리보기 — 알림 내용 미리보기 + 개별 ON/OFF
+- [x] Swift Charts — 항목별 수치 변화 Line Chart, 정상 범위 레퍼런스 라인
+- [x] 수치 히스토리 화면 — 항목별 날짜순 목록
+- [x] 최근 검색어 — UserDefaults 저장/표시
+
+---
+
 ## 미완료
-
-### 시술 기록 탭 (Domain + Data 계층 완료 / Presentation 미구현)
-- [ ] 차수 목록 화면 — 차수별 카드 (채취/수정/동결 개수, 이식 결과)
-- [ ] 채취/이식 입력 화면 — 차수·개수·등급·동결/신선 입력
-- [ ] 이식 결과 기록 — 이식일·등급·개수·결과 (성공/실패/진행중)
-- [ ] PGT / 반착검사 기록 화면
-- [ ] Swift Charts — 차수별 채취→수정→동결→이식 흐름 Bar/Line Chart
-
-### 약/주사 탭
-- [ ] 알림 미리보기 — 알림 내용 미리보기 + 개별 ON/OFF
-
-### 검사 탭
-- [ ] Swift Charts — 항목별 수치 변화 Line Chart, 정상 범위 레퍼런스 라인
-- [ ] 수치 히스토리 화면 — 항목별 날짜순 목록
-
-### 약 정보 탭
-- [ ] 최근 검색어 — UserDefaults 저장/표시
 
 ### 테스트
 - [ ] UseCase Test — TransferRecordUseCase
