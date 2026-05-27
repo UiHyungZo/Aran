@@ -36,7 +36,7 @@ final class DrugInfoViewModel: ObservableObject {
             .sink { [weak self] keyword in
                 guard let self else { return }
                 let trimmed = keyword.trimmingCharacters(in: .whitespaces)
-                if trimmed.isEmpty {
+                if trimmed.count < 2 {
                     viewState = .initial
                 } else {
                     Task { await self.search(keyword: trimmed) }

@@ -12,6 +12,8 @@ struct DrugDetailView: View {
                 if let efcy = drug.efcyQesitm { detailSection(title: "효능", content: efcy) }
                 if let use = drug.useMethodQesitm { detailSection(title: "사용법", content: use) }
                 if let atpn = drug.atpnQesitm { detailSection(title: "주의사항", content: atpn) }
+                if let interaction = drug.intrcQesitm { detailSection(title: "상호작용", content: interaction) }
+                if let sideEffect = drug.seQesitm { detailSection(title: "부작용", content: sideEffect) }
                 if let deposit = drug.depositMethodQesitm { detailSection(title: "보관법", content: deposit) }
             }
             .padding(.horizontal, 20)
