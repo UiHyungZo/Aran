@@ -21,10 +21,12 @@ final class MedicationFormViewModel {
     }
 
     private let medicationUseCase: MedicationUseCase
+    private let initialMedication: Medication?
     private let disposeBag = DisposeBag()
 
-    init(medicationUseCase: MedicationUseCase) {
+    init(medicationUseCase: MedicationUseCase, initialMedication: Medication? = nil) {
         self.medicationUseCase = medicationUseCase
+        self.initialMedication = initialMedication
     }
 
     func transform(input: Input) -> Output {
@@ -67,19 +69,23 @@ final class MedicationFormViewModel {
                     endDate: endDate
                 )
                 let medication = Medication(
-                    id: UUID(),
+                    id: self.initialMedication?.id ?? UUID(),
                     drugName: name.trimmingCharacters(in: .whitespaces),
                     dosage: dosage.trimmingCharacters(in: .whitespaces),
                     type: medicationType,
                     schedule: schedule,
                     isEnabled: notificationsEnabled,
-                    notificationIDs: [],
-                    createdAt: Date()
+                    notificationIDs: self.initialMedication?.notificationIDs ?? [],
+                    createdAt: self.initialMedication?.createdAt ?? Date()
                 )
                 return Observable.create { observer in
                     Task {
                         do {
-                            try await self.medicationUseCase.save(medication)
+                            if self.initialMedication == nil {
+                                try await self.medicationUseCase.save(medication)
+                            } else {
+                                try await self.medicationUseCase.update(medication)
+                            }
                             observer.onNext(())
                             observer.onCompleted()
                         } catch {
