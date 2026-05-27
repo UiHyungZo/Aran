@@ -7,6 +7,7 @@ final class MedicationFormViewController: UIViewController {
     private let actions: MedicationFormActions
     private let initialMedication: Medication?
     private let initialDrugName: String
+    private let initialComponent: String
     private let initialDosage: String
     private let disposeBag = DisposeBag()
 
@@ -14,6 +15,7 @@ final class MedicationFormViewController: UIViewController {
     private let contentStack = UIStackView()
 
     private let drugNameField = UITextField()
+    private let componentField = UITextField()
     private let typeSegment = UISegmentedControl(
         items: MedicationType.allCases.map { $0.rawValue }
     )
@@ -30,18 +32,21 @@ final class MedicationFormViewController: UIViewController {
     private let notificationSwitch = UISwitch()
 
     private let saveButton = UIButton(type: .system)
+    private let deleteButton = UIButton(type: .system)
     private let saveTappedRelay = PublishRelay<Void>()
 
     init(viewModel: MedicationFormViewModel,
          actions: MedicationFormActions,
          initialMedication: Medication? = nil,
          initialDrugName: String = "",
+         initialComponent: String = "",
          initialDosage: String = "")
     {
         self.viewModel = viewModel
         self.actions = actions
         self.initialMedication = initialMedication
         self.initialDrugName = initialMedication?.drugName ?? initialDrugName
+        self.initialComponent = initialMedication?.component ?? initialComponent
         self.initialDosage = initialMedication?.dosage ?? initialDosage
         super.init(nibName: nil, bundle: nil)
     }
@@ -63,8 +68,7 @@ final class MedicationFormViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = initialMedication == nil ? "약 등록" : "약 수정"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "취소",
-            style: .plain,
+            barButtonSystemItem: .close,
             target: self,
             action: #selector(cancelTapped)
         )
@@ -75,6 +79,9 @@ final class MedicationFormViewController: UIViewController {
         contentStack.addArrangedSubview(makeTimeRows())
         contentStack.addArrangedSubview(makeNotificationRow())
         contentStack.addArrangedSubview(saveButton)
+        if initialMedication != nil {
+            contentStack.addArrangedSubview(deleteButton)
+        }
 
         saveButton.setTitle(initialMedication == nil ? "저장" : "수정 완료", for: .normal)
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -85,6 +92,13 @@ final class MedicationFormViewController: UIViewController {
         saveButton.isEnabled = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         saveButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
+
+        deleteButton.setTitle("이 약 삭제", for: .normal)
+        deleteButton.titleLabel?.font = .systemFont(ofSize: 15)
+        deleteButton.setTitleColor(.systemRed, for: .normal)
+        deleteButton.backgroundColor = .clear
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        deleteButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
 
     private func setupScrollView() {
@@ -117,12 +131,19 @@ final class MedicationFormViewController: UIViewController {
     // MARK: - Section Builders
 
     private func makeInfoFields() -> UIView {
-        drugNameField.placeholder = "예: 프로게스테론"
+        drugNameField.placeholder = "약 검색으로 자동 입력"
         drugNameField.text = initialDrugName
         drugNameField.borderStyle = .none
         drugNameField.font = AranFont.bodyUI()
         drugNameField.clearButtonMode = .whileEditing
         drugNameField.returnKeyType = .next
+
+        componentField.placeholder = "예) Follitropin alfa"
+        componentField.text = initialComponent
+        componentField.borderStyle = .none
+        componentField.font = AranFont.bodyUI()
+        componentField.clearButtonMode = .whileEditing
+        componentField.returnKeyType = .next
 
         dosageField.placeholder = "예: 100mg / 1정"
         dosageField.text = initialDosage
@@ -136,6 +157,7 @@ final class MedicationFormViewController: UIViewController {
 
         return makeStack(rows: [
             makeFieldRow(label: "약 이름", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
+            makeFieldRow(label: "성분명", control: componentField, isPrefilled: !initialComponent.isEmpty),
             makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
             makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false),
         ])
@@ -328,7 +350,7 @@ final class MedicationFormViewController: UIViewController {
         titleLabel.textColor = .secondaryLabel
 
         control.backgroundColor = isPrefilled
-            ? UIColor(red: 0.93, green: 0.93, blue: 1, alpha: 1)
+            ? UIColor(red: 0.933, green: 0.929, blue: 0.996, alpha: 1)
             : .secondarySystemGroupedBackground
         control.layer.cornerRadius = 8
 
@@ -395,6 +417,7 @@ final class MedicationFormViewController: UIViewController {
         let input = MedicationFormViewModel.Input(
             drugNameChanged: drugNameField.rx.text.orEmpty.asObservable(),
             typeSelected: typeSelected.asObservable(),
+            componentChanged: componentField.rx.text.orEmpty.asObservable(),
             dosageChanged: dosageField.rx.text.orEmpty.asObservable(),
             timesChanged: timesRelay.asObservable(),
             startDateChanged: startDateRelay.asObservable(),
@@ -432,9 +455,29 @@ final class MedicationFormViewController: UIViewController {
         saveButton.rx.tap
             .bind(to: saveTappedRelay)
             .disposed(by: disposeBag)
+
+        deleteButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.deleteTapped()
+            })
+            .disposed(by: disposeBag)
     }
 
     @objc private func cancelTapped() {
         actions.onCancel()
+    }
+
+    private func deleteTapped() {
+        guard let initialMedication else { return }
+        let alert = UIAlertController(
+            title: "이 약을 삭제할까요?",
+            message: "삭제한 약 정보는 복구할 수 없습니다.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
+            self?.actions.onDelete(initialMedication)
+        })
+        present(alert, animated: true)
     }
 }

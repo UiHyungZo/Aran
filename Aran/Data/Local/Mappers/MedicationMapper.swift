@@ -6,6 +6,7 @@ enum MedicationMapper {
             id: model.id,
             drugName: model.drugName,
             dosage: model.dosage,
+            component: model.component,
             type: MedicationType(rawValue: model.typeRawValue) ?? .other,
             schedule: MedicationSchedule(
                 times: model.scheduleTimes,
@@ -23,6 +24,7 @@ enum MedicationMapper {
             id: entity.id,
             drugName: entity.drugName,
             dosage: entity.dosage,
+            component: entity.component,
             typeRawValue: entity.type.rawValue,
             scheduleTimes: entity.schedule.times,
             scheduleStartDate: entity.schedule.startDate,

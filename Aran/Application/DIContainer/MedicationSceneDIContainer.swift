@@ -54,11 +54,17 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         )
     }
 
-    func makeMedicationFormViewController(drugName: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController {
+    func makeMedicationFormViewController(
+        drugName: String,
+        component: String,
+        dosage: String,
+        actions: MedicationFormActions
+    ) -> MedicationFormViewController {
         MedicationFormViewController(
             viewModel: MedicationFormViewModel(medicationUseCase: medicationUseCase),
             actions: actions,
             initialDrugName: drugName,
+            initialComponent: component,
             initialDosage: dosage
         )
     }
@@ -78,5 +84,9 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
 
     func makeMedicationFlowCoordinator(navigationController: UINavigationController) -> MedicationFlowCoordinator {
         MedicationFlowCoordinator(navigationController: navigationController, dependencies: self)
+    }
+
+    func deleteMedication(_ medication: Medication) async throws {
+        try await medicationUseCase.delete(medication: medication)
     }
 }

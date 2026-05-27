@@ -166,6 +166,30 @@ final class MedicationFormViewModelTests: XCTestCase {
         XCTAssertEqual(medicationRepo.updatedMedications.first?.drugName, "수정약")
         XCTAssertEqual(medicationRepo.updatedMedications.first?.dosage, "200mg")
     }
+
+    func testSave_whenComponentFilled_savesComponent() {
+        // given
+        let saveTapped = PublishSubject<Void>()
+        let input = makeInput(
+            drugName: "약A",
+            component: "Follitropin alfa",
+            dosage: "50mg",
+            saveTapped: saveTapped.asObservable()
+        )
+        let output = sut.transform(input: input)
+
+        let expectation = XCTestExpectation(description: "save completed")
+        output.saveCompleted
+            .drive(onNext: { expectation.fulfill() })
+            .disposed(by: disposeBag)
+
+        // when
+        saveTapped.onNext(())
+
+        // then
+        wait(for: [expectation], timeout: 2.0)
+        XCTAssertEqual(medicationRepo.savedMedications.first?.component, "Follitropin alfa")
+    }
 }
 
 // MARK: - Helpers
@@ -173,12 +197,14 @@ final class MedicationFormViewModelTests: XCTestCase {
 private extension MedicationFormViewModelTests {
     func makeInput(
         drugName: String = "",
+        component: String = "",
         dosage: String = "",
         saveTapped: Observable<Void> = .empty()
     ) -> MedicationFormViewModel.Input {
         MedicationFormViewModel.Input(
             drugNameChanged: .just(drugName),
             typeSelected: .just(.oral),
+            componentChanged: .just(component),
             dosageChanged: .just(dosage),
             timesChanged: .just([Date()]),
             startDateChanged: .just(Date()),

@@ -6,6 +6,7 @@ final class MedicationFormViewModel {
     struct Input {
         let drugNameChanged: Observable<String>
         let typeSelected: Observable<MedicationType>
+        let componentChanged: Observable<String>
         let dosageChanged: Observable<String>
         let timesChanged: Observable<[Date]>
         let startDateChanged: Observable<Date>
@@ -35,6 +36,7 @@ final class MedicationFormViewModel {
 
         let drugName = input.drugNameChanged.startWith("")
         let type = input.typeSelected.startWith(.oral)
+        let component = input.componentChanged.startWith("")
         let dosage = input.dosageChanged.startWith("")
         let times = input.timesChanged.startWith([])
         let startDate = input.startDateChanged.startWith(Date())
@@ -50,7 +52,7 @@ final class MedicationFormViewModel {
             .asDriver(onErrorJustReturn: false)
 
         let formState = Observable.combineLatest(
-            Observable.combineLatest(drugName, type, dosage),
+            Observable.combineLatest(drugName, type, component, dosage),
             Observable.combineLatest(times, startDate, endDate, isNotificationEnabled)
         )
 
@@ -58,8 +60,8 @@ final class MedicationFormViewModel {
             .withLatestFrom(formState)
             .flatMapLatest { [weak self] combined -> Observable<Void> in
                 guard let self else { return .empty() }
-                let (nameTypeDosage, timesStartEndNotif) = combined
-                let (name, medicationType, dosage) = nameTypeDosage
+                let (nameTypeComponentDosage, timesStartEndNotif) = combined
+                let (name, medicationType, component, dosage) = nameTypeComponentDosage
                 let (times, startDate, endDate, notificationsEnabled) = timesStartEndNotif
 
                 let defaultTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: startDate) ?? startDate
@@ -72,6 +74,7 @@ final class MedicationFormViewModel {
                     id: self.initialMedication?.id ?? UUID(),
                     drugName: name.trimmingCharacters(in: .whitespaces),
                     dosage: dosage.trimmingCharacters(in: .whitespaces),
+                    component: component.trimmingCharacters(in: .whitespaces),
                     type: medicationType,
                     schedule: schedule,
                     isEnabled: notificationsEnabled,

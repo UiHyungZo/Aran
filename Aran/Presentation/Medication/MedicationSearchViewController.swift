@@ -38,8 +38,8 @@ final class MedicationSearchViewController: UIViewController {
             mode: .register,
             viewModel: viewModel,
             onAddDrug: { _ in },
-            onRegisterDrug: { [weak self] drugName, dosage in
-                self?.actions.showForm(drugName, dosage)
+            onRegisterDrug: { [weak self] drugName, component, dosage in
+                self?.actions.showForm(drugName, component, dosage)
             },
             onClose: { [weak self] in
                 self?.actions.close()
