@@ -25,6 +25,21 @@ final class CycleRecordUseCase {
         }
     }
 
+    func removeTransferEvent(transferID: UUID) async throws {
+        let records = try await repository.fetchAll()
+
+        for var record in records {
+            let updatedEvents = record.events.filter { event in
+                guard case let .embryoTransfer(id) = event else { return true }
+                return id != transferID
+            }
+
+            guard updatedEvents.count != record.events.count else { continue }
+            record.events = updatedEvents
+            try await repository.update(record)
+        }
+    }
+
     func saveDiary(emoji: String?, text: String, for date: Date) async throws {
         let diary = DiaryEntry(emoji: emoji, text: text)
         if var existing = try await repository.fetch(date: date) {

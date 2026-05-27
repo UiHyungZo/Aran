@@ -32,7 +32,7 @@ struct DiaryEntry {
     var text: String
 }
 
-enum TransferType: String {
+enum TransferType: String, Hashable {
     case fresh = "신선"
     case frozen = "동결"
 }
