@@ -4,13 +4,13 @@ import SwiftData
 @Model
 final class CycleRecordModel {
     @Attribute(.unique) var id: UUID
-    var cycleNumber: Int
+    var cycleNumber: Int = 1
     var date: Date
-    var retrievalCount: Int
-    var fertilizedCount: Int
-    var frozenCount: Int
-    var embryoGrades: [String]
-    var eventsData: Data // JSON-encoded [DayEventDTO]
+    var retrievalCount: Int = 0
+    var fertilizedCount: Int = 0
+    var frozenCount: Int = 0
+    var embryoGradesRaw: String = "[]" // JSON-encoded [String]
+    var eventsData: Data = Data() // JSON-encoded [DayEventDTO]
     var diaryEmoji: String?
     var diaryText: String?
 
@@ -21,7 +21,7 @@ final class CycleRecordModel {
         retrievalCount: Int = 0,
         fertilizedCount: Int = 0,
         frozenCount: Int = 0,
-        embryoGrades: [String] = [],
+        embryoGradesRaw: String = "[]",
         eventsData: Data = Data(),
         diaryEmoji: String? = nil,
         diaryText: String? = nil
@@ -32,7 +32,7 @@ final class CycleRecordModel {
         self.retrievalCount = retrievalCount
         self.fertilizedCount = fertilizedCount
         self.frozenCount = frozenCount
-        self.embryoGrades = embryoGrades
+        self.embryoGradesRaw = embryoGradesRaw
         self.eventsData = eventsData
         self.diaryEmoji = diaryEmoji
         self.diaryText = diaryText

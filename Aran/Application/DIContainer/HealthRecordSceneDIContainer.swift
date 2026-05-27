@@ -40,13 +40,6 @@ final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencie
         )
     }
 
-    func makePGTFormViewController(onSaved: @escaping () -> Void) -> UIViewController {
-        PGTFormViewController(
-            viewModel: PGTFormViewModel(useCase: healthRecordUseCase),
-            onSaved: onSaved
-        )
-    }
-
     func makeExamHistoryViewController(item: TestItem, actions: ExamHistoryActions) -> ExamHistoryViewController {
         ExamHistoryViewController(
             viewModel: ExamHistoryViewModel(useCase: healthRecordUseCase, item: item),

@@ -42,7 +42,7 @@ final class CycleRecordRepository: CycleRecordRepositoryProtocol {
         model.retrievalCount = updated.retrievalCount
         model.fertilizedCount = updated.fertilizedCount
         model.frozenCount = updated.frozenCount
-        model.embryoGrades = updated.embryoGrades
+        model.embryoGradesRaw = updated.embryoGradesRaw
         model.eventsData = updated.eventsData
         model.diaryEmoji = updated.diaryEmoji
         model.diaryText = updated.diaryText

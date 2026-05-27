@@ -11,7 +11,7 @@ enum CycleRecordMapper {
             retrievalCount: model.retrievalCount,
             fertilizedCount: model.fertilizedCount,
             frozenCount: model.frozenCount,
-            embryoGrades: model.embryoGrades,
+            embryoGrades: decodeGrades(model.embryoGradesRaw),
             events: events,
             diary: diary
         )
@@ -26,11 +26,23 @@ enum CycleRecordMapper {
             retrievalCount: entity.retrievalCount,
             fertilizedCount: entity.fertilizedCount,
             frozenCount: entity.frozenCount,
-            embryoGrades: entity.embryoGrades,
+            embryoGradesRaw: encodeGrades(entity.embryoGrades),
             eventsData: eventsData,
             diaryEmoji: entity.diary?.emoji,
             diaryText: entity.diary?.text
         )
+    }
+
+    static func decodeGrades(_ raw: String) -> [String] {
+        guard let data = raw.data(using: .utf8),
+              let grades = try? JSONDecoder().decode([String].self, from: data) else { return [] }
+        return grades
+    }
+
+    static func encodeGrades(_ grades: [String]) -> String {
+        guard let data = try? JSONEncoder().encode(grades),
+              let raw = String(data: data, encoding: .utf8) else { return "[]" }
+        return raw
     }
 
     private static func decodeEvents(from data: Data) -> [DayEvent] {

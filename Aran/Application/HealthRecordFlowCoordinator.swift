@@ -8,7 +8,6 @@ struct ExamListActions {
 protocol HealthRecordFlowCoordinatorDependencies {
     func makeExamListViewController(actions: ExamListActions) -> ExamListViewController
     func makeHealthRecordFormViewController(onSaved: @escaping () -> Void) -> UIViewController
-    func makePGTFormViewController(onSaved: @escaping () -> Void) -> UIViewController
     func makeExamHistoryViewController(item: TestItem, actions: ExamHistoryActions) -> ExamHistoryViewController
 }
 
@@ -25,7 +24,7 @@ final class HealthRecordFlowCoordinator {
     func start() {
         let vc = dependencies.makeExamListViewController(
             actions: ExamListActions(
-                showAddForm: { [weak self] in self?.showAddFormSelection() },
+                showAddForm: { [weak self] in self?.showNumericForm() },
                 showHistory: { [weak self] item in self?.showHistory(item: item) }
             )
         )
@@ -33,33 +32,8 @@ final class HealthRecordFlowCoordinator {
         navigationController?.setViewControllers([vc], animated: false)
     }
 
-    private func showAddFormSelection() {
-        let alert = UIAlertController(title: "검사 유형 선택", message: nil, preferredStyle: .actionSheet)
-
-        alert.addAction(UIAlertAction(title: "검사 수치 입력", style: .default) { [weak self] _ in
-            self?.showNumericForm()
-        })
-        alert.addAction(UIAlertAction(title: "PGT / 염색체 기록", style: .default) { [weak self] _ in
-            self?.showPGTForm()
-        })
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
-
-        navigationController?.topViewController?.present(alert, animated: true)
-    }
-
     private func showNumericForm() {
         let vc = dependencies.makeHealthRecordFormViewController(onSaved: { [weak self] in
-            self?.listViewController?.reload()
-        })
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
-            sheet.prefersGrabberVisible = true
-        }
-        navigationController?.topViewController?.present(vc, animated: true)
-    }
-
-    private func showPGTForm() {
-        let vc = dependencies.makePGTFormViewController(onSaved: { [weak self] in
             self?.listViewController?.reload()
         })
         if let sheet = vc.sheetPresentationController {
@@ -80,10 +54,6 @@ final class HealthRecordFlowCoordinator {
     }
 
     private func showAddFormForItem(_ item: TestItem) {
-        if item.isNumeric {
-            showNumericForm()
-        } else {
-            showPGTForm()
-        }
+        showNumericForm()
     }
 }

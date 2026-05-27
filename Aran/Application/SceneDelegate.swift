@@ -20,12 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let modelContainer: ModelContainer
         do {
-            modelContainer = try ModelContainer(for:
-                CycleRecordModel.self,
-                MedicationModel.self,
-                HealthRecordModel.self,
-                TransferRecordModel.self,
-                PGTRecordModel.self)
+            modelContainer = try Self.makeModelContainer()
         } catch {
             fatalError("ModelContainer 초기화 실패: \(error)")
         }
@@ -64,5 +59,39 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+
+    private static func makeModelContainer() throws -> ModelContainer {
+        let schema = Schema([
+            CycleRecordModel.self,
+            MedicationModel.self,
+            HealthRecordModel.self,
+            TransferRecordModel.self,
+            PGTRecordModel.self
+        ])
+        let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
+        let configuration = ModelConfiguration(schema: schema, url: storeURL)
+
+        do {
+            return try ModelContainer(for: schema, configurations: [configuration])
+        } catch {
+            resetLocalStore(at: storeURL)
+            return try ModelContainer(for: schema, configurations: [configuration])
+        }
+    }
+
+    private static func resetLocalStore(at storeURL: URL) {
+        let fileManager = FileManager.default
+        let storeDirectory = storeURL.deletingLastPathComponent()
+        let storeFileName = storeURL.lastPathComponent
+        let relatedURLs = [
+            storeURL,
+            storeDirectory.appending(path: "\(storeFileName)-shm"),
+            storeDirectory.appending(path: "\(storeFileName)-wal")
+        ]
+
+        for url in relatedURLs where fileManager.fileExists(atPath: url.path) {
+            try? fileManager.removeItem(at: url)
+        }
     }
 }
