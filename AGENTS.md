@@ -9,7 +9,7 @@ Aran은 시험관 시술(IVF) 관리용 iOS 앱입니다.
 - 최소 타겟: iOS 17+
 - 데이터 저장: SwiftData
 - UI 구성
-  - 캘린더 / 약 정보: SwiftUI + Combine
+  - 캘린더 / 시술 기록 / 약 정보: SwiftUI + Combine
   - 약/주사 / 검사: UIKit + RxSwift
 - 테스트 전략: UseCase Unit Test 우선
 
@@ -26,9 +26,10 @@ Aran은 시험관 시술(IVF) 관리용 iOS 앱입니다.
 - `docs/testing.md`
 - `docs/concurrency.md`
 - `docs/data-model.md`
-- `docs/decisions.md`
 - `docs/roadmap.md`
+- `docs/ADR.md`
 - `docs/git-convention.md`
+- `docs/UI_GUIDE.md`
 
 ---
 
@@ -52,7 +53,7 @@ Aran은 시험관 시술(IVF) 관리용 iOS 앱입니다.
 
 ## UI 규칙
 
-- 캘린더 / 약 정보 탭은 SwiftUI + Combine 사용
+- 캘린더 / 시술 기록 / 약 정보 탭은 SwiftUI + Combine 사용
 - 약/주사 / 검사 탭은 UIKit + RxSwift 사용
 - UIKit ↔ SwiftUI 브릿지는 UIHostingController 사용
 - ViewModel은 상태 관리와 액션 처리 담당
@@ -88,6 +89,8 @@ UseCase Unit Test를 우선 작성합니다.
 
 - `CycleRecordUseCase`
 - `MedicationNotificationUseCase`
+- `MedicationLogUseCase`
+- `MenstrualCycleUseCase`
 - `SearchDrugUseCase`
 - `HealthRecordUseCase`
 
@@ -97,31 +100,31 @@ UseCase Unit Test를 우선 작성합니다.
 
 ## MVP 우선순위
 
-명시적으로 요청되지 않은 경우
-Phase 2 기능은 구현하지 않습니다.
+명시적으로 요청되지 않은 경우 Phase 2 기능은 구현하지 않습니다.
 
 ### 1순위 기능
 
 - 월간 캘린더 메인 화면
-- 날짜 상세 바텀시트
+- 날짜 2단계 바텀시트 (전체 섹션)
+- 복용 약 체크 (MedicationLog)
+- 병원 일정 복수 종류 선택
+- 생리 주기 입력 + 배란일 자동 계산
+- 감정 일기 입력/수정/삭제
 - 채취 / 이식 기록 입력
-- 감정 일기 섹션 표시
-- 약 목록
-- 약 등록 폼
+- PGT / 염색체 / 반착검사 기록
+- 시술 기록 탭 Presentation 전체
+- 약 목록 / 약 등록 폼 / 수정 화면
 - UserNotifications 기반 알림
 - DrugSearch 공통 컴포넌트
 - e약은요 API 연동
-- 검사 수치 입력 및 목록
-- 최신 수치 / 증감 표시
+- 검사 수치 입력 / 목록 / 수정/삭제
+- 최신 수치 / 증감 TrendBadge
 - UseCase Unit Test
 - README / GIF / GitHub 포트폴리오 정리
 
 ### 현재 제외 또는 Phase 2 기능
 
-- 생리 주기 입력
-- 배란일 자동 계산
-- PGT / 염색체 / 반착검사
-- Swift Charts 그래프
+- Swift Charts 그래프 (검사 탭 / 시술 기록 탭)
 - HealthKit
 - 전체 UI Test
 - Firebase

@@ -30,7 +30,7 @@ Aran은 IVF 치료 관리용 iOS 포트폴리오 앱이다.
 핵심 목적:
 
 * IVF 치료 일정 관리
-* 약물/주사 추적
+* 약물/주사 추적 (날짜별 복용 체크 포함)
 * 검사 수치 기록
 * 배아이식/채취 기록
 * 의약품 정보 검색
@@ -97,7 +97,7 @@ Data -> Infrastructure
 대상:
 
 * 💊 약/주사
-* 🧪 검사
+* 🏥 검사
 
 ## Reactive 규칙
 
@@ -164,7 +164,7 @@ xcodebuild test -scheme Aran \
 * `docs/concurrency.md`
 * `docs/data-model.md`
 * `docs/roadmap.md`
-* `docs/decisions.md`
+* `docs/ADR.md`
 * `docs/UI_GUIDE.md`
 
 ---
@@ -190,6 +190,8 @@ xcodebuild test -scheme Aran \
   → `docs/features.md`, `docs/architecture.md`, `docs/UI_GUIDE.md` 확인 후 계획 제시
 - "Swift Charts 추가해줘"
   → `docs/features.md`, `docs/UI_GUIDE.md` 확인 후 계획 제시
+- "복용 체크 구현해줘" / "MedicationLog 구현해줘"
+  → `docs/data-model.md`, `docs/features.md` 확인 후 계획 제시
 
 ### Scope Check
 - "이거 PRD 범위야?"
