@@ -63,6 +63,17 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         )
     }
 
+    func makeEditMedicationFormViewController(medication: Medication, actions: MedicationFormActions) -> MedicationFormViewController {
+        MedicationFormViewController(
+            viewModel: MedicationFormViewModel(
+                medicationUseCase: medicationUseCase,
+                initialMedication: medication
+            ),
+            actions: actions,
+            initialMedication: medication
+        )
+    }
+
     // MARK: - Flow Coordinator
 
     func makeMedicationFlowCoordinator(navigationController: UINavigationController) -> MedicationFlowCoordinator {

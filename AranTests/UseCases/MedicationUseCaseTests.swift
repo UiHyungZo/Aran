@@ -75,6 +75,35 @@ final class MedicationUseCaseTests: XCTestCase {
         XCTAssertEqual(medicationRepo.savedMedications.count, 1)
     }
 
+    // MARK: - update
+
+    func testUpdate_whenEnabled_cancelsOldNotificationAndSchedulesNewNotification() async throws {
+        // given
+        notificationRepo.scheduleResult = ["new-id"]
+        let medication = makeMedication(isEnabled: true, notificationIDs: ["old-id"])
+
+        // when
+        try await sut.update(medication)
+
+        // then
+        XCTAssertEqual(notificationRepo.cancelledIDs, ["old-id"])
+        XCTAssertEqual(notificationRepo.scheduledMedications.count, 1)
+        XCTAssertEqual(medicationRepo.updatedMedications.first?.notificationIDs, ["new-id"])
+    }
+
+    func testUpdate_whenDisabled_cancelsOldNotificationAndClearsIDs() async throws {
+        // given
+        let medication = makeMedication(isEnabled: false, notificationIDs: ["old-id"])
+
+        // when
+        try await sut.update(medication)
+
+        // then
+        XCTAssertEqual(notificationRepo.cancelledIDs, ["old-id"])
+        XCTAssertTrue(notificationRepo.scheduledMedications.isEmpty)
+        XCTAssertEqual(medicationRepo.updatedMedications.first?.notificationIDs, [])
+    }
+
     // MARK: - toggle
 
     func testToggle_fromEnabledToDisabled_cancelsNotification() async throws {

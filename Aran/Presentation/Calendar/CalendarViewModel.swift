@@ -9,7 +9,6 @@ final class CalendarViewModel: ObservableObject {
     @Published var healthRecords: [Date: [HealthRecord]] = [:]
     @Published var selectedRecord: CycleRecord?
     @Published var selectedDateTransferRecords: [TransferRecord] = []
-    @Published var isDetailSheetPresented = false
     @Published var errorMessage: String?
 
     @Published var allMedications: [Medication] = []

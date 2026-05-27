@@ -134,6 +134,38 @@ final class MedicationFormViewModelTests: XCTestCase {
         // then
         wait(for: [expectation], timeout: 2.0)
     }
+
+    func testSave_whenInitialMedicationExists_updatesExistingMedication() {
+        // given
+        let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
+        let useCase = MedicationUseCase(
+            medicationRepository: medicationRepo,
+            notificationRepository: notificationRepo
+        )
+        sut = MedicationFormViewModel(
+            medicationUseCase: useCase,
+            initialMedication: initialMedication
+        )
+
+        let saveTapped = PublishSubject<Void>()
+        let input = makeInput(drugName: "수정약", dosage: "200mg", saveTapped: saveTapped.asObservable())
+        let output = sut.transform(input: input)
+
+        let expectation = XCTestExpectation(description: "update completed")
+        output.saveCompleted
+            .drive(onNext: { expectation.fulfill() })
+            .disposed(by: disposeBag)
+
+        // when
+        saveTapped.onNext(())
+
+        // then
+        wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(medicationRepo.savedMedications.isEmpty)
+        XCTAssertEqual(medicationRepo.updatedMedications.first?.id, initialMedication.id)
+        XCTAssertEqual(medicationRepo.updatedMedications.first?.drugName, "수정약")
+        XCTAssertEqual(medicationRepo.updatedMedications.first?.dosage, "200mg")
+    }
 }
 
 // MARK: - Helpers
@@ -153,6 +185,23 @@ private extension MedicationFormViewModelTests {
             endDateChanged: .just(nil),
             isNotificationEnabled: .just(false),
             saveTapped: saveTapped
+        )
+    }
+
+    func makeMedication(name: String, dosage: String) -> Medication {
+        Medication(
+            id: UUID(),
+            drugName: name,
+            dosage: dosage,
+            type: .oral,
+            schedule: MedicationSchedule(
+                times: [Date()],
+                startDate: Date(),
+                endDate: nil
+            ),
+            isEnabled: false,
+            notificationIDs: [],
+            createdAt: Date()
         )
     }
 }

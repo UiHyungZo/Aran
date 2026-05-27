@@ -27,20 +27,19 @@ Aran은 시험관 시술(IVF) 관리에 특화된 iOS 앱이다.
 
 ---
 
-# MVP Structure
+# App Structure — 5탭
 
-Aran MVP는 4개의 탭으로 구성한다.
-
-| Tab                    | Stack             | Role         |
-| ---------------------- | ----------------- | ------------ |
-| Calendar               | SwiftUI + Combine | 날짜 기반 메인 허브  |
-| Medication / Injection | UIKit + RxSwift   | 약/주사 및 알림 관리 |
-| Health Record          | UIKit + RxSwift   | 검사 수치 기록     |
-| Drug Information       | SwiftUI + Combine | 약 검색 및 상세 조회 |
+| Tab | Stack | Role |
+|-----|-------|------|
+| 📅 캘린더 | SwiftUI + Combine | 날짜 기반 메인 허브 |
+| 💊 약/주사 | UIKit + RxSwift | 약/주사 및 알림 관리 |
+| 🏥 검사 | UIKit + RxSwift + Swift Charts | 검사 수치 기록 |
+| 🗂 시술 기록 | SwiftUI + Combine + Swift Charts | 차수별 IVF 기록 |
+| 🔍 약 정보 | SwiftUI + Combine | 약 검색 및 상세 조회 |
 
 ---
 
-# Tab 1 · Calendar
+# Tab 1 · 📅 캘린더
 
 ## Stack
 
@@ -68,12 +67,13 @@ Aran MVP는 4개의 탭으로 구성한다.
 
 도트 종류:
 
-| Type  | Color  |
-| ----- | ------ |
-| 병원 일정 | Pink   |
-| 약 알림  | Purple |
-| 이식일   | Teal   |
-| 배란일   | Amber  |
+| Type | Color |
+|------|-------|
+| 병원 일정 | Pink (채워진 원) |
+| 약 복용 알림 | Purple (채워진 원) |
+| 이식일 | Green (채워진 원) |
+| 배란일 | Amber (채워진 원) |
+| 생리 기간 | Pink (사각 도트) |
 
 규칙:
 
@@ -83,108 +83,96 @@ Aran MVP는 4개의 탭으로 구성한다.
 
 ---
 
-### Date Detail Bottom Sheet
+### 2단계 바텀시트 구조
 
-날짜 선택 시 바텀시트 표시.
-
-섹션:
-
-* 채취 / 이식 기록
-* 복용 약
-* 감정 일기
-* 검사 수치
-
-예시 흐름:
+날짜 선택 시 1단계 시트, 섹션 탭 시 2단계 시트로 진입.
 
 ```text
-Calendar Date Tap
-→ Bottom Sheet
-→ Detail Sections
+캘린더 날짜 탭
+→ 1단계 시트 (날짜 요약)
+→ 섹션 탭
+→ 2단계 시트 (항목별 입력/수정)
 ```
 
 규칙:
 
-* Empty 상태 제공
-* 저장된 데이터 없을 경우 placeholder 표시
-* 날짜별 모든 기록을 허브처럼 연결
+* 2단계 진입 시 1단계 시트는 25% opacity로 뒤에 유지
+* 각 섹션은 기록 있을 때 / 없을 때 상태 구분
+* 수정/삭제는 2단계 시트에서만 가능
 
 ---
 
-### Retrieval / Transfer Record
+### 1단계 시트 섹션
+
+| 섹션 | 기록 있을 때 | 기록 없을 때 | 탭 동작 |
+|------|-------------|-------------|--------|
+| 병원 일정 | 일정 종류(복수) + 메모 | "일정 없음" | 2단계: 병원 일정 입력/수정 |
+| 복용 약 | 약 이름 pill + 체크박스 | "복용 약 없음" | 체크 토글. 약 추가는 약/주사 탭 |
+| 감정 일기 | 이모지 + 텍스트 미리보기 | "기록 없음" | 2단계: 감정 일기 입력/수정 |
+| 검사 수치 | 항목·수치 요약 | "기록 없음" | 2단계: 검사 수치 입력/수정 |
+| 생리 시작일 | 생리 시작일로 표시 | "오늘로 기록하기" 버튼 | 2단계: 생리 주기 입력/수정 |
+
+---
+
+### 복용 약 체크 (MedicationLog)
 
 기능:
 
-* 채취 개수 입력
-* 수정 개수 입력
-* 동결 개수 입력
-* 배아 등급 입력
-* 이식 개수 입력
-* 신선/동결 여부 입력
-
-예시:
-
-```text
-2차 시술
-채취 12개
-수정 9개
-동결 6개
-3AA 배아 1개 이식
-```
+* 1단계 시트에서 각 약 옆 체크박스로 당일 복용 완료 토글
+* 체크 상태는 날짜별로 저장 (MedicationLog)
+* 약 추가/수정/삭제는 약/주사 탭에서만 가능
 
 규칙:
 
-* CycleRecord 기준 관리
-* 날짜 기반 Calendar 연결
-* 복잡한 계산은 UseCase에서 수행
+* MedicationLog 저장: `(medicationId, logDate, isTaken)`
+* 날짜별 복용 상태 독립 관리
 
 ---
 
-### Emotional Diary
+### 병원 일정 입력/수정 (2단계)
+
+기능:
+
+* 일정 종류 복수 선택 (내원 / 채혈 / 초음파)
+* 메모 입력
+* 수정 가능 · 삭제 가능
+
+규칙:
+
+* visitTypes: [String] 으로 복수 저장
+* 같은 날 여러 종류 동시 선택 지원
+
+---
+
+### 감정 일기 입력/수정 (2단계)
 
 기능:
 
 * 감정 이모지 선택
-* 텍스트 기록
+* 텍스트 기록 (최대 500자)
 * 날짜별 감정 기록 저장
-
-예시:
-
-```text
-😢
-긴장되지만 기대돼요
-```
-
-규칙:
-
-* 감정 기록은 보조 기능
-* 캘린더 흐름을 방해하지 않는다
-* Empty 상태를 우선 지원
+* 수정 가능 · 삭제 가능
 
 ---
 
-### Hospital Schedule
+### 생리 주기 입력/수정 (2단계)
 
 기능:
 
-* 병원 일정 추가
-* 병원 일정 삭제
+* 생리 시작일 기록 (자동)
+* 주기 길이 설정 (기본 28일)
+* 배란 예정일 자동 계산
+* 수정 가능
 
-예시:
+---
 
-```text
-난임센터 방문
-초음파 검사
-피검사
-```
+### 검사 수치 입력/수정 (2단계)
 
-우선순위:
+기능:
 
-* MVP 2순위
-
-규칙:
-
-* 단순 일정 관리 수준 유지
-* 범용 캘린더 앱처럼 확장하지 않는다
+* 항목 선택 · 수치 · 단위 · 측정일 · 메모
+* 수정 가능 · 삭제 가능
+* 검사 탭과 데이터 연동
 
 ---
 
@@ -192,14 +180,13 @@ Calendar Date Tap
 
 MVP 제외:
 
-* 생리 주기 입력
-* 배란일 자동 계산
-* 복잡한 cycle prediction
 * Apple Calendar sync
+* 복잡한 cycle prediction
+* HealthKit 연동
 
 ---
 
-# Tab 2 · Medication / Injection
+# Tab 2 · 💊 약/주사
 
 ## Stack
 
@@ -221,100 +208,52 @@ MVP 제외:
 
 기능:
 
-* 약 목록 표시
+* 약 목록 표시 (UITableView)
 * 복용 여부 체크
 * 활성/비활성 상태 구분
 * 복용 시간 표시
 
-표시 정보:
-
-* 약 이름
-* 용량
-* 타입
-* 복용 시간
-* 체크 상태
-
 규칙:
 
-* UITableView 기반
 * Driver 기반 UI 바인딩 우선
-* 상태는 RxSwift로 관리
+* 상태는 BehaviorRelay로 관리
 
 ---
 
-### Medication Check
+### 약 셀 탭 → 수정 화면
 
 기능:
 
-* 복용 완료 체크
-* 실시간 상태 변경
-
-예시:
-
-```text
-☑ 프로게스테론
-☐ 에스트라디올
-```
+* 약 이름·성분·용량·복용 시간·알림 설정 수정 가능
 
 규칙:
 
-* 사용자 입력은 PublishRelay 사용
-* 현재 상태는 BehaviorRelay 사용
-* ViewController 내부 비즈니스 로직 금지
+* MedicationFormViewController 재사용
+* 수정 모드 초기값 자동 바인딩
 
 ---
 
 ### Swipe Actions
 
-왼쪽 스와이프 기능 제공.
+왼쪽 스와이프 기능:
 
-동작:
-
-* 중단
-* 삭제
-
-차이점:
-
-| Action | Behavior      |
-| ------ | ------------- |
-| 중단     | 기록 유지 + 알림 중단 |
-| 삭제     | 데이터 제거        |
-
-규칙:
-
-* 비활성화 상태는 history 유지
-* swipe action은 UIKit native 방식 사용
+| Action | Behavior |
+|--------|----------|
+| 중단 | 기록 유지 + 알림 중단 |
+| 삭제 | 데이터 제거 |
 
 ---
 
 ### Medication Registration
 
-기능:
-
-* 약 추가
-* DrugSearchView register mode 사용
-* 자동 입력 지원
-
-자동 입력:
-
-* 약 이름
-* 성분명
-
-사용자 입력:
-
-* 용량
-* 복용 시간
-* 메모
-* 알림 여부
-
 흐름:
 
 ```text
-Medication Tab
-→ Add Button
-→ DrugSearchView(register)
-→ Select Drug
-→ MedicationForm
+약/주사 탭
+→ + 버튼
+→ DrugSearchView (register 모드)
+→ 약 선택
+→ MedicationFormVC
 ```
 
 ---
@@ -323,22 +262,13 @@ Medication Tab
 
 기능:
 
-* 복용 시간별 알림 등록
-* 알림 수정
-* 알림 삭제
-* 알림 ON/OFF
+* 복용 시간별 알림 등록/수정/삭제/ON·OFF
+* 알림 미리보기 + 개별 ON/OFF
 
 규칙:
 
-* UserNotifications 사용
 * notificationId를 schedule 단위로 관리
-* 알림 수정 시 기존 알림 취소 후 재등록
-
-예시:
-
-```text
-프로게스테론 복용 시간이에요
-```
+* 수정 시 기존 알림 취소 후 재등록
 
 ---
 
@@ -353,43 +283,54 @@ MVP 제외:
 
 ---
 
-# Tab 3 · Health Record
+# Tab 3 · 🏥 검사
 
 ## Stack
 
 * UIKit
 * RxSwift
+* Swift Charts
 
 ## Role
 
-시험관 시술 관련 검사 수치 기록.
+혈액/초음파 수치 전용 탭. PGT/염색체는 시술 기록 탭에서 관리.
 
 ---
 
 ## Main Features
 
+### 검사 항목
+
+기본 제공 7개:
+
+| 항목 | 단위 | 카테고리 |
+|------|------|---------|
+| FSH | mIU/mL | 난소 기능 |
+| AMH | ng/mL | 난소 기능 |
+| AFC | 개 | 난소 기능 |
+| E2 | pg/mL | 호르몬 |
+| P4 | ng/mL | 호르몬 |
+| LH | mIU/mL | 호르몬 |
+| β-hCG | mIU/mL | 임신 확인 |
+
+직접 추가: 이름·단위 입력 → HealthRecord.type(String)으로 저장
+
+---
+
 ### Health Record Input
 
 기능:
 
-* 검사 항목 선택
-* 수치 입력
+* 검사 항목 선택 (기본 7개 + 커스텀)
+* 수치/단위 입력
 * 날짜 선택
 * 메모 입력
-
-지원 항목:
-
-* FSH
-* AMH
-* AFC
-* E2
-* Progesterone
+* 수정 가능 · 삭제 가능
 
 규칙:
 
-* 숫자 입력 validation 제공
-* 잘못된 값 입력 시 저장 버튼 비활성
-* validation은 ViewModel에서 처리
+* 숫자 validation은 ViewModel에서 처리
+* 저장 버튼 활성화 조건: 항목 선택 + 유효한 수치
 
 ---
 
@@ -397,22 +338,14 @@ MVP 제외:
 
 기능:
 
-* 최신 수치 표시
-* 이전 대비 증감 표시
+* 섹션별(난소기능/호르몬 등) 그룹화
+* 항목별 최신 수치 + 증감 TrendBadge
 * 날짜 표시
-
-예시:
-
-```text
-FSH 8.2
-↓ 1.4
-```
 
 규칙:
 
 * UITableView 기반
-* TrendBadge 제공
-* 최신값 기준 정렬
+* TrendBadge: 최신값 - 이전값 기준 ↑↓ 표시
 
 ---
 
@@ -420,33 +353,16 @@ FSH 8.2
 
 기능:
 
-* 항목별 히스토리 조회
-* 날짜순 목록 표시
-
-예시:
-
-```text
-2024.03.12 - 8.2
-2024.02.05 - 9.6
-```
-
-우선순위:
-
-* MVP 2순위
+* 항목별 시간순 목록 조회
 
 ---
 
-### PGT / Genetic Record
+### Swift Charts — Trend
 
-Phase 2 기능.
+기능:
 
-예정 기능:
-
-* PGT 결과
-* 염색체 검사
-* 모자이크 결과
-
-MVP에서는 제외한다.
+* 항목별 수치 변화 Line Chart
+* 정상 범위 레퍼런스 라인
 
 ---
 
@@ -454,14 +370,86 @@ MVP에서는 제외한다.
 
 MVP 제외:
 
-* Swift Charts
 * 자동 해석 기능
 * 의료 진단 기능
-* 그래프 분석
 
 ---
 
-# Tab 4 · Drug Information
+# Tab 4 · 🗂 시술 기록
+
+## Stack
+
+* SwiftUI
+* Combine
+* Swift Charts
+
+## Role
+
+차수별 IVF 기록 전용 탭.
+
+---
+
+## Main Features
+
+### 차수 목록
+
+기능:
+
+* 차수별 카드 — 채취·수정·동결 개수, 이식 결과 요약
+* 진행중 / 성공 / 실패 배지
+* 차수 카드 탭 → 상세 화면
+
+---
+
+### 차수 상세 화면
+
+기능:
+
+* 해당 차수 전체 이력 한눈에 표시
+* 채취 → 수정 → 동결 → 이식 → PGT 결과 흐름
+
+---
+
+### 채취/이식 입력
+
+기능:
+
+* 차수 선택
+* 개수·등급·동결/신선 입력
+* SwiftData 저장
+
+---
+
+### 이식 결과 입력
+
+기능:
+
+* 이식일 · 등급 · 개수 · 결과(성공/실패/진행중)
+* 나중에 별도 업데이트 가능
+
+---
+
+### PGT / 염색체 / 반착검사 기록
+
+기능:
+
+* PGT-A/M 결과
+* 부부 염색체 검사
+* 반착검사 결과
+* 차수에 연결
+
+---
+
+### Swift Charts — 차수별 비교
+
+기능:
+
+* 차수별 채취→수정→동결→이식 흐름 Bar Chart
+* 전체 차수 비교
+
+---
+
+# Tab 5 · 🔍 약 정보
 
 ## Stack
 
@@ -481,124 +469,55 @@ e약은요 API 기반 약 검색 기능.
 기능:
 
 * 약 이름 검색
-* debounce 검색
+* Combine debounce (0.3초)
 * 실시간 결과 표시
 
 규칙:
 
-* Combine debounce 사용
-* 기본 debounce 시간: 0.3초
 * 빈 검색어 API 호출 금지
-
-예시:
-
-```swift
-.debounce(for: .milliseconds(300))
-```
+* 최소 2자 입력 안내
 
 ---
 
 ### Search Result List
 
-표시 정보:
+표시: 약명·성분 요약
 
-* 약 이름
-* 제약사
-* 성분 요약
-
-기능:
-
-* 상세 화면 이동
-* register mode에서 약 선택 가능
-
-규칙:
-
-* Loading 상태 제공
-* Empty 상태 제공
-* Error 상태 제공
+상태: Loading / Empty / Error
 
 ---
 
 ### Drug Detail
 
-표시 정보:
+표시: 효능·용법·경고·주의사항·상호작용·부작용·보관법
 
-* 효능
-* 용법
-* 경고
-* 주의사항
-* 상호작용
-* 부작용
-* 보관법
-
-규칙:
-
-* NavigationStack 기반
-* 긴 텍스트 스크롤 지원
-* Warning Banner 제공
+기능: 전문의약품 경고 배너
 
 ---
 
 ### Add Medication Flow
 
-약 상세 화면에서 약 등록 가능.
-
-흐름:
-
 ```text
 Drug Detail
-→ Add Medication
+→ "이 약 추가하기"
 → MedicationFormViewController
 ```
 
-브리징:
+---
 
-```text
-SwiftUI
-→ UIHostingController
-→ UIKit
-```
+### 최근 검색어
 
-규칙:
-
-* register mode와 흐름 공유
-* 선택된 약 정보 자동 입력
+* UserDefaults 저장/표시
 
 ---
 
 ### Fallback Policy
 
-검색 결과 없음은 정상 UX Case다.
-
-예시:
-
-```text
-찾는 약이 없나요?
-직접 입력하기
-```
-
-네트워크 오류:
-
-```text
-Retry
-→ 실패 시 fallback 안내
-```
-
-규칙:
-
-* Empty Result를 fatal error로 처리하지 않는다
-* IVF 약 특성상 직접 입력 fallback 제공
-
----
-
-## Drug Information Non-goals
-
-MVP 제외:
-
-* 즐겨찾기
-* OCR 약 검색
-* 이미지 검색
-* 오프라인 캐시 검색
+| 상황 | 처리 |
+|------|------|
+| 검색 결과 없음 | "직접 입력하기" → 빈 MedicationFormVC |
+| 네트워크 오류 | retry 1회 → 오류 토스트 → 직접 입력 폴백 |
+| 빈 검색어 | API 호출 차단, 최소 2자 입력 안내 |
 
 ---
 
@@ -608,76 +527,38 @@ DrugSearchView는 재사용 컴포넌트다.
 
 ## browse mode
 
-사용 위치:
-
-* Drug Information Tab
-
-동작:
-
-```text
-검색
-→ 상세 조회
-```
-
----
+사용 위치: 약 정보 탭
+동작: 검색 → 상세 조회
 
 ## register mode
 
-사용 위치:
-
-* Medication Registration
-
-동작:
-
-```text
-검색
-→ 선택
-→ MedicationForm 자동 입력
-```
-
-규칙:
-
-* 검색 로직은 공유
-* mode에 따라 선택 후 흐름만 변경
+사용 위치: 약/주사 탭 등록
+동작: 검색 → 선택 → MedicationForm 자동 입력
 
 ---
 
 # MVP Priority Policy
 
-## 1순위
+## 1순위 (반드시 구현)
 
-반드시 구현:
-
-* Calendar
-* Date Bottom Sheet
-* Medication List
-* Medication Registration
-* Notification Flow
-* Drug Search
-* Health Record Input
+* Calendar 2단계 바텀시트 전체
+* 복용 약 체크 (MedicationLog)
+* 병원 일정 복수 종류 선택
+* Medication List / Registration / Notification
+* Drug Search (browse + register)
+* Health Record Input / List / TrendBadge
+* CycleRecord Presentation 전체
 * UseCase Unit Test
 
----
+## 2순위 (시간 되면 추가)
 
-## 2순위
-
-시간 되면 추가:
-
-* 감정 일기 입력 화면
-* 병원 일정
 * 알림 미리보기
 * 최근 검색어
-* History View
-
----
+* Swift Charts (검사 탭 + 시술 기록 탭)
+* 수치 히스토리 화면
 
 ## Phase 2
 
-MVP 제외:
-
-* 생리 주기 계산
-* 배란일 자동 계산
-* Swift Charts
 * HealthKit
 * 전체 UI Test
 * Firebase
@@ -687,38 +568,15 @@ MVP 제외:
 
 # UX Principles
 
-## 핵심 원칙
-
 * 치료 흐름 방해 최소화
 * 입력 단계 단순화
 * Empty 상태 친절하게 제공
 * 직접 입력 fallback 제공
-* 사용자가 “잊지 않게” 돕는 UX
-
----
-
-## Empty State
-
-예시:
-
-```text
-기록된 수치가 없어요
-```
-
-```text
-직접 입력하기
-```
-
-규칙:
-
-* Empty 상태를 오류처럼 표현하지 않는다
-* 사용자가 다음 행동을 이해할 수 있어야 한다
+* 수정/삭제 흐름을 명확하게
 
 ---
 
 # Portfolio Principles
-
-이 앱은 포트폴리오 프로젝트이다.
 
 중요 목표:
 
@@ -727,11 +585,3 @@ MVP 제외:
 * UIKit + SwiftUI 혼합 이유 설명 가능
 * RxSwift + Combine 경계 설명 가능
 * 테스트 가능한 구조 증명 가능
-
-우선순위:
-
-1. 명확한 구조
-2. 설명 가능한 코드
-3. 테스트 가능성
-4. 유지보수성
-5. UI polish

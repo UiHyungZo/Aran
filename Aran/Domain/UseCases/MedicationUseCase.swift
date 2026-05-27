@@ -31,6 +31,11 @@ final class MedicationUseCase {
         try await medicationRepository.save(updated)
     }
 
+    func update(_ medication: Medication) async throws {
+        let updated = try await notificationUseCase.prepareForUpdate(medication)
+        try await medicationRepository.update(updated)
+    }
+
     func toggle(medication: Medication) async throws {
         let updated: Medication
         if medication.isEnabled {

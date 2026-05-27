@@ -20,3 +20,11 @@
 **이유**: 저장소 유출 위험을 방지하고 포트폴리오 코드 품질을 유지한다.
 
 **트레이드오프**: 로컬 실행 전 환경 설정 단계가 필요하다.
+
+## ADR-004: 시술 기록 탭은 SwiftUI + Combine을 사용한다
+**결정**: CycleRecord / TransferRecord / PGT 탭은 SwiftUI + Combine + Swift Charts로 구현한다.
+
+**이유**: 차수 카드 목록과 Swift Charts 시각화가 SwiftUI 선언형 방식에 자연스럽게 맞기 때문이다. UIKit + RxSwift는 Medication/HealthRecord 탭에서 이미 증명하므로 중복 구현할 필요가 없다.
+
+**트레이드오프**: CalendarSceneDIContainer 등 기존 SwiftUI 탭과 패턴을 통일해야 한다.
+

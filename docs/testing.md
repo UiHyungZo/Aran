@@ -5,96 +5,56 @@
 Aran의 테스트 전략은 Clean Architecture를 선택한 이유를 증명하는 것이다.
 
 목표:
-
-* 핵심 비즈니스 로직을 UI 없이 검증한다.
-* 네트워크, DB, 알림 의존성 없이 UseCase를 테스트한다.
-* ViewModel의 상태 변화와 입력 검증을 테스트한다.
-* Repository 구현의 Mapping / Error Handling을 검증한다.
-* 포트폴리오에서 “테스트 가능한 구조”를 설명할 수 있게 한다.
+- 핵심 비즈니스 로직을 UI 없이 검증한다.
+- 네트워크, DB, 알림 의존성 없이 UseCase를 테스트한다.
+- ViewModel의 상태 변화와 입력 검증을 테스트한다.
+- Repository 구현의 Mapping / Error Handling을 검증한다.
+- Network Layer의 Request 구성과 Response 처리를 검증한다.
+- 포트폴리오에서 "테스트 가능한 구조"를 설명할 수 있게 한다.
 
 ---
 
-# Test Targets
+## Test Targets
 
-테스트 코드는 앱 소스 타겟과 분리된 Xcode 테스트 타겟에 둔다.
-
-```text
+```
 Aran
 ├── Application
-├── Common
 ├── Presentation
 ├── Domain
 ├── Data
-├── Infrastructure
-└── Resources
+└── Infrastructure
 
 AranTests
-├── Domain
-├── Presentation
-├── Data
-└── Mocks
+├── Domain/
+├── Presentation/
+├── Data/
+│   ├── Repositories/
+│   ├── Mappers/
+│   └── Network/
+└── Mocks/
 
 AranUITests
-└── Flows
+└── Flows/
 ```
 
 규칙:
-
-* Unit Test는 `AranTests`에 작성한다.
-* UI Test는 `AranUITests`에 작성한다.
-* Mock 객체는 앱 소스가 아니라 테스트 타겟 내부에 둔다.
-* 테스트 타겟은 앱 모듈을 import하여 검증한다.
+- Unit Test는 `AranTests`에 작성한다.
+- UI Test는 `AranUITests`에 작성한다.
+- Mock 객체는 앱 소스가 아닌 테스트 타겟 내부에 둔다.
 
 ---
 
-# Test Priority
-
-우선순위:
+## Test Priority
 
 1. UseCase Unit Test
 2. ViewModel Unit Test
 3. Repository / Mapper Test
-4. Core UI Flow Test
-
-MVP에서는 UseCase 테스트를 가장 우선한다.
-
----
-
-# Unit Test Scope
-
-## Primary Targets
-
-필수 테스트 대상:
-
-* CycleRecordUseCase
-* MedicationNotificationUseCase
-* SearchDrugUseCase
-* HealthRecordUseCase
-
-권장 테스트 대상:
-
-* DrugSearchViewModel
-* MedicationViewModel
-* HealthRecordViewModel
-* DrugRepository
-* Mapper
+4. Network Layer Test
+5. Core UI Flow Test
 
 ---
 
-# UseCase Test Targets
-
-| UseCase                       | Required Coverage                        |
-| ----------------------------- | ---------------------------------------- |
-| CycleRecordUseCase            | 채취 저장, 차수별 조회, 이식 결과 업데이트                |
-| MedicationNotificationUseCase | 알림 등록, 수정 시 기존 알림 취소 후 재등록, 비활성화 시 알림 삭제 |
-| SearchDrugUseCase             | 정상 검색, 빈 검색어, 네트워크 실패 전파                 |
-| HealthRecordUseCase           | 수치 저장, 항목별 조회, 날짜순 정렬                    |
-
----
-
-# Test Style
-
-모든 테스트는 가능하면 given / when / then 구조를 따른다.
+## Test Style
 
 ```swift
 func test_searchDrug_whenKeywordIsEmpty_thenThrowsError() async {
@@ -107,96 +67,55 @@ func test_searchDrug_whenKeywordIsEmpty_thenThrowsError() async {
 ```
 
 규칙:
-
-* 테스트 이름은 상황과 기대 결과를 드러낸다.
-* 하나의 테스트는 하나의 동작만 검증한다.
-* 테스트 내부에서 실제 네트워크를 호출하지 않는다.
-* 테스트 내부에서 실제 알림을 등록하지 않는다.
-* 테스트 내부에서 실제 DB에 의존하지 않는다.
+- `given / when / then` 구조를 따른다.
+- 테스트 이름 패턴: `test_기능_when상황_then결과`
+- 하나의 테스트는 하나의 동작만 검증한다.
+- 테스트 내부에서 실제 네트워크, 알림, DB에 의존하지 않는다.
 
 ---
 
-# Test Naming
+## 현재 테스트 현황
 
-권장 패턴:
-
-```text
-test_기능_when상황_then결과
-```
-
-예시:
-
-```swift
-test_searchDrug_whenKeywordIsEmpty_thenThrowsValidationError()
-test_saveHealthRecord_whenValueIsValid_thenStoresRecord()
-test_scheduleMedication_whenNotificationEnabled_thenRegistersNotification()
-test_updateMedicationSchedule_whenTimeChanged_thenCancelsOldNotification()
-```
-
----
-
-# Mock Strategy
-
-Mock Repository는 테스트 타겟 내부에 둔다.
-
-```text
-AranTests
-└── Mocks
-    ├── MockDrugRepository.swift
-    ├── MockMedicationRepository.swift
-    ├── MockHealthRecordRepository.swift
-    ├── MockCycleRecordRepository.swift
-    └── MockNotificationRepository.swift
-```
-
-Mock은 다음 기능을 지원한다.
-
-* Stubbed success value
-* Stubbed error
-* Captured input
-* Call count verification
-* Invocation order 검증이 필요한 경우 최소한으로 지원
+| 파일 | 테스트 수 | 상태 |
+|------|----------|------|
+| MedicationUseCaseTests | 8개 | ✅ 완료 |
+| MedicationFormViewModelTests | 6개 | ✅ 완료 |
+| CycleRecordUseCaseTests | 10개 | ✅ 완료 |
+| SearchDrugUseCaseTests | 4개 | ✅ 완료 |
+| HealthRecordUseCaseTests | 12개 | ✅ 완료 |
+| MedicationNotificationUseCaseTests | 6개 | ✅ 완료 |
+| DrugRepositoryTests | 3개 | ✅ 완료 |
+| MedicationRepositoryTests | 3개 | ✅ 완료 |
+| HealthRecordRepositoryTests | 4개 | ✅ 완료 |
+| DrugMapperTests | 3개 | ✅ 완료 |
+| MedicationMapperTests | 4개 | ✅ 완료 |
+| DrugRouterTests | 4개 | ✅ 완료 |
+| DrugAPIClientTests | 4개 | ✅ 완료 |
+| MedicationLogUseCaseTests | — | ❌ 미구현 |
+| MenstrualCycleUseCaseTests | — | ❌ 미구현 |
+| TransferRecordUseCaseTests | — | ❌ 미구현 |
+| CycleRecordRepositoryTests | — | ❌ 미구현 |
+| TransferRecordRepositoryTests | — | ❌ 미구현 |
+| HospitalVisitRepositoryTests | — | ❌ 미구현 |
+| MedicationLogRepositoryTests | — | ❌ 미구현 |
+| CalendarViewModelTests | — | ❌ 미구현 |
+| DrugInfoViewModelTests | — | ❌ 미구현 |
+| ExamHistoryViewModelTests | — | ❌ 미구현 |
+| HealthRecordFormViewModelTests | — | ❌ 미구현 |
+| HealthRecordViewModelTests | — | ❌ 미구현 |
+| PGTFormViewModelTests | — | ❌ 미구현 |
 
 ---
 
-# Mock Example
+## UseCase Tests
 
-```swift
-final class MockDrugRepository: DrugRepositoryProtocol {
-
-    var searchResult: Result<[Drug], Error> = .success([])
-    private(set) var receivedKeyword: String?
-    private(set) var searchCallCount = 0
-
-    func search(keyword: String) async throws -> [Drug] {
-        searchCallCount += 1
-        receivedKeyword = keyword
-
-        switch searchResult {
-        case .success(let drugs):
-            return drugs
-        case .failure(let error):
-            throw error
-        }
-    }
-}
-```
-
----
-
-# UseCase Testing
-
-## SearchDrugUseCase
+### SearchDrugUseCase
 
 검증 항목:
-
-* 정상 검색 시 Drug 배열 반환
-* 빈 검색어 입력 시 API 호출하지 않음
-* 최소 글자 수 미달 시 validation error
-* Repository error 전파
-* 검색어 trim 처리
-
-예시:
+- 정상 검색 시 Drug 배열 반환
+- 빈 검색어 입력 시 API 호출하지 않음
+- 최소 글자 수 미달 시 validation error
+- Repository error 전파
 
 ```swift
 func test_searchDrug_whenKeywordIsEmpty_thenDoesNotCallRepository() async {
@@ -215,295 +134,371 @@ func test_searchDrug_whenKeywordIsEmpty_thenDoesNotCallRepository() async {
 }
 ```
 
----
-
-## MedicationNotificationUseCase
+### MedicationNotificationUseCase
 
 검증 항목:
+- 복용 시간별 알림 등록
+- 알림 수정 시 기존 알림 취소 → 새 알림 재등록
+- 약 비활성화 시 관련 알림 전체 취소
+- notificationId 안정성 유지
 
-* 복용 시간별 알림 등록
-* 알림 수정 시 기존 알림 취소
-* 알림 수정 시 새 알림 재등록
-* 약 비활성화 시 관련 알림 취소
-* notificationId 안정성 유지
-
----
-
-## CycleRecordUseCase
+### MedicationLogUseCase ← v14 신규
 
 검증 항목:
-
-* 채취 기록 저장
-* 차수별 기록 조회
-* 이식 기록 추가
-* 이식 결과 업데이트
-* 날짜 기준 조회
-
----
-
-## HealthRecordUseCase
-
-검증 항목:
-
-* 검사 수치 저장
-* 항목별 최신값 조회
-* 날짜순 정렬
-* 이전 수치 대비 증감 계산
-* 잘못된 수치 입력 처리
-
----
-
-# ViewModel Testing
-
-ViewModel 테스트는 상태 변화와 사용자 입력 이벤트를 검증한다.
-
-## SwiftUI + Combine ViewModel
-
-대상:
-
-* CalendarViewModel
-* DrugSearchViewModel
-
-검증 항목:
-
-* searchText 변경 시 debounce 이후 검색 실행
-* loading 상태 변경
-* empty state 변경
-* error state 변경
-* selectedDate 변경
-* bottom sheet 표시 상태 변경
-
-규칙:
-
-* View를 띄우지 않고 ViewModel만 테스트한다.
-* Combine scheduler 제어가 어려운 경우 debounce 로직은 최소 단위로 분리한다.
-
----
-
-## UIKit + RxSwift ViewModel
-
-대상:
-
-* MedicationViewModel
-* HealthRecordViewModel
-
-검증 항목:
-
-* 입력값 validation
-* 저장 버튼 활성/비활성
-* cell state 생성
-* check toggle 상태 변경
-* error state 생성
-
-규칙:
-
-* ViewController 없이 ViewModel만 테스트한다.
-* Rx output은 테스트 가능한 형태로 구독한다.
-* DisposeBag lifecycle을 명확히 처리한다.
-
----
-
-# Repository Testing
-
-Repository 테스트는 필요할 때만 작성한다.
-
-대상:
-
-* DrugRepository
-* MedicationRepository
-* HealthRecordRepository
-* CycleRecordRepository
-
-검증 항목:
-
-* DTO → Entity mapping
-* SwiftData Model → Entity mapping
-* Infrastructure error → App error 변환
-* Empty response 처리
-* Decoding failure 처리
-
-규칙:
-
-* 실제 API 호출 테스트는 기본적으로 하지 않는다.
-* APIClient를 Mock으로 교체한다.
-* Local Repository는 in-memory container를 사용할 수 있다.
-
----
-
-# Mapper Testing
-
-Mapper는 별도 테스트할 수 있다.
-
-검증 항목:
-
-* DTO nil field 처리
-* optional field 변환
-* API 필드명과 Entity 필드 매핑
-* SwiftData Model relationship 변환
-
-예시:
+- 복용 체크 저장 (isTaken = true)
+- 날짜별 복용 로그 조회
+- 체크 토글 (true → false, false → true)
+- 같은 날짜·약 중복 저장 방지
 
 ```swift
-func test_mapDrugDTO_whenOptionalFieldsAreNil_thenCreatesEntityWithNilValues() {
+func test_toggleLog_whenNotTaken_thenSavesAsTaken() async throws {
     // given
+    let repository = MockMedicationLogRepository()
+    let useCase = MedicationLogUseCase(repository: repository)
+    let medication = Medication.stub()
 
     // when
+    try await useCase.toggle(medicationId: medication.id, date: Date())
 
     // then
+    let log = try await repository.fetch(medicationId: medication.id, date: Date())
+    XCTAssertTrue(log?.isTaken ?? false)
 }
 ```
 
----
+### MenstrualCycleUseCase ← v14 신규
 
-# UI Test Scope
-
-UI Test는 핵심 플로우만 작성한다.
-
-MVP 필수는 아니며, 시간이 부족할 경우 Phase 2로 이월 가능하다.
-
-권장 시나리오:
-
-1. 캘린더 날짜 탭 → 바텀시트 표시
-2. 약 검색 → 약 등록 폼 이동
-3. 약 복용 시간 저장 → 알림 설정 흐름
-4. 검사 수치 입력 → 목록 반영
-5. 약 검색 결과 → 상세 화면 이동
-
-규칙:
-
-* 모든 UI를 세세하게 테스트하지 않는다.
-* 포트폴리오에서는 핵심 사용자 흐름만 검증한다.
-* flaky test가 많아지면 범위를 줄인다.
-
----
-
-# Coverage Target
-
-권장 목표:
-
-| Layer                     | Target      |
-| ------------------------- | ----------- |
-| Domain / UseCases         | 80%+        |
-| Data / Repositories       | 60%+        |
-| Presentation / ViewModels | 50%+        |
-| UI Tests                  | 핵심 플로우 1~5개 |
-
-Coverage 숫자보다 중요한 것은 핵심 비즈니스 로직이 독립적으로 테스트 가능한 구조인지다.
-
----
-
-# TDD Policy
-
-MVP에서는 UseCase 중심 TDD를 적용한다.
-
-필수 TDD 대상:
-
-* CycleRecordUseCase
-* MedicationNotificationUseCase
-* SearchDrugUseCase
-* HealthRecordUseCase
-
-흐름:
-
-```text
-Failing Test
-→ Minimal Implementation
-→ Refactor
-```
-
-규칙:
-
-* 모든 화면을 TDD로 작성하려고 하지 않는다.
-* 핵심 비즈니스 로직에 집중한다.
-* UI는 일반 개발 후 필요한 부분만 테스트한다.
-
----
-
-# Test Data Policy
-
-테스트 데이터는 명확하게 작성한다.
-
-좋은 예시:
+검증 항목:
+- 생리 시작일 저장
+- 배란 예정일 계산 (startDate + cycleLength - 14)
+- 주기 수정
+- 기본 주기 28일 적용
 
 ```swift
-let medication = Medication(
-    id: UUID(),
-    name: "프로게스테론",
-    dosage: "200mg",
-    isActive: true,
-    schedules: []
-)
+func test_calculateOvulation_whenCycleLengthIs28_thenOvulationIsDay14() async throws {
+    // given
+    let repository = MockMenstrualCycleRepository()
+    let useCase = MenstrualCycleUseCase(repository: repository)
+    let startDate = Calendar.current.startOfDay(for: Date())
+
+    // when
+    let ovulation = useCase.calculateOvulationDate(startDate: startDate, cycleLength: 28)
+
+    // then
+    let expected = Calendar.current.date(byAdding: .day, value: 14, to: startDate)
+    XCTAssertEqual(ovulation, expected)
+}
 ```
 
-지양:
+### CycleRecordUseCase
+
+검증 항목:
+- 채취 기록 저장
+- 차수별 기록 조회
+- 이식 기록 추가 및 결과 업데이트
+- 날짜 기준 조회
+
+### HealthRecordUseCase
+
+검증 항목:
+- 검사 수치 저장
+- 항목별 최신값 조회
+- 날짜순 정렬
+- 이전 수치 대비 증감 계산
+- 커스텀 항목 저장 (String type)
+- 잘못된 수치 입력 처리
+
+---
+
+## Repository Tests
+
+Repository 테스트는 **DTO → Entity 변환**, **에러 변환**, **Storage 동작**을 검증한다.
+실제 네트워크 / SwiftData 호출은 하지 않는다.
+
+### 테스트 파일 위치
+
+```
+AranTests/Data/Repositories/
+├── DrugRepositoryTests.swift
+├── MedicationRepositoryTests.swift
+├── MedicationLogRepositoryTests.swift      ← v14 신규
+├── HealthRecordRepositoryTests.swift
+├── CycleRecordRepositoryTests.swift
+├── TransferRecordRepositoryTests.swift
+├── HospitalVisitRepositoryTests.swift      ← v14 신규 (visitTypes 복수)
+└── MenstrualCycleRepositoryTests.swift     ← v14 신규
+```
+
+### MedicationLogRepository ← v14 신규
+
+검증 항목:
+- 날짜별 복용 로그 저장
+- medicationId + logDate 기준 단건 조회
+- isTaken 토글
+- Medication 삭제 시 연관 로그 함께 삭제
 
 ```swift
-let item = makeDummy()
+final class MedicationLogRepositoryTests: XCTestCase {
+
+    func test_save_whenLogSaved_thenFetchReturnsIt() async throws {
+        // given (in-memory SwiftData)
+        let log = MedicationLog(
+            id: UUID(),
+            medicationId: UUID(),
+            logDate: Calendar.current.startOfDay(for: Date()),
+            isTaken: true
+        )
+
+        // when
+        try await repository.save(log)
+        let result = try await repository.fetch(medicationId: log.medicationId, date: log.logDate)
+
+        // then
+        XCTAssertEqual(result?.isTaken, true)
+    }
+}
 ```
 
-단, 반복이 많아지면 Fixture를 사용할 수 있다.
+### HospitalVisitRepository ← v14 신규 (visitTypes 배열)
 
----
+검증 항목:
+- visitTypes 배열 저장 및 조회
+- 복수 종류(내원+채혈) 동시 저장
+- 날짜 범위 조회
+- 수정/삭제
 
-# Fixture Policy
+### DrugRepository
 
-반복 테스트 데이터는 Fixture로 분리 가능하다.
+검증 항목:
+- 검색 성공 시 DTO → Drug Entity 변환 확인
+- APIClient 에러 → DomainError 변환
+- 빈 배열 응답 처리
 
-```text
-AranTests
-└── Fixtures
-    ├── DrugFixture.swift
-    ├── MedicationFixture.swift
-    └── HealthRecordFixture.swift
+```swift
+final class DrugRepositoryTests: XCTestCase {
+
+    func test_search_whenAPIReturnsItems_thenReturnsMappedDrugs() async throws {
+        // given
+        let mockClient = MockDrugAPIClient()
+        mockClient.result = .success([DrugItemDTO.stub(itemName: "프로게스테론")])
+        let repository = DefaultDrugRepository(apiClient: mockClient)
+
+        // when
+        let drugs = try await repository.search(keyword: "프로게스테론")
+
+        // then
+        XCTAssertEqual(drugs.count, 1)
+        XCTAssertEqual(drugs.first?.name, "프로게스테론")
+    }
+}
 ```
 
-규칙:
+### MedicationRepository (SwiftData)
 
-* Fixture는 테스트 가독성을 해치지 않아야 한다.
-* 너무 추상적인 fixture factory는 지양한다.
-
----
-
-# Test Anti-patterns
-
-금지 또는 지양:
-
-* 실제 네트워크 호출
-* 실제 알림 등록
-* 테스트 간 상태 공유
-* 순서에 의존하는 테스트
-* 너무 많은 내용을 한 테스트에서 검증
-* Mock이 실제 구현보다 복잡해지는 것
-* UI Test 과다 작성
+검증 항목:
+- 저장 후 fetchAll 시 포함 여부
+- 비활성화 후 active 필터 조회
+- 삭제 후 목록에서 제거 확인
+- Schedule 포함 저장 및 조회
 
 ---
 
-# Build / Test Command
+## Mapper Tests
 
-## Unit Test
+### 테스트 파일 위치
+
+```
+AranTests/Data/Mappers/
+├── DrugMapperTests.swift
+└── MedicationMapperTests.swift
+```
+
+### DrugMapper
+
+검증 항목:
+- 모든 필드 정상 매핑
+- optional 필드 nil 처리
+- HTML 태그 제거
+- 빈 문자열 → nil 변환
+
+### MedicationMapper
+
+검증 항목:
+- Medication → MedicationModel 변환
+- MedicationModel → Medication 변환
+- Schedule 포함 변환
+- isActive 상태 보존
+
+---
+
+## Network Layer Tests
+
+### 테스트 파일 위치
+
+```
+AranTests/Data/Network/
+├── DrugRouterTests.swift
+└── DrugAPIClientTests.swift
+```
+
+### DrugRouter Tests
+
+검증 항목:
+- URL 구성 정확성 (baseURL + path)
+- 필수 query parameter 포함 여부 (serviceKey, type=json)
+- keyword 인코딩 처리
+- pageNo 파라미터 반영
+- HTTP method (GET)
+
+### DrugAPIClient Tests
+
+검증 항목:
+- 정상 JSON 응답 → DTO 배열 반환
+- 빈 응답 배열 처리
+- HTTP 4xx / 5xx → 에러 throw
+- JSON decoding 실패 처리
+- 네트워크 연결 실패 처리
+
+---
+
+## ViewModel Tests
+
+### 테스트 파일 위치
+
+```
+AranTests/Presentation/ViewModels/
+├── MedicationFormViewModelTests.swift      ✅ 완료
+├── CalendarViewModelTests.swift            ❌ 미구현
+├── DrugInfoViewModelTests.swift            ❌ 미구현
+├── ExamHistoryViewModelTests.swift         ❌ 미구현
+├── HealthRecordFormViewModelTests.swift    ❌ 미구현
+├── HealthRecordViewModelTests.swift        ❌ 미구현
+└── PGTFormViewModelTests.swift             ❌ 미구현
+```
+
+### CalendarViewModel
+
+검증 항목:
+- @Published 날짜 선택 상태 변화
+- 도트 데이터 바인딩 (MedicationLog 포함)
+- 복용 약 체크 토글 → MedicationLog 저장
+
+### MedicationFormViewModel (RxSwift)
+
+검증 항목:
+- 입력 유효성 검사
+- 저장 버튼 활성화 조건
+- 수정 모드 초기값 바인딩
+
+---
+
+## UI Tests
+
+### 테스트 시나리오 (AranUITests/Flows/)
+
+| 플로우 | 시나리오 |
+|--------|---------|
+| 캘린더 탭 플로우 | 날짜 탭 → 1단계 시트 → 감정 일기 탭 → 2단계 시트 → 저장 → 1단계 시트 반영 확인 |
+| 복용 약 체크 플로우 | 캘린더 1단계 시트 → 약 체크 → 체크 상태 저장 확인 |
+| 약 등록/수정 플로우 | 약/주사 탭 → + → 약 검색 → 등록 → 셀 탭 → 수정 → 목록 반영 확인 |
+| 약 검색 플로우 | 약 정보 탭 → 검색 → 결과 → 상세 → 이 약 추가하기 → 등록 폼 확인 |
+| 채취/이식 입력 플로우 | 시술 기록 탭 → + → 개수·등급 입력 → 저장 → 차수 카드 반영 확인 |
+| 검사 수치 입력 플로우 | 검사 탭 → + → 항목·수치 입력 → 저장 → 목록 증감 표시 확인 |
+
+---
+
+## Mock 전략
+
+### Mock 파일 위치
+
+```
+AranTests/Mocks/
+├── MockDrugRepository.swift
+├── MockMedicationRepository.swift
+├── MockMedicationLogRepository.swift       ← v14 신규
+├── MockHealthRecordRepository.swift
+├── MockCycleRecordRepository.swift
+├── MockTransferRecordRepository.swift
+├── MockHospitalVisitRepository.swift       ← v14 신규
+├── MockMenstrualCycleRepository.swift      ← v14 신규
+├── MockNotificationRepository.swift
+├── MockDrugAPIClient.swift
+└── MockURLProtocol.swift
+```
+
+### Mock 작성 규칙
+
+```swift
+final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
+    var savedLogs: [MedicationLog] = []
+    private(set) var saveCallCount = 0
+
+    func save(_ log: MedicationLog) async throws {
+        saveCallCount += 1
+        savedLogs.append(log)
+    }
+
+    func fetch(medicationId: UUID, date: Date) async throws -> MedicationLog? {
+        savedLogs.first {
+            $0.medicationId == medicationId &&
+            Calendar.current.isDate($0.logDate, inSameDayAs: date)
+        }
+    }
+}
+```
+
+- `Result` 타입으로 success / failure 모두 지원
+- `private(set)` 으로 호출 검증 가능
+- Test Target에만 포함 (Production 코드 금지)
+
+---
+
+## Coverage 목표
+
+| Layer | 목표 |
+|-------|------|
+| Domain / UseCases | 80%+ |
+| Data / Repositories | 60%+ |
+| Data / Mappers | 70%+ |
+| Data / Network (Router) | 70%+ |
+| Data / Network (APIClient) | 60%+ |
+| Presentation / ViewModels | 50%+ |
+| UI Tests | 핵심 플로우 6개 |
+
+숫자보다 중요한 것은 **핵심 비즈니스 로직이 독립적으로 테스트 가능한 구조**인지다.
+
+---
+
+## 빌드 / 테스트 명령어
 
 ```bash
-xcodebuild test -scheme Aran
-```
-
-필요 시 destination 명시:
-
-```bash
-xcodebuild test \
-  -scheme Aran \
-  -destination 'platform=iOS Simulator,name=iPhone 16'
+# 전체 테스트
+xcodebuild test -scheme Aran \
+  -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
 ```
 
 ---
 
-# Portfolio Principles
+## Anti-patterns
 
-테스트는 “많이 작성했다”보다 “왜 이 구조가 테스트 가능한가”를 보여주는 데 목적이 있다.
+금지:
+- 실제 네트워크 호출
+- 실제 알림 등록
+- 실제 SwiftData 파일 기반 container (in-memory 사용)
+- 테스트 간 상태 공유
+- 순서에 의존하는 테스트
+- 한 테스트에서 여러 동작 동시 검증
+- Mock이 실제 구현보다 복잡해지는 것
+
+---
+
+## 포트폴리오 어필 포인트
 
 면접에서 설명할 포인트:
-
-* Domain은 프레임워크 의존성이 없어 Unit Test가 쉽다.
-* UseCase는 Repository Protocol에 의존해서 Mock 교체가 가능하다.
-* ViewModel은 UI 없이 상태 변화를 검증할 수 있다.
-* Repository는 DTO / Entity 분리를 통해 mapping 테스트가 가능하다.
-* UI Test는 핵심 사용자 플로우만 검증한다.
+- Domain은 프레임워크 의존성이 없어 Unit Test가 간단하다.
+- UseCase는 Repository Protocol에 의존하므로 Mock 교체가 가능하다.
+- Repository는 APIClient를 Protocol로 추상화해서 테스트 가능하다.
+- Router 테스트로 URL 구성 오류를 빌드 전에 잡을 수 있다.
+- Mapper 테스트로 API 필드 변경에 대한 회귀를 방지한다.
+- SwiftData Repository는 in-memory container로 격리 테스트한다.
+- MedicationLog 분리로 날짜별 복용 체크를 독립적으로 테스트한다.

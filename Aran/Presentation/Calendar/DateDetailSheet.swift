@@ -2,9 +2,8 @@ import SwiftUI
 
 struct DateDetailSheet: View {
     @ObservedObject var viewModel: CalendarViewModel
-    @State private var diaryEmoji = ""
-    @State private var diaryText = ""
-    @State private var isEditingDiary = false
+    @State private var isDiarySheetPresented = false
+    @State private var isHospitalFormPresented = false
     @State private var isTransferFormPresented = false
     @State private var selectedHealthRecord: HealthRecord?
     @Environment(\.dismiss) private var dismiss
@@ -35,9 +34,14 @@ struct DateDetailSheet: View {
                 }
             }
         }
-        .onAppear { loadExistingDiary() }
         .sheet(isPresented: $isTransferFormPresented) {
             TransferRecordFormView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isDiarySheetPresented) {
+            DiaryEditSheet(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isHospitalFormPresented) {
+            HospitalVisitFormSheet(viewModel: viewModel)
         }
         .sheet(item: $selectedHealthRecord) { record in
             HealthRecordDetailView(record: record)
@@ -142,13 +146,19 @@ struct DateDetailSheet: View {
                 if case .medication = event { return false }
                 return true
             }
-        if !events.isEmpty {
-            Section {
+        Section {
+            if events.isEmpty {
+                Text("일정이 없습니다.")
+                    .font(AranFont.body())
+                    .foregroundStyle(.secondary)
+            } else {
                 ForEach(events.indices, id: \.self) { index in
                     EventRow(event: events[index])
                 }
-            } header: {
-                SectionHeaderView(title: "병원 / 이벤트", buttonTitle: "편집") {}
+            }
+        } header: {
+            SectionHeaderView(title: "병원 / 이벤트", buttonTitle: "추가") {
+                isHospitalFormPresented = true
             }
         }
     }
@@ -157,23 +167,7 @@ struct DateDetailSheet: View {
 
     private var diarySection: some View {
         Section {
-            if isEditingDiary {
-                TextField("이모지", text: $diaryEmoji)
-                    .font(AranFont.body(24))
-                TextEditor(text: $diaryText)
-                    .frame(minHeight: 60)
-                    .font(AranFont.body())
-                Button("저장") {
-                    Task {
-                        await viewModel.saveDiary(
-                            emoji: diaryEmoji.isEmpty ? nil : diaryEmoji,
-                            text: diaryText
-                        )
-                        isEditingDiary = false
-                    }
-                }
-                .disabled(diaryText.isEmpty)
-            } else if let diary = viewModel.selectedRecord?.diary, !diary.text.isEmpty {
+            if let diary = viewModel.selectedRecord?.diary, !diary.text.isEmpty {
                 HStack(spacing: 8) {
                     if let emoji = diary.emoji {
                         Text(emoji).font(AranFont.body(22))
@@ -181,6 +175,7 @@ struct DateDetailSheet: View {
                     Text(diary.text)
                         .font(AranFont.body())
                         .foregroundStyle(.primary)
+                        .lineLimit(3)
                 }
                 .padding(.vertical, 2)
             } else {
@@ -191,13 +186,9 @@ struct DateDetailSheet: View {
         } header: {
             SectionHeaderView(
                 title: "감정 일기",
-                buttonTitle: isEditingDiary ? "취소" : (viewModel.selectedRecord?.diary != nil ? "편집" : "추가")
+                buttonTitle: viewModel.selectedRecord?.diary != nil ? "편집" : "추가"
             ) {
-                if isEditingDiary {
-                    isEditingDiary = false
-                } else {
-                    isEditingDiary = true
-                }
+                isDiarySheetPresented = true
             }
         }
     }
@@ -235,12 +226,164 @@ struct DateDetailSheet: View {
         }
     }
 
-    // MARK: -
+}
 
-    private func loadExistingDiary() {
-        if let diary = viewModel.selectedRecord?.diary {
-            diaryEmoji = diary.emoji ?? ""
-            diaryText = diary.text
+// MARK: - 감정 일기 입력 시트
+
+private struct DiaryEditSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var diaryEmoji = ""
+    @State private var diaryText = ""
+
+    private let emojiOptions = ["😊", "😟", "😰", "😣", "🥰"]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Capsule()
+                .fill(Color.secondary.opacity(0.4))
+                .frame(width: 36, height: 5)
+                .padding(.top, 12)
+                .padding(.bottom, 16)
+
+            Text("감정 일기")
+                .font(AranFont.body(17))
+                .fontWeight(.semibold)
+                .padding(.bottom, 20)
+
+            Text("오늘 기분은?")
+                .font(AranFont.caption())
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+
+            HStack(spacing: 12) {
+                ForEach(emojiOptions, id: \.self) { emoji in
+                    Text(emoji)
+                        .font(.system(size: 32))
+                        .padding(8)
+                        .background(
+                            Circle().fill(
+                                diaryEmoji == emoji
+                                    ? AranColor.primary.opacity(0.15)
+                                    : Color.clear
+                            )
+                        )
+                        .onTapGesture {
+                            diaryEmoji = diaryEmoji == emoji ? "" : emoji
+                        }
+                }
+            }
+            .padding(.vertical, 12)
+
+            Text("오늘 하루 기록")
+                .font(AranFont.caption())
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 4)
+
+            ZStack(alignment: .bottomTrailing) {
+                TextEditor(text: $diaryText)
+                    .frame(height: 120)
+                    .padding(8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .onChange(of: diaryText) { _, new in
+                        if new.count > 500 { diaryText = String(new.prefix(500)) }
+                    }
+
+                Text("\(diaryText.count) / 500")
+                    .font(AranFont.caption())
+                    .foregroundStyle(.secondary)
+                    .padding(.trailing, 24)
+                    .padding(.bottom, 8)
+            }
+
+            Button {
+                Task {
+                    await viewModel.saveDiary(
+                        emoji: diaryEmoji.isEmpty ? nil : diaryEmoji,
+                        text: diaryText
+                    )
+                    dismiss()
+                }
+            } label: {
+                Text("저장")
+                    .font(AranFont.body(16))
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                            ? Color.gray.opacity(0.3)
+                            : Color.black
+                    )
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
+        }
+        .presentationDetents([.medium])
+        .onAppear {
+            if let diary = viewModel.selectedRecord?.diary {
+                diaryEmoji = diary.emoji ?? ""
+                diaryText = diary.text
+            }
+        }
+    }
+}
+
+// MARK: - 병원 일정 입력 시트
+
+private struct HospitalVisitFormSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var visitType = "내원"
+    @State private var memo = ""
+
+    private let visitTypes = ["내원", "채혈", "초음파"]
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("방문 유형") {
+                    Picker("방문 유형", selection: $visitType) {
+                        ForEach(visitTypes, id: \.self) { type in
+                            Text(type).tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Section("메모 (선택)") {
+                    TextField("예: 담당 의사 면담", text: $memo)
+                }
+            }
+            .navigationTitle("병원 일정 추가")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("저장") {
+                        Task {
+                            let note = memo.trimmingCharacters(in: .whitespacesAndNewlines)
+                            let fullNote = note.isEmpty ? visitType : "\(visitType) — \(note)"
+                            await viewModel.addEvent(.hospitalVisit(note: fullNote), to: viewModel.selectedDate)
+                            dismiss()
+                        }
+                    }
+                }
+            }
         }
     }
 }
