@@ -4,14 +4,29 @@ enum CycleRecordMapper {
     static func toDomain(_ model: CycleRecordModel) -> CycleRecord {
         let events = decodeEvents(from: model.eventsData)
         let diary: DiaryEntry? = model.diaryText.map { DiaryEntry(emoji: model.diaryEmoji, text: $0) }
-        return CycleRecord(id: model.id, date: model.date, events: events, diary: diary)
+        return CycleRecord(
+            id: model.id,
+            cycleNumber: model.cycleNumber,
+            date: model.date,
+            retrievalCount: model.retrievalCount,
+            fertilizedCount: model.fertilizedCount,
+            frozenCount: model.frozenCount,
+            embryoGrades: model.embryoGrades,
+            events: events,
+            diary: diary
+        )
     }
 
     static func toModel(_ entity: CycleRecord) -> CycleRecordModel {
         let eventsData = encodeEvents(entity.events)
         return CycleRecordModel(
             id: entity.id,
+            cycleNumber: entity.cycleNumber,
             date: entity.date,
+            retrievalCount: entity.retrievalCount,
+            fertilizedCount: entity.fertilizedCount,
+            frozenCount: entity.frozenCount,
+            embryoGrades: entity.embryoGrades,
             eventsData: eventsData,
             diaryEmoji: entity.diary?.emoji,
             diaryText: entity.diary?.text
