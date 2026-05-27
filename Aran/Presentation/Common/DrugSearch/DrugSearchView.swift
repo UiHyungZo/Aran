@@ -10,7 +10,7 @@ struct DrugSearchView: View {
     let mode: DrugSearchMode
     @ObservedObject var viewModel: DrugInfoViewModel
     let onAddDrug: (Drug) -> Void
-    let onRegisterDrug: (_ drugName: String, _ dosage: String) -> Void
+    let onRegisterDrug: (_ drugName: String, _ component: String, _ dosage: String) -> Void
     let onClose: (() -> Void)?
 
     @FocusState private var isSearchFocused: Bool
@@ -36,7 +36,7 @@ struct DrugSearchView: View {
             .safeAreaInset(edge: .bottom) {
                 if mode == .register {
                     Button {
-                        onRegisterDrug("", "")
+                        onRegisterDrug("", "", "")
                     } label: {
                         Text("찾는 약이 없나요? 직접 입력하기")
                             .font(.system(size: 15, weight: .medium))
@@ -289,7 +289,7 @@ struct DrugSearchView: View {
         case .browse:
             Task { await viewModel.selectDrug(drug) }
         case .register:
-            onRegisterDrug(drug.itemName, "")
+            onRegisterDrug(drug.itemName, drug.component ?? "", "")
         }
     }
 }

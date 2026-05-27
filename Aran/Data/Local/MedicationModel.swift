@@ -6,6 +6,7 @@ final class MedicationModel {
     @Attribute(.unique) var id: UUID
     var drugName: String
     var dosage: String
+    var component: String = ""
     var typeRawValue: String
     var scheduleTimes: [Date]
     var scheduleStartDate: Date
@@ -18,6 +19,7 @@ final class MedicationModel {
         id: UUID = UUID(),
         drugName: String,
         dosage: String,
+        component: String = "",
         typeRawValue: String,
         scheduleTimes: [Date],
         scheduleStartDate: Date,
@@ -29,6 +31,7 @@ final class MedicationModel {
         self.id = id
         self.drugName = drugName
         self.dosage = dosage
+        self.component = component
         self.typeRawValue = typeRawValue
         self.scheduleTimes = scheduleTimes
         self.scheduleStartDate = scheduleStartDate

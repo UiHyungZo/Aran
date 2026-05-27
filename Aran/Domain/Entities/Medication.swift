@@ -4,6 +4,7 @@ struct Medication: Identifiable {
     let id: UUID
     var drugName: String
     var dosage: String
+    var component: String = ""
     var type: MedicationType
     var schedule: MedicationSchedule
     var isEnabled: Bool

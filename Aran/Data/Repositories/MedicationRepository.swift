@@ -30,6 +30,7 @@ final class MedicationRepository: MedicationRepositoryProtocol {
         guard let model = try context.fetch(descriptor).first else { return }
         model.drugName = medication.drugName
         model.dosage = medication.dosage
+        model.component = medication.component
         model.typeRawValue = medication.type.rawValue
         model.scheduleTimes = medication.schedule.times
         model.scheduleStartDate = medication.schedule.startDate

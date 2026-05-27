@@ -15,7 +15,7 @@ struct DrugInfoView: View {
             mode: .browse,
             viewModel: viewModel,
             onAddDrug: onAddDrug,
-            onRegisterDrug: { _, _ in },
+            onRegisterDrug: { _, _, _ in },
             onClose: nil
         )
     }

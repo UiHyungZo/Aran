@@ -205,7 +205,7 @@ extension MedicationListViewController: UITableViewDataSource {
     }
 
     func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
-        section == 0 ? "복용 중" : "중단됨"
+        section == 0 ? "복용 중 (\(activeMedications.count))" : "중단됨 (\(inactiveMedications.count))"
     }
 }
 
@@ -233,14 +233,14 @@ extension MedicationListViewController: UITableViewDelegate {
             self?.toggleRelay.accept(medication)
             completion(true)
         }
-        toggleAction.backgroundColor = .systemOrange
+        toggleAction.backgroundColor = UIColor(red: 0.533, green: 0.533, blue: 0.533, alpha: 1.0)
 
         return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
     }
 
     func tableView(_: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
-        label.text = section == 0 ? "복용 중" : "중단됨"
+        label.text = section == 0 ? "복용 중 (\(activeMedications.count))" : "중단됨 (\(inactiveMedications.count))"
         label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .secondaryLabel
 
