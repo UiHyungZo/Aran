@@ -166,6 +166,11 @@ extension MedicationListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension MedicationListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        actions.showEdit(medication(at: indexPath))
+    }
+
     func tableView(
         _: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath

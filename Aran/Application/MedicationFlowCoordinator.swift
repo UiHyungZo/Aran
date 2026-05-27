@@ -7,6 +7,7 @@ import UIKit
 
 struct MedicationListActions {
     let showSearch: () -> Void
+    let showEdit: (Medication) -> Void
 }
 
 struct MedicationSearchActions {
@@ -23,6 +24,7 @@ protocol MedicationFlowCoordinatorDependencies {
     func makeMedicationListViewController(actions: MedicationListActions) -> MedicationListViewController
     func makeMedicationSearchViewController(actions: MedicationSearchActions) -> MedicationSearchViewController
     func makeMedicationFormViewController(drugName: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController
+    func makeEditMedicationFormViewController(medication: Medication, actions: MedicationFormActions) -> MedicationFormViewController
 }
 
 final class MedicationFlowCoordinator {
@@ -36,7 +38,10 @@ final class MedicationFlowCoordinator {
 
     func start() {
         let vc = dependencies.makeMedicationListViewController(
-            actions: MedicationListActions(showSearch: { [weak self] in self?.showSearch() })
+            actions: MedicationListActions(
+                showSearch: { [weak self] in self?.showSearch() },
+                showEdit: { [weak self] medication in self?.showEdit(medication: medication) }
+            )
         )
         navigationController?.setViewControllers([vc], animated: false)
     }
@@ -61,6 +66,19 @@ final class MedicationFlowCoordinator {
             }
         )
         let vc = dependencies.makeMedicationFormViewController(drugName: drugName, dosage: dosage, actions: actions)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    private func showEdit(medication: Medication) {
+        let actions = MedicationFormActions(
+            onCancel: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            },
+            onSaveCompleted: { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+        )
+        let vc = dependencies.makeEditMedicationFormViewController(medication: medication, actions: actions)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

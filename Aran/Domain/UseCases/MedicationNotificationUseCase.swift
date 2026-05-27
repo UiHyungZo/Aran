@@ -17,6 +17,21 @@ final class MedicationNotificationUseCase {
         return updated
     }
 
+    func prepareForUpdate(_ medication: Medication) async throws -> Medication {
+        var updated = medication
+        if !medication.notificationIDs.isEmpty {
+            try await notificationRepository.cancel(notificationIDs: medication.notificationIDs)
+        }
+
+        guard medication.isEnabled else {
+            updated.notificationIDs = []
+            return updated
+        }
+
+        updated.notificationIDs = try await notificationRepository.schedule(for: medication)
+        return updated
+    }
+
     func enable(_ medication: Medication) async throws -> Medication {
         var updated = medication
         updated.isEnabled = true

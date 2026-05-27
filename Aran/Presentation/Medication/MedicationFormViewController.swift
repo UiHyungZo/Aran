@@ -5,6 +5,7 @@ import UIKit
 final class MedicationFormViewController: UIViewController {
     private let viewModel: MedicationFormViewModel
     private let actions: MedicationFormActions
+    private let initialMedication: Medication?
     private let initialDrugName: String
     private let initialDosage: String
     private let disposeBag = DisposeBag()
@@ -33,13 +34,15 @@ final class MedicationFormViewController: UIViewController {
 
     init(viewModel: MedicationFormViewModel,
          actions: MedicationFormActions,
+         initialMedication: Medication? = nil,
          initialDrugName: String = "",
          initialDosage: String = "")
     {
         self.viewModel = viewModel
         self.actions = actions
-        self.initialDrugName = initialDrugName
-        self.initialDosage = initialDosage
+        self.initialMedication = initialMedication
+        self.initialDrugName = initialMedication?.drugName ?? initialDrugName
+        self.initialDosage = initialMedication?.dosage ?? initialDosage
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,7 +61,7 @@ final class MedicationFormViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .systemBackground
-        title = "약 등록"
+        title = initialMedication == nil ? "약 등록" : "약 수정"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: "취소",
             style: .plain,
@@ -73,7 +76,7 @@ final class MedicationFormViewController: UIViewController {
         contentStack.addArrangedSubview(makeNotificationRow())
         contentStack.addArrangedSubview(saveButton)
 
-        saveButton.setTitle("저장", for: .normal)
+        saveButton.setTitle(initialMedication == nil ? "저장" : "수정 완료", for: .normal)
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
@@ -128,7 +131,8 @@ final class MedicationFormViewController: UIViewController {
         dosageField.clearButtonMode = .whileEditing
         dosageField.returnKeyType = .done
 
-        typeSegment.selectedSegmentIndex = 0
+        let selectedType = initialMedication?.type ?? .oral
+        typeSegment.selectedSegmentIndex = MedicationType.allCases.firstIndex(of: selectedType) ?? 0
 
         return makeStack(rows: [
             makeFieldRow(label: "약 이름", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
@@ -142,13 +146,24 @@ final class MedicationFormViewController: UIViewController {
         startDatePicker.preferredDatePickerStyle = .compact
         startDatePicker.tintColor = AranColor.primaryUI
         startDatePicker.locale = Locale(identifier: "ko_KR")
+        let startDate = initialMedication?.schedule.startDate ?? Date()
+        startDatePicker.date = startDate
+        startDateRelay.accept(startDate)
 
         endDatePicker.datePickerMode = .date
         endDatePicker.preferredDatePickerStyle = .compact
         endDatePicker.tintColor = AranColor.primaryUI
         endDatePicker.locale = Locale(identifier: "ko_KR")
-        endDatePicker.isEnabled = false
-        endDatePicker.alpha = 0.4
+        if let endDate = initialMedication?.schedule.endDate {
+            endDatePicker.date = endDate
+            endDatePicker.isEnabled = true
+            endDatePicker.alpha = 1.0
+            endDateSwitch.isOn = true
+            endDateRelay.accept(endDate)
+        } else {
+            endDatePicker.isEnabled = false
+            endDatePicker.alpha = 0.4
+        }
 
         endDateSwitch.onTintColor = AranColor.primaryUI
 
@@ -181,7 +196,12 @@ final class MedicationFormViewController: UIViewController {
     private func makeTimeRows() -> UIView {
         timePickerContainer.axis = .vertical
         timePickerContainer.spacing = 0
-        addTimePickerRow()
+        let initialTimes = initialMedication?.schedule.times ?? []
+        if initialTimes.isEmpty {
+            addTimePickerRow()
+        } else {
+            initialTimes.forEach { addTimePickerRow(date: $0) }
+        }
 
         let addButton = UIButton(type: .system)
         addButton.setTitle("+ 시간 추가", for: .normal)
@@ -264,6 +284,7 @@ final class MedicationFormViewController: UIViewController {
 
     private func makeNotificationRow() -> UIView {
         notificationSwitch.onTintColor = AranColor.primaryUI
+        notificationSwitch.isOn = initialMedication?.isEnabled ?? false
 
         let titleLabel = UILabel()
         titleLabel.text = "알림 받기"
