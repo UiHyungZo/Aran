@@ -10,7 +10,7 @@ struct TransferRecord: Identifiable {
     var result: TransferResult
 }
 
-enum TransferResult: String {
+enum TransferResult: String, Hashable {
     case pending = "대기"
     case success = "성공"
     case failed = "실패"

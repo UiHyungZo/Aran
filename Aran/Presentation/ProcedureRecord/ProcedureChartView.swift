@@ -7,33 +7,45 @@ import SwiftUI
 import Charts
 
 struct ProcedureChartView: View {
-    let records: [TransferRecord]
+    let summaries: [ProcedureCycleSummary]
 
     private struct ChartEntry: Identifiable {
         let id = UUID()
         let cycleNumber: Int
-        let embryoCount: Int
-        let result: TransferResult
+        let count: Int
+        let category: String
     }
 
     private var entries: [ChartEntry] {
-        records.map {
-            ChartEntry(cycleNumber: $0.cycleNumber, embryoCount: $0.embryoCount, result: $0.result)
+        summaries.flatMap { summary in
+            [
+                ChartEntry(
+                    cycleNumber: summary.cycleNumber,
+                    count: summary.retrievedCount ?? 0,
+                    category: "채취"
+                ),
+                ChartEntry(
+                    cycleNumber: summary.cycleNumber,
+                    count: summary.transferredCount,
+                    category: "이식"
+                )
+            ]
         }
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("차수별 이식 기록")
+            Text("차수별 시술 흐름")
                 .font(.subheadline.weight(.semibold))
                 .padding(.horizontal, 16)
 
             Chart(entries) { entry in
                 BarMark(
                     x: .value("차수", "\(entry.cycleNumber)차"),
-                    y: .value("이식 개수", entry.embryoCount)
+                    y: .value("개수", entry.count)
                 )
-                .foregroundStyle(barColor(for: entry.result))
+                .foregroundStyle(color(for: entry.category))
+                .position(by: .value("구분", entry.category))
                 .cornerRadius(4)
             }
             .chartYAxis {
@@ -46,9 +58,8 @@ struct ProcedureChartView: View {
             .padding(.horizontal, 16)
 
             HStack(spacing: 16) {
-                legendItem(color: AranColor.dotTransfer, label: "성공")
-                legendItem(color: .orange, label: "대기")
-                legendItem(color: .secondary, label: "실패")
+                legendItem(color: AranColor.dotRetrieval, label: "채취")
+                legendItem(color: AranColor.dotTransfer, label: "이식")
             }
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -56,12 +67,8 @@ struct ProcedureChartView: View {
         }
     }
 
-    private func barColor(for result: TransferResult) -> Color {
-        switch result {
-        case .success: return AranColor.dotTransfer
-        case .pending: return .orange
-        case .failed: return Color(.systemGray3)
-        }
+    private func color(for category: String) -> Color {
+        category == "채취" ? AranColor.dotRetrieval : AranColor.dotTransfer
     }
 
     private func legendItem(color: Color, label: String) -> some View {

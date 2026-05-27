@@ -15,7 +15,7 @@ struct ProcedureRecordView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if viewModel.transferRecords.isEmpty {
+                if viewModel.procedureSummaries.isEmpty {
                     emptyStateView
                 } else {
                     contentView
@@ -55,10 +55,10 @@ struct ProcedureRecordView: View {
             Text("기록된 시술이 없어요")
                 .font(.headline)
                 .foregroundStyle(.secondary)
-            Text("+ 버튼으로 이식 기록을 추가해보세요")
+            Text("+ 버튼으로 채취 또는 이식 기록을 추가해보세요")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Button("이식 기록 추가") {
+            Button("시술 기록 추가") {
                 viewModel.isFormPresented = true
             }
             .buttonStyle(.borderedProminent)
@@ -71,13 +71,17 @@ struct ProcedureRecordView: View {
     private var contentView: some View {
         List {
             Section {
-                ProcedureChartView(records: viewModel.transferRecords)
+                ProcedureChartView(summaries: viewModel.procedureSummaries)
                     .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .listRowBackground(Color.clear)
             }
 
             ForEach(viewModel.sortedCycleNumbers, id: \.self) { cycleNumber in
                 Section("\(cycleNumber)차 시술") {
+                    if let summary = viewModel.summary(for: cycleNumber) {
+                        ProcedureCycleSummaryCard(summary: summary)
+                    }
+
                     ForEach(viewModel.records(for: cycleNumber)) { record in
                         TransferCycleCard(record: record)
                     }
@@ -92,6 +96,56 @@ struct ProcedureRecordView: View {
             }
         }
         .listStyle(.insetGrouped)
+    }
+}
+
+// MARK: - ProcedureCycleSummaryCard
+
+private struct ProcedureCycleSummaryCard: View {
+    let summary: ProcedureCycleSummary
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                metricItem(title: "채취", value: retrievedText)
+                Divider()
+                metricItem(title: "이식", value: "\(summary.transferredCount)개")
+                Divider()
+                metricItem(title: "결과", value: resultText)
+            }
+
+            if let retrievalDate = summary.retrievalDate {
+                Label {
+                    Text(retrievalDate, style: .date)
+                } icon: {
+                    Image(systemName: "calendar")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 6)
+    }
+
+    private var retrievedText: String {
+        guard let retrievedCount = summary.retrievedCount else { return "-" }
+        return "\(retrievedCount)개"
+    }
+
+    private var resultText: String {
+        summary.latestTransferResult?.rawValue ?? "-"
+    }
+
+    private func metricItem(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.primary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
