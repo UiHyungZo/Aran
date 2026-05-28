@@ -118,7 +118,7 @@ Data -> Infrastructure
 
 # API 규칙
 
-* Router는 Alamofire `URLRequestConvertible` 사용
+* Router는 `URLComponents` 기반 순수 Foundation `URLRequest` 반환 (Alamofire 미의존)
 * API Key는 configuration으로 관리
 * DTO는 Data Layer에서 decode
 * DTO → Domain Entity 변환 후 반환

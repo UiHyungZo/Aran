@@ -1,7 +1,6 @@
-import Alamofire
 import Foundation
 
-enum DrugRouter: URLRequestConvertible {
+enum DrugRouter {
     case search(keyword: String, pageNo: Int, serviceKey: String, baseURL: String)
     case detail(itemSeq: String, serviceKey: String, baseURL: String)
 
@@ -12,7 +11,7 @@ enum DrugRouter: URLRequestConvertible {
         }
     }
 
-    private var baseURL: String {
+    private var baseURLString: String {
         switch self {
         case let .search(_, _, _, url): return url
         case let .detail(_, _, url): return url
@@ -26,24 +25,28 @@ enum DrugRouter: URLRequestConvertible {
         }
     }
 
-    private var parameters: Parameters {
-        var params: Parameters = [
-            "serviceKey": serviceKey,
-            "type": "json",
+    func asURLRequest() throws -> URLRequest {
+        guard var components = URLComponents(string: baseURLString + path) else {
+            throw AppError.invalidInput("Invalid URL")
+        }
+        var queryItems = [
+            URLQueryItem(name: "serviceKey", value: serviceKey),
+            URLQueryItem(name: "type", value: "json"),
         ]
         switch self {
         case let .search(keyword, pageNo, _, _):
-            params["itemName"] = keyword
-            params["pageNo"] = pageNo
-            params["numOfRows"] = 20
+            queryItems += [
+                URLQueryItem(name: "itemName", value: keyword),
+                URLQueryItem(name: "pageNo", value: "\(pageNo)"),
+                URLQueryItem(name: "numOfRows", value: "20"),
+            ]
         case let .detail(itemSeq, _, _):
-            params["itemSeq"] = itemSeq
+            queryItems.append(URLQueryItem(name: "itemSeq", value: itemSeq))
         }
-        return params
-    }
-
-    func asURLRequest() throws -> URLRequest {
-        let url = try (baseURL + path).asURL()
-        return try URLEncoding.default.encode(URLRequest(url: url), with: parameters)
+        components.queryItems = queryItems
+        guard let url = components.url else {
+            throw AppError.invalidInput("Invalid URL components")
+        }
+        return URLRequest(url: url)
     }
 }
