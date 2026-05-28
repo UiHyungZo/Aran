@@ -34,7 +34,12 @@ final class ExamHistoryViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewWillAppearSubject.onNext(())
+        reload()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        layoutHeaderView()
     }
 
     private func setupUI() {
@@ -46,13 +51,14 @@ final class ExamHistoryViewController: UIViewController {
             action: #selector(addTapped)
         )
 
-        headerView.translatesAutoresizingMaskIntoConstraints = false
+        headerView.autoresizingMask = [.flexibleWidth]
 
         tableView.register(ExamHistoryCell.self, forCellReuseIdentifier: ExamHistoryCell.reuseIdentifier)
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 56
+        tableView.estimatedRowHeight = 68
         tableView.separatorStyle = .none
         tableView.tableHeaderView = headerView
 
@@ -129,19 +135,39 @@ final class ExamHistoryViewController: UIViewController {
     }
 
     private func layoutHeaderView() {
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        let size = headerView.systemLayoutSizeFitting(
-            CGSize(width: tableView.bounds.width, height: UIView.layoutFittingCompressedSize.height),
+        tableView.layoutIfNeeded()
+        guard tableView.bounds.width > 0 else { return }
+
+        let targetWidth = tableView.bounds.width
+        let currentHeader = tableView.tableHeaderView ?? headerView
+        let widthChanged = abs(currentHeader.frame.width - targetWidth) > 0.5
+        currentHeader.frame.size.width = targetWidth
+
+        currentHeader.setNeedsLayout()
+        currentHeader.layoutIfNeeded()
+        let size = currentHeader.systemLayoutSizeFitting(
+            CGSize(width: targetWidth, height: UIView.layoutFittingCompressedSize.height),
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .fittingSizeLevel
         )
-        headerView.frame.size.height = size.height
-        tableView.tableHeaderView = headerView
+        let heightChanged = abs(currentHeader.frame.height - size.height) > 0.5
+        if widthChanged || heightChanged {
+            currentHeader.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: targetWidth,
+                height: size.height
+            )
+            tableView.tableHeaderView = currentHeader
+        }
     }
 
     @objc private func addTapped() {
         actions.showAddForm()
+    }
+
+    func reload() {
+        viewWillAppearSubject.onNext(())
     }
 }
 
@@ -166,9 +192,19 @@ extension ExamHistoryViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
+
+extension ExamHistoryViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        actions.showEditForm(records[indexPath.row])
+    }
+}
+
 // MARK: - ExamHistoryHeaderView
 
 final class ExamHistoryHeaderView: UIView {
+    private let cardView = UIView()
     private let latestLabel = UILabel()
     private let trendLabel = UILabel()
     private let chartView = ExamChartHostingView()
@@ -188,31 +224,52 @@ final class ExamHistoryHeaderView: UIView {
     private func setupUI() {
         backgroundColor = .systemGroupedBackground
 
-        latestLabel.font = .systemFont(ofSize: 28, weight: .bold)
-        latestLabel.textColor = .label
-        latestLabel.textAlignment = .center
+        cardView.backgroundColor = .secondarySystemGroupedBackground
+        cardView.layer.cornerRadius = 8
 
-        trendLabel.font = AranFont.captionUI(13)
-        trendLabel.textColor = .secondaryLabel
+        latestLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        latestLabel.textColor = AranColor.healthRecordUI
+        latestLabel.textAlignment = .left
+        latestLabel.adjustsFontSizeToFitWidth = true
+        latestLabel.minimumScaleFactor = 0.75
+        latestLabel.lineBreakMode = .byTruncatingTail
+
+        trendLabel.font = .systemFont(ofSize: 11, weight: .semibold)
         trendLabel.textAlignment = .center
+        trendLabel.layer.cornerRadius = 8
+        trendLabel.layer.masksToBounds = true
+        trendLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        trendLabel.setContentHuggingPriority(.required, for: .horizontal)
 
         chartView.translatesAutoresizingMaskIntoConstraints = false
-        chartView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        chartView.heightAnchor.constraint(equalToConstant: 160).isActive = true
 
-        let stack = UIStackView(arrangedSubviews: [latestLabel, trendLabel, chartView])
+        let metricRow = UIStackView(arrangedSubviews: [latestLabel, trendLabel])
+        metricRow.axis = .horizontal
+        metricRow.alignment = .center
+        metricRow.spacing = 8
+        metricRow.distribution = .fill
+
+        let stack = UIStackView(arrangedSubviews: [chartView, metricRow])
         stack.axis = .vertical
-        stack.spacing = 4
+        stack.spacing = 10
         stack.alignment = .fill
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 16, bottom: 16, trailing: 16)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
 
-        addSubview(stack)
+        addSubview(cardView)
+        cardView.addSubview(stack)
+        cardView.translatesAutoresizingMaskIntoConstraints = false
         stack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor),
+            cardView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            cardView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            cardView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            cardView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+            stack.topAnchor.constraint(equalTo: cardView.topAnchor),
+            stack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
         ])
     }
 
@@ -224,11 +281,14 @@ final class ExamHistoryHeaderView: UIView {
 
         if let trend {
             if trend.hasPrefix("↑") {
-                trendLabel.textColor = .systemRed
+                trendLabel.textColor = AranColor.trendUpTextUI
+                trendLabel.backgroundColor = AranColor.trendUpBackgroundUI
             } else if trend.hasPrefix("↓") {
-                trendLabel.textColor = .systemBlue
+                trendLabel.textColor = AranColor.trendDownTextUI
+                trendLabel.backgroundColor = AranColor.trendDownBackgroundUI
             } else {
                 trendLabel.textColor = .secondaryLabel
+                trendLabel.backgroundColor = .tertiarySystemGroupedBackground
             }
         }
     }
@@ -249,6 +309,7 @@ final class ExamHistoryCell: UITableViewCell {
     private let trendLabel = UILabel()
     private let noteLabel = UILabel()
     private let separatorLine = UIView()
+    private let chevronView = UIImageView(image: UIImage(systemName: "chevron.right"))
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -261,7 +322,7 @@ final class ExamHistoryCell: UITableViewCell {
     }
 
     private func setupUI() {
-        selectionStyle = .none
+        selectionStyle = .default
         backgroundColor = .systemBackground
         contentView.backgroundColor = .systemBackground
 
@@ -269,17 +330,21 @@ final class ExamHistoryCell: UITableViewCell {
         dateLabel.textColor = .secondaryLabel
 
         valueLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        valueLabel.textColor = .label
+        valueLabel.textColor = AranColor.healthRecordUI
         valueLabel.textAlignment = .right
 
-        trendLabel.font = .systemFont(ofSize: 11)
-        trendLabel.textAlignment = .right
+        trendLabel.font = .systemFont(ofSize: 11, weight: .semibold)
+        trendLabel.textAlignment = .center
+        trendLabel.layer.cornerRadius = 8
+        trendLabel.layer.masksToBounds = true
 
         noteLabel.font = AranFont.captionUI(12)
         noteLabel.textColor = .tertiaryLabel
         noteLabel.numberOfLines = 1
 
         separatorLine.backgroundColor = .separator
+        chevronView.tintColor = .tertiaryLabel
+        chevronView.setContentHuggingPriority(.required, for: .horizontal)
 
         let leftStack = UIStackView(arrangedSubviews: [dateLabel, noteLabel])
         leftStack.axis = .vertical
@@ -291,7 +356,7 @@ final class ExamHistoryCell: UITableViewCell {
         rightStack.spacing = 2
         rightStack.setContentHuggingPriority(.required, for: .horizontal)
 
-        let row = UIStackView(arrangedSubviews: [leftStack, rightStack])
+        let row = UIStackView(arrangedSubviews: [leftStack, rightStack, chevronView])
         row.axis = .horizontal
         row.alignment = .center
         row.spacing = 12
@@ -334,13 +399,16 @@ final class ExamHistoryCell: UITableViewCell {
                 : String(format: "%.2f", abs(diff))
             if diff > 0 {
                 trendLabel.text = "↑ \(diffFormatted)"
-                trendLabel.textColor = .systemRed
+                trendLabel.textColor = AranColor.trendUpTextUI
+                trendLabel.backgroundColor = AranColor.trendUpBackgroundUI
             } else if diff < 0 {
                 trendLabel.text = "↓ \(diffFormatted)"
-                trendLabel.textColor = .systemBlue
+                trendLabel.textColor = AranColor.trendDownTextUI
+                trendLabel.backgroundColor = AranColor.trendDownBackgroundUI
             } else {
                 trendLabel.text = "→"
                 trendLabel.textColor = .secondaryLabel
+                trendLabel.backgroundColor = .secondarySystemGroupedBackground
             }
             trendLabel.isHidden = false
         } else {
@@ -353,4 +421,5 @@ final class ExamHistoryCell: UITableViewCell {
 
 struct ExamHistoryActions {
     let showAddForm: () -> Void
+    let showEditForm: (_ record: HealthRecord) -> Void
 }

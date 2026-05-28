@@ -16,6 +16,7 @@ final class HealthRecordFlowCoordinator {
     private weak var navigationController: UINavigationController?
     private let dependencies: HealthRecordFlowCoordinatorDependencies
     private weak var listViewController: ExamListViewController?
+    private weak var historyViewController: ExamHistoryViewController?
 
     init(navigationController: UINavigationController, dependencies: HealthRecordFlowCoordinatorDependencies) {
         self.navigationController = navigationController
@@ -34,9 +35,10 @@ final class HealthRecordFlowCoordinator {
         navigationController?.setViewControllers([vc], animated: false)
     }
 
-    private func showNumericForm() {
-        let vc = dependencies.makeHealthRecordFormViewController(mode: .add, onSaved: { [weak self] in
+    private func showNumericForm(mode: HealthRecordFormViewModel.FormMode = .add, onSaved: (() -> Void)? = nil) {
+        let vc = dependencies.makeHealthRecordFormViewController(mode: mode, onSaved: { [weak self] in
             self?.listViewController?.reload()
+            onSaved?()
         })
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
@@ -55,10 +57,16 @@ final class HealthRecordFlowCoordinator {
     private func showHistory(type: String) {
         let actions = ExamHistoryActions(
             showAddForm: { [weak self] in
-                self?.showNumericForm()
+                self?.showNumericForm(mode: .addLocked(type: type)) { [weak self] in
+                    self?.historyViewController?.reload()
+                }
+            },
+            showEditForm: { [weak self] record in
+                self?.showEditForm(record: record)
             }
         )
         let vc = dependencies.makeExamHistoryViewController(type: type, actions: actions)
+        historyViewController = vc
         navigationController?.pushViewController(vc, animated: true)
     }
 }

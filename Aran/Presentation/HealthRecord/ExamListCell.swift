@@ -7,6 +7,8 @@ final class ExamListCell: UITableViewCell {
     private let valueLabel = UILabel()
     private let trendLabel = UILabel()
     private let dateLabel = UILabel()
+    private let unitLabel = UILabel()
+    private let chevronView = UIImageView(image: UIImage(systemName: "chevron.right"))
 
     private let trailingStack = UIStackView()
 
@@ -21,37 +23,49 @@ final class ExamListCell: UITableViewCell {
     }
 
     private func setupUI() {
-        selectionStyle = .none
+        selectionStyle = .default
         backgroundColor = .systemBackground
         contentView.backgroundColor = .systemBackground
 
-        itemLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        itemLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         itemLabel.textColor = .label
         itemLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
 
-        valueLabel.font = AranFont.bodyUI()
-        valueLabel.textColor = .label
+        valueLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        valueLabel.textColor = AranColor.healthRecordUI
         valueLabel.textAlignment = .right
 
-        trendLabel.font = AranFont.captionUI(11)
-        trendLabel.textAlignment = .right
+        trendLabel.font = .systemFont(ofSize: 11, weight: .semibold)
+        trendLabel.textAlignment = .center
+        trendLabel.layer.cornerRadius = 8
+        trendLabel.layer.masksToBounds = true
 
         dateLabel.font = AranFont.captionUI(11)
         dateLabel.textColor = .secondaryLabel
-        dateLabel.textAlignment = .right
+        dateLabel.textAlignment = .left
 
-        // trailing 스택: 수치 or chips + 날짜
+        unitLabel.font = AranFont.captionUI(10)
+        unitLabel.textColor = .secondaryLabel
+        unitLabel.textAlignment = .right
+
+        chevronView.tintColor = .tertiaryLabel
+        chevronView.setContentHuggingPriority(.required, for: .horizontal)
+
         trailingStack.axis = .vertical
         trailingStack.alignment = .trailing
-        trailingStack.spacing = 4
+        trailingStack.spacing = 3
         trailingStack.setContentHuggingPriority(.required, for: .horizontal)
 
-        let row = UIStackView(arrangedSubviews: [itemLabel, trailingStack])
+        let leftStack = UIStackView(arrangedSubviews: [itemLabel, dateLabel])
+        leftStack.axis = .vertical
+        leftStack.spacing = 4
+
+        let row = UIStackView(arrangedSubviews: [leftStack, trailingStack, chevronView])
         row.axis = .horizontal
         row.alignment = .center
         row.spacing = 12
         row.isLayoutMarginsRelativeArrangement = true
-        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)
+        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 13, leading: 16, bottom: 13, trailing: 12)
 
         contentView.addSubview(row)
         row.translatesAutoresizingMaskIntoConstraints = false
@@ -68,38 +82,42 @@ final class ExamListCell: UITableViewCell {
 
         trailingStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         configureNumeric(summary: summary)
-        trailingStack.addArrangedSubview(dateLabel)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "MM.dd"
+        formatter.dateFormat = "yyyy-MM-dd"
         dateLabel.text = formatter.string(from: summary.latestRecord.recordDate)
     }
 
     private func configureNumeric(summary: HealthRecordSummary) {
         let unit = summary.latestRecord.unit
-        valueLabel.text = "\(formatValue(summary.latestRecord.value)) \(unit)"
-        valueLabel.textColor = .label
+        valueLabel.text = formatValue(summary.latestRecord.value)
+        unitLabel.text = unit
 
         if let trend = summary.trend {
             let trendText: String
             if trend > 0 {
                 trendText = "↑ \(formatValue(trend))"
-                trendLabel.textColor = .systemRed
+                trendLabel.textColor = AranColor.trendUpTextUI
+                trendLabel.backgroundColor = AranColor.trendUpBackgroundUI
             } else if trend < 0 {
                 trendText = "↓ \(formatValue(abs(trend)))"
-                trendLabel.textColor = .systemBlue
+                trendLabel.textColor = AranColor.trendDownTextUI
+                trendLabel.backgroundColor = AranColor.trendDownBackgroundUI
             } else {
                 trendText = "→ 변화없음"
                 trendLabel.textColor = .secondaryLabel
+                trendLabel.backgroundColor = .secondarySystemGroupedBackground
             }
             trendLabel.text = trendText
             trendLabel.isHidden = false
             trailingStack.addArrangedSubview(valueLabel)
+            trailingStack.addArrangedSubview(unitLabel)
             trailingStack.addArrangedSubview(trendLabel)
         } else {
             trendLabel.isHidden = true
             trailingStack.addArrangedSubview(valueLabel)
+            trailingStack.addArrangedSubview(unitLabel)
         }
     }
 

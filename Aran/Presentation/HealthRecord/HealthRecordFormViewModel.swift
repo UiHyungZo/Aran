@@ -5,6 +5,7 @@ import RxSwift
 final class HealthRecordFormViewModel {
     enum FormMode {
         case add
+        case addLocked(type: String)
         case edit(record: HealthRecord)
     }
 
@@ -46,14 +47,28 @@ final class HealthRecordFormViewModel {
             initialRecord = nil
         }
 
-        let latestType = BehaviorRelay<String>(value: initialRecord?.type ?? HealthRecordType.fsh)
-        let latestUnit = BehaviorRelay<String>(value: initialRecord?.unit ?? HealthRecordType.defaultUnits[HealthRecordType.fsh] ?? "")
+        let initialType: String
+        switch mode {
+        case .add:
+            initialType = HealthRecordType.fsh
+        case let .addLocked(type):
+            initialType = type
+        case let .edit(record):
+            initialType = record.type
+        }
+
+        let latestType = BehaviorRelay<String>(value: initialType)
+        let latestUnit = BehaviorRelay<String>(
+            value: initialRecord?.unit ?? HealthRecordType.defaultUnits[initialType] ?? ""
+        )
         let latestDate = BehaviorRelay<Date>(value: initialRecord?.recordDate ?? Date())
         let latestMemo = BehaviorRelay<String?>(value: initialRecord?.memo)
 
-        input.selectedType
-            .bind(to: latestType)
-            .disposed(by: disposeBag)
+        if !mode.isTypeLocked {
+            input.selectedType
+                .bind(to: latestType)
+                .disposed(by: disposeBag)
+        }
 
         input.unitText
             .bind(to: latestUnit)
@@ -70,7 +85,7 @@ final class HealthRecordFormViewModel {
         let parsedValue = input.valueText
             .map { Double($0) }
 
-        let isSaveEnabled = Observable.combineLatest(input.selectedType, parsedValue, input.unitText)
+        let isSaveEnabled = Observable.combineLatest(latestType.asObservable(), parsedValue, input.unitText)
             .map { type, value, unit in
                 !type.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                     && value != nil
@@ -95,7 +110,7 @@ final class HealthRecordFormViewModel {
                     Task {
                         do {
                             switch self.mode {
-                            case .add:
+                            case .add, .addLocked(_):
                                 try await self.useCase.save(
                                     type: type,
                                     value: value,
@@ -160,5 +175,16 @@ final class HealthRecordFormViewModel {
             deleted: deletedRelay.asDriver(onErrorJustReturn: ()),
             error: errorRelay.asDriver(onErrorJustReturn: "")
         )
+    }
+}
+
+private extension HealthRecordFormViewModel.FormMode {
+    var isTypeLocked: Bool {
+        switch self {
+        case .addLocked(_), .edit(_):
+            return true
+        case .add:
+            return false
+        }
     }
 }

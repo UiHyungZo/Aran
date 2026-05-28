@@ -40,21 +40,24 @@ final class ExamListViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .systemGroupedBackground
-        title = "검사"
+        title = "검사 기록"
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addTapped)
-        )
+        let addButton = UIButton(type: .system)
+        addButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addButton.tintColor = AranColor.healthRecordUI
+        addButton.backgroundColor = AranColor.healthRecordUI.withAlphaComponent(0.1)
+        addButton.layer.cornerRadius = 15
+        addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        addButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
 
         tableView.register(ExamListCell.self, forCellReuseIdentifier: ExamListCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 60
-        tableView.separatorStyle = .singleLine
+        tableView.estimatedRowHeight = 72
+        tableView.separatorStyle = .none
 
         emptyLabel.text = "기록된 검사 수치가 없습니다."
         emptyLabel.font = AranFont.captionUI(13)
@@ -160,7 +163,7 @@ extension ExamListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let s = summary(at: indexPath)
-        actions.showEditForm(s.latestRecord)
+        actions.showHistory(s.type)
     }
 
     func tableView(
@@ -180,8 +183,10 @@ extension ExamListViewController: UITableViewDelegate {
         label.text = sections[section].title
         label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .secondaryLabel
+        label.backgroundColor = .clear
 
         let container = UIView()
+        container.backgroundColor = .clear
         container.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

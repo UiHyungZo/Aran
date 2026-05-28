@@ -97,7 +97,8 @@ final class HealthRecordViewModel {
     private func buildSections(from grouped: [String: [HealthRecord]]) -> [ExamSection] {
         let categories: [(String, [String])] = [
             ("난소 기능 검사", [HealthRecordType.fsh, HealthRecordType.amh, HealthRecordType.afc]),
-            ("호르몬 검사", [HealthRecordType.e2, HealthRecordType.p4, HealthRecordType.lh, HealthRecordType.betaHCG]),
+            ("호르몬 검사", [HealthRecordType.e2, HealthRecordType.p4, HealthRecordType.lh]),
+            ("임신 확인", [HealthRecordType.betaHCG]),
         ]
 
         var result: [ExamSection] = []

@@ -15,7 +15,8 @@ final class HealthRecordFormViewController: UIViewController {
     private var itemChipButtons: [UIButton] = []
     private var itemTypes = HealthRecordType.defaults
     private var customUnits: [String: String] = [:]
-    private let selectedTypeRelay = BehaviorRelay<String>(value: HealthRecordType.fsh)
+    private var selectedChipIndex: Int?
+    private let selectedTypeRelay: BehaviorRelay<String>
 
     private let valueField = UITextField()
     private let unitField = UITextField()
@@ -34,6 +35,7 @@ final class HealthRecordFormViewController: UIViewController {
         self.viewModel = viewModel
         self.mode = mode
         self.onSaved = onSaved
+        selectedTypeRelay = BehaviorRelay<String>(value: Self.initialType(for: mode))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -46,6 +48,12 @@ final class HealthRecordFormViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         bindViewModel()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+        refreshChipStyles()
     }
 
     private func setupUI() {
@@ -61,13 +69,18 @@ final class HealthRecordFormViewController: UIViewController {
 
         let closeButton = UIButton(type: .system)
         closeButton.setImage(UIImage(systemName: isEditMode ? "chevron.left" : "xmark.circle.fill"), for: .normal)
-        closeButton.tintColor = .systemGray3
+        closeButton.tintColor = .secondaryLabel
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        closeButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        closeButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
 
-        let headerRow = UIStackView(arrangedSubviews: [titleLabel, closeButton])
+        let spacer = UIView()
+        spacer.widthAnchor.constraint(equalToConstant: 32).isActive = true
+
+        let headerRow = UIStackView(arrangedSubviews: [closeButton, titleLabel, spacer])
         headerRow.axis = .horizontal
         headerRow.alignment = .center
-        headerRow.distribution = .equalSpacing
+        headerRow.distribution = .fill
         view.addSubview(headerRow)
         headerRow.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -118,6 +131,7 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func makeChipSection() -> UIView {
         let label = sectionTitle("검사 항목")
+
         chipScrollView.showsHorizontalScrollIndicator = false
         chipStackView.axis = .horizontal
         chipStackView.spacing = 8
@@ -167,7 +181,7 @@ final class HealthRecordFormViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.locale = Locale(identifier: "ko_KR")
-        datePicker.tintColor = AranColor.primaryUI
+        datePicker.tintColor = AranColor.healthRecordUI
         datePicker.maximumDate = Date()
 
         let row = UIStackView(arrangedSubviews: [label, datePicker])
@@ -196,7 +210,7 @@ final class HealthRecordFormViewController: UIViewController {
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
-        saveButton.backgroundColor = AranColor.primaryUI
+        saveButton.backgroundColor = AranColor.healthRecordUI
         saveButton.layer.cornerRadius = 10
         saveButton.isEnabled = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
@@ -207,10 +221,9 @@ final class HealthRecordFormViewController: UIViewController {
     private func makeDeleteButton() -> UIView {
         deleteButton.setTitle("이 기록 삭제", for: .normal)
         deleteButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        deleteButton.setTitleColor(.systemRed, for: .normal)
+        deleteButton.setTitleColor(AranColor.trendUpTextUI, for: .normal)
+        deleteButton.backgroundColor = AranColor.trendUpBackgroundUI
         deleteButton.layer.cornerRadius = 10
-        deleteButton.layer.borderWidth = 1
-        deleteButton.layer.borderColor = UIColor.systemRed.cgColor
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
         return deleteButton
@@ -220,7 +233,7 @@ final class HealthRecordFormViewController: UIViewController {
         textField.placeholder = placeholder
         textField.borderStyle = .none
         textField.font = AranFont.bodyUI()
-        textField.backgroundColor = .secondarySystemGroupedBackground
+        textField.backgroundColor = AranColor.healthRecordFieldBackgroundUI
         textField.layer.cornerRadius = 8
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: 1))
         textField.leftViewMode = .always
@@ -253,7 +266,7 @@ final class HealthRecordFormViewController: UIViewController {
             .drive(onNext: { [weak self] isEnabled in
                 self?.saveButton.isEnabled = isEnabled
                 self?.saveButton.backgroundColor = isEnabled
-                    ? AranColor.primaryUI
+                    ? AranColor.healthRecordUI
                     : .secondarySystemGroupedBackground
             })
             .disposed(by: disposeBag)
@@ -301,10 +314,11 @@ final class HealthRecordFormViewController: UIViewController {
             itemChipButtons.append(button)
         }
 
-        guard !isEditMode else { return }
-        let addButton = makeChipButton(title: "+ 직접 추가", tag: itemTypes.count)
-        chipStackView.addArrangedSubview(addButton)
-        itemChipButtons.append(addButton)
+        if !mode.isTypeLocked {
+            let addButton = makeChipButton(title: "+ 직접 추가", tag: itemTypes.count)
+            chipStackView.addArrangedSubview(addButton)
+            itemChipButtons.append(addButton)
+        }
     }
 
     private func makeChipButton(title: String, tag: Int) -> UIButton {
@@ -316,24 +330,31 @@ final class HealthRecordFormViewController: UIViewController {
         button.layer.borderWidth = 1
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 14, bottom: 6, right: 14)
         button.addTarget(self, action: #selector(chipTapped(_:)), for: .touchUpInside)
-        button.isEnabled = !isEditMode || title == currentRecord?.type
+        button.isEnabled = true
         setChipStyle(button, selected: false)
         return button
     }
 
     private func setChipStyle(_ button: UIButton, selected: Bool) {
         if selected {
-            button.backgroundColor = AranColor.primaryUI
+            button.backgroundColor = AranColor.healthRecordUI
             button.setTitleColor(.white, for: .normal)
-            button.layer.borderColor = AranColor.primaryUI.cgColor
+            button.layer.borderColor = AranColor.healthRecordUI.resolvedColor(with: traitCollection).cgColor
+        } else if mode.isTypeLocked {
+            button.backgroundColor = .systemBackground
+            button.setTitleColor(.tertiaryLabel, for: .normal)
+            button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         } else {
             button.backgroundColor = .systemBackground
             button.setTitleColor(button.isEnabled ? .label : .tertiaryLabel, for: .normal)
-            button.layer.borderColor = UIColor.systemGray4.cgColor
+            button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         }
     }
 
     @objc private func chipTapped(_ sender: UIButton) {
+        if mode.isTypeLocked {
+            return
+        }
         if sender.tag == itemTypes.count {
             showCustomItemAlert()
             return
@@ -343,9 +364,8 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func selectChip(at index: Int) {
         guard itemTypes.indices.contains(index) else { return }
-        for (buttonIndex, button) in itemChipButtons.enumerated() {
-            setChipStyle(button, selected: buttonIndex == index)
-        }
+        selectedChipIndex = index
+        refreshChipStyles()
         let type = itemTypes[index]
         selectedTypeRelay.accept(type)
         let unit = customUnits[type] ?? HealthRecordType.defaultUnits[type] ?? ""
@@ -353,10 +373,27 @@ final class HealthRecordFormViewController: UIViewController {
         unitField.sendActions(for: .editingChanged)
     }
 
+    private func refreshChipStyles() {
+        for (buttonIndex, button) in itemChipButtons.enumerated() {
+            setChipStyle(button, selected: buttonIndex == selectedChipIndex)
+        }
+    }
+
     private func configureInitialValues() {
         switch mode {
         case .add:
             selectChip(at: 0)
+        case let .addLocked(type):
+            if !itemTypes.contains(type) {
+                itemTypes.append(type)
+            }
+            if let index = itemTypes.firstIndex(of: type) {
+                selectChip(at: index)
+            } else {
+                selectedTypeRelay.accept(type)
+                unitField.text = customUnits[type] ?? HealthRecordType.defaultUnits[type] ?? ""
+                unitField.sendActions(for: .editingChanged)
+            }
         case let .edit(record):
             if !itemTypes.contains(record.type) {
                 itemTypes.append(record.type)
@@ -421,15 +458,32 @@ final class HealthRecordFormViewController: UIViewController {
         return false
     }
 
-    private var currentRecord: HealthRecord? {
-        if case let .edit(record) = mode { return record }
-        return nil
-    }
-
     private func formatValue(_ value: Double) -> String {
         if value == value.rounded() {
             return String(format: "%.0f", value)
         }
         return String(format: "%.2f", value)
+    }
+
+    private static func initialType(for mode: HealthRecordFormViewModel.FormMode) -> String {
+        switch mode {
+        case .add:
+            return HealthRecordType.fsh
+        case let .addLocked(type):
+            return type
+        case let .edit(record):
+            return record.type
+        }
+    }
+}
+
+private extension HealthRecordFormViewModel.FormMode {
+    var isTypeLocked: Bool {
+        switch self {
+        case .addLocked(_), .edit(_):
+            return true
+        case .add:
+            return false
+        }
     }
 }
