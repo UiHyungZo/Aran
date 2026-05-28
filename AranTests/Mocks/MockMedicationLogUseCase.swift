@@ -5,7 +5,7 @@ final class MockMedicationLogUseCase: MedicationLogUseCaseProtocol {
     var stubbedAll: [MedicationLog] = []
     var stubbedByDate: [MedicationLog] = []
     var stubbedByMedication: MedicationLog?
-    var toggledPairs: [(UUID, Date)] = []
+    var toggledItems: [(UUID, Date, Int)] = []
     var shouldThrow: Error?
 
     func fetchAll() async throws -> [MedicationLog] {
@@ -23,8 +23,8 @@ final class MockMedicationLogUseCase: MedicationLogUseCaseProtocol {
         return stubbedByMedication
     }
 
-    func toggle(medicationId: UUID, date: Date) async throws {
+    func toggle(medicationId: UUID, date: Date, timeIndex: Int) async throws {
         if let error = shouldThrow { throw error }
-        toggledPairs.append((medicationId, date))
+        toggledItems.append((medicationId, date, timeIndex))
     }
 }

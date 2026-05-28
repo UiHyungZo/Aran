@@ -8,6 +8,7 @@ import UIKit
 struct MedicationListActions {
     let showSearch: () -> Void
     let showEdit: (Medication) -> Void
+    let showNotificationSettings: () -> Void
 }
 
 struct MedicationSearchActions {
@@ -26,6 +27,7 @@ protocol MedicationFlowCoordinatorDependencies {
     func makeMedicationSearchViewController(actions: MedicationSearchActions) -> MedicationSearchViewController
     func makeMedicationFormViewController(drugName: String, component: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController
     func makeEditMedicationFormViewController(medication: Medication, actions: MedicationFormActions) -> MedicationFormViewController
+    func makeNotificationSettingsViewController() -> NotificationSettingsViewController
     func deleteMedication(_ medication: Medication) async throws
 }
 
@@ -42,7 +44,8 @@ final class MedicationFlowCoordinator {
         let vc = dependencies.makeMedicationListViewController(
             actions: MedicationListActions(
                 showSearch: { [weak self] in self?.showSearch() },
-                showEdit: { [weak self] medication in self?.showEdit(medication: medication) }
+                showEdit: { [weak self] medication in self?.showEdit(medication: medication) },
+                showNotificationSettings: { [weak self] in self?.showNotificationSettings() }
             )
         )
         navigationController?.setViewControllers([vc], animated: false)
@@ -93,6 +96,11 @@ final class MedicationFlowCoordinator {
             }
         )
         let vc = dependencies.makeEditMedicationFormViewController(medication: medication, actions: actions)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    private func showNotificationSettings() {
+        let vc = dependencies.makeNotificationSettingsViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 

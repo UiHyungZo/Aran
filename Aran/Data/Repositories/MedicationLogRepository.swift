@@ -36,6 +36,19 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
         return try context.fetch(descriptor).first.map { MedicationLogMapper.toDomain($0) }
     }
 
+    func fetch(medicationId: UUID, date: Date, timeIndex: Int) async throws -> MedicationLog? {
+        let start = Calendar.current.startOfDay(for: date)
+        let end = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? start
+        let descriptor = FetchDescriptor<MedicationLogModel>(
+            predicate: #Predicate {
+                $0.medicationId == medicationId && $0.logDate >= start && $0.logDate < end
+            }
+        )
+        return try context.fetch(descriptor)
+            .first { $0.timeIndex == timeIndex }
+            .map { MedicationLogMapper.toDomain($0) }
+    }
+
     func upsert(_ log: MedicationLog) async throws {
         let medicationId = log.medicationId
         let start = Calendar.current.startOfDay(for: log.logDate)
@@ -45,7 +58,8 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
                 $0.medicationId == medicationId && $0.logDate >= start && $0.logDate < end
             }
         )
-        if let model = try context.fetch(descriptor).first {
+        let models = try context.fetch(descriptor)
+        if let model = models.first(where: { $0.timeIndex == log.timeIndex }) {
             model.logDate = start
             model.isTaken = log.isTaken
         } else {
@@ -53,7 +67,8 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
                 id: log.id,
                 medicationId: medicationId,
                 logDate: start,
-                isTaken: log.isTaken
+                isTaken: log.isTaken,
+                timeIndex: log.timeIndex
             ))
         }
         try context.save()

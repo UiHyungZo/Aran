@@ -359,16 +359,13 @@ private struct DrugResultCell: View {
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(drug.entpName)
+                let subtitle = [drug.component, drug.entpName]
+                    .compactMap { $0 }
+                    .joined(separator: " · ")
+                Text(subtitle.isEmpty ? drug.entpName : subtitle)
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
-
-                if let efcy = drug.efcyQesitm {
-                    Text(efcy.prefix(50))
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.secondary)
-                        .lineLimit(1)
-                }
+                    .lineLimit(1)
 
                 Text(actionTitle)
                     .font(.system(size: 13, weight: .medium))

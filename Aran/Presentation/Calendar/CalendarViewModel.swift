@@ -121,13 +121,11 @@ final class CalendarViewModel: ObservableObject {
         hospitalVisits[Calendar.current.startOfDay(for: date)] ?? []
     }
 
-    func medicationLog(for medicationId: UUID, date: Date) -> MedicationLog? {
+    func isMedicationTaken(_ medication: Medication, on date: Date, timeIndex: Int) -> Bool {
         let key = Calendar.current.startOfDay(for: date)
-        return medicationLogs[key]?.first { $0.medicationId == medicationId }
-    }
-
-    func isMedicationTaken(_ medication: Medication, on date: Date) -> Bool {
-        medicationLog(for: medication.id, date: date)?.isTaken ?? false
+        return medicationLogs[key]?.first {
+            $0.medicationId == medication.id && $0.timeIndex == timeIndex
+        }?.isTaken ?? false
     }
 
     func diary(for date: Date) -> DiaryEntry? {
@@ -235,10 +233,18 @@ final class CalendarViewModel: ObservableObject {
         menstrualCycleUseCase.calculateOvulationDate(startDate: startDate, cycleLength: cycleLength)
     }
 
-    func toggleMedicationLog(medicationId: UUID, date: Date) async {
+    func toggleMedicationLog(medicationId: UUID, date: Date, timeIndex: Int) async {
         do {
-            try await medicationLogUseCase.toggle(medicationId: medicationId, date: date)
-            await loadMonthRecords()
+            try await medicationLogUseCase.toggle(medicationId: medicationId, date: date, timeIndex: timeIndex)
+            let key = Calendar.current.startOfDay(for: date)
+            if let idx = medicationLogs[key]?.firstIndex(where: {
+                $0.medicationId == medicationId && $0.timeIndex == timeIndex
+            }) {
+                medicationLogs[key]?[idx].isTaken.toggle()
+            } else {
+                let newLog = MedicationLog(id: UUID(), medicationId: medicationId, logDate: key, isTaken: true, timeIndex: timeIndex)
+                medicationLogs[key, default: []].append(newLog)
+            }
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
         }

@@ -50,11 +50,9 @@ final class MedicationListViewController: UIViewController {
         view.backgroundColor = .secondarySystemGroupedBackground
         title = "약 / 주사"
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addTapped)
-        )
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        let bellButton = UIBarButtonItem(image: UIImage(systemName: "bell"), style: .plain, target: self, action: #selector(bellTapped))
+        navigationItem.rightBarButtonItems = [addButton, bellButton]
 
         tableView.register(MedicationCell.self, forCellReuseIdentifier: MedicationCell.reuseIdentifier)
         tableView.dataSource = self
@@ -64,8 +62,6 @@ final class MedicationListViewController: UIViewController {
         tableView.estimatedRowHeight = 64
         tableView.separatorStyle = .none
         tableView.sectionHeaderTopPadding = 0
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        tableView.addGestureRecognizer(longPressGesture)
 
         emptyLabel.text = "등록된 약/주사가 없습니다."
         emptyLabel.font = AranFont.captionUI(13)
@@ -129,52 +125,12 @@ final class MedicationListViewController: UIViewController {
         actions.showSearch()
     }
 
-    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .began else { return }
-
-        let point = gesture.location(in: tableView)
-        guard let indexPath = tableView.indexPathForRow(at: point) else { return }
-        presentNotificationPreview(for: medication(at: indexPath))
+    @objc private func bellTapped() {
+        actions.showNotificationSettings()
     }
 
     private func medication(at indexPath: IndexPath) -> Medication {
         indexPath.section == 0 ? activeMedications[indexPath.row] : inactiveMedications[indexPath.row]
-    }
-
-    private func presentNotificationPreview(for medication: Medication) {
-        let message: String
-        if medication.isEnabled, !medication.schedule.times.isEmpty {
-            message = formattedNotificationPreview(for: medication)
-        } else {
-            message = "알림이 꺼져 있습니다."
-        }
-
-        let alert = UIAlertController(
-            title: "\(medication.drugName) 알림",
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
-    }
-
-    private func formattedNotificationPreview(for medication: Medication) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-
-        let timeFormatter = DateFormatter()
-        timeFormatter.locale = Locale(identifier: "ko_KR")
-        timeFormatter.dateFormat = "a h:mm"
-
-        let startDate = dateFormatter.string(from: medication.schedule.startDate)
-        let endDate = medication.schedule.endDate.map { dateFormatter.string(from: $0) } ?? "종료일 없음"
-        let times = medication.schedule.times
-            .sorted()
-            .map { timeFormatter.string(from: $0) }
-            .joined(separator: "\n")
-
-        return "기간: \(startDate) ~ \(endDate)\n\n예정 시각\n\(times)"
     }
 }
 
@@ -198,9 +154,6 @@ extension MedicationListViewController: UITableViewDataSource {
         }
         let medication = medication(at: indexPath)
         cell.configure(with: medication)
-        cell.onToggle = { [weak self] _ in
-            self?.toggleRelay.accept(medication)
-        }
         return cell
     }
 

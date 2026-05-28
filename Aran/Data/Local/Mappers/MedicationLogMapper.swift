@@ -6,7 +6,8 @@ enum MedicationLogMapper {
             id: model.id,
             medicationId: model.medicationId,
             logDate: model.logDate,
-            isTaken: model.isTaken
+            isTaken: model.isTaken,
+            timeIndex: model.timeIndex
         )
     }
 
@@ -15,7 +16,8 @@ enum MedicationLogMapper {
             id: entity.id,
             medicationId: entity.medicationId,
             logDate: entity.logDate,
-            isTaken: entity.isTaken
+            isTaken: entity.isTaken,
+            timeIndex: entity.timeIndex
         )
     }
 }

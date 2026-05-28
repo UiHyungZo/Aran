@@ -80,6 +80,12 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         )
     }
 
+    func makeNotificationSettingsViewController() -> NotificationSettingsViewController {
+        NotificationSettingsViewController(
+            viewModel: MedicationViewModel(medicationUseCase: medicationUseCase)
+        )
+    }
+
     // MARK: - Flow Coordinator
 
     func makeMedicationFlowCoordinator(navigationController: UINavigationController) -> MedicationFlowCoordinator {

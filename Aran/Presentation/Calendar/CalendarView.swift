@@ -342,23 +342,40 @@ struct CalendarView: View {
             .padding(.bottom, meds.isEmpty ? 12 : 6)
 
             ForEach(meds) { med in
-                Button {
-                    Task { await viewModel.toggleMedicationLog(medicationId: med.id, date: viewModel.selectedDate) }
-                } label: {
-                    HStack {
-                        medicationCheckmark(isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate))
-                        Text(med.drugName)
-                            .font(AranFont.body())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(med.dosage)
-                            .font(AranFont.caption())
-                            .foregroundStyle(.secondary)
+                let sortedPairs = med.schedule.times.enumerated()
+                    .sorted { a, b in
+                        let cal = Calendar.current
+                        let aMin = cal.component(.hour, from: a.element) * 60 + cal.component(.minute, from: a.element)
+                        let bMin = cal.component(.hour, from: b.element) * 60 + cal.component(.minute, from: b.element)
+                        return aMin < bMin
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
+                ForEach(sortedPairs, id: \.offset) { pair in
+                    Button {
+                        Task {
+                            await viewModel.toggleMedicationLog(
+                                medicationId: med.id,
+                                date: viewModel.selectedDate,
+                                timeIndex: pair.offset
+                            )
+                        }
+                    } label: {
+                        HStack {
+                            medicationCheckmark(
+                                isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate, timeIndex: pair.offset)
+                            )
+                            Text(med.drugName)
+                                .font(AranFont.body())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(formattedTime(pair.element))
+                                .font(AranFont.caption())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
     }
@@ -375,6 +392,13 @@ struct CalendarView: View {
                     .frame(width: 7, height: 7)
             }
         }
+    }
+
+    private func formattedTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "a h:mm"
+        return formatter.string(from: date)
     }
 
     // MARK: - 요약 패널 서브타이틀

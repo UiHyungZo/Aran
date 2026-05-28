@@ -1,5 +1,6 @@
 import RxCocoa
 import RxSwift
+import UserNotifications
 import UIKit
 
 final class MedicationFormViewController: UIViewController {
@@ -15,11 +16,11 @@ final class MedicationFormViewController: UIViewController {
     private let contentStack = UIStackView()
 
     private let drugNameField = UITextField()
-    private let componentField = UITextField()
     private let typeSegment = UISegmentedControl(
         items: MedicationType.allCases.map { $0.rawValue }
     )
     private let dosageField = UITextField()
+
     private let startDatePicker = UIDatePicker()
     private let startDateRelay = BehaviorRelay<Date>(value: Date())
     private let endDatePicker = UIDatePicker()
@@ -86,7 +87,8 @@ final class MedicationFormViewController: UIViewController {
             contentStack.addArrangedSubview(deleteButton)
         }
 
-        saveButton.setTitle(initialMedication == nil ? "저장" : "수정 완료", for: .normal)
+        let saveTitle = initialMedication == nil ? "저장하기" : "수정 저장"
+        saveButton.setTitle(saveTitle, for: .normal)
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
@@ -97,11 +99,12 @@ final class MedicationFormViewController: UIViewController {
         saveButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
 
         deleteButton.setTitle("이 약 삭제", for: .normal)
-        deleteButton.titleLabel?.font = .systemFont(ofSize: 15)
-        deleteButton.setTitleColor(.systemRed, for: .normal)
-        deleteButton.backgroundColor = .clear
+        deleteButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
+        deleteButton.setTitleColor(UIColor(red: 0.8, green: 0.1, blue: 0.1, alpha: 1), for: .normal)
+        deleteButton.backgroundColor = UIColor(red: 1.0, green: 0.92, blue: 0.92, alpha: 1)
+        deleteButton.layer.cornerRadius = 10
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
-        deleteButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
     }
 
     private func setupScrollView() {
@@ -142,14 +145,7 @@ final class MedicationFormViewController: UIViewController {
         drugNameField.clearButtonMode = .whileEditing
         drugNameField.returnKeyType = .next
 
-        componentField.placeholder = "예) Follitropin alfa"
-        componentField.text = initialComponent
-        componentField.borderStyle = .none
-        componentField.font = AranFont.bodyUI()
-        componentField.clearButtonMode = .whileEditing
-        componentField.returnKeyType = .next
-
-        dosageField.placeholder = "예: 100mg / 1정"
+        dosageField.placeholder = "예) 300IU/0.5mL"
         dosageField.text = initialDosage
         dosageField.borderStyle = .none
         dosageField.font = AranFont.bodyUI()
@@ -157,17 +153,15 @@ final class MedicationFormViewController: UIViewController {
         dosageField.returnKeyType = .done
 
         drugNameField.delegate = self
-        componentField.delegate = self
         dosageField.delegate = self
 
         let selectedType = initialMedication?.type ?? .oral
         typeSegment.selectedSegmentIndex = MedicationType.allCases.firstIndex(of: selectedType) ?? 0
 
         return makeStack(rows: [
-            makeFieldRow(label: "약 이름", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
-            makeFieldRow(label: "성분명", control: componentField, isPrefilled: !initialComponent.isEmpty),
+            makeFieldRow(label: "약 이름 *", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
             makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
-            makeFieldRow(label: "용량 / 메모", control: dosageField, isPrefilled: false),
+            makeFieldRow(label: "용량/메모", control: dosageField, isPrefilled: false),
         ])
     }
 
@@ -226,7 +220,11 @@ final class MedicationFormViewController: UIViewController {
     private func makeTimeRows() -> UIView {
         timePickerContainer.axis = .vertical
         timePickerContainer.spacing = 0
-        let initialTimes = initialMedication?.schedule.times ?? []
+        let initialTimes = (initialMedication?.schedule.times ?? []).sorted {
+            let cal = Calendar.current
+            return cal.component(.hour, from: $0) * 60 + cal.component(.minute, from: $0)
+                 < cal.component(.hour, from: $1) * 60 + cal.component(.minute, from: $1)
+        }
         if initialTimes.isEmpty {
             addTimePickerRow()
         } else {
@@ -241,7 +239,7 @@ final class MedicationFormViewController: UIViewController {
         addButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
         addButton.addTarget(self, action: #selector(addTimeTapped), for: .touchUpInside)
 
-        let title = sectionTitle("복용 시간")
+        let title = sectionTitle("복용 시간 *")
         return makeStack(rows: [title, timePickerContainer, addButton])
     }
 
@@ -255,9 +253,10 @@ final class MedicationFormViewController: UIViewController {
         picker.addTarget(self, action: #selector(pickerValueChanged), for: .valueChanged)
         timePickers.append(picker)
 
-        let label = UILabel()
-        label.text = "복용 시간"
-        label.font = AranFont.bodyUI()
+        let freqLabel = UILabel()
+        freqLabel.text = "매일"
+        freqLabel.font = AranFont.bodyUI()
+        freqLabel.textColor = .secondaryLabel
 
         let deleteButton = UIButton(type: .system)
         deleteButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
@@ -267,10 +266,10 @@ final class MedicationFormViewController: UIViewController {
         deleteButton.widthAnchor.constraint(equalToConstant: 24).isActive = true
         deleteButton.heightAnchor.constraint(equalToConstant: 24).isActive = true
 
-        let row = UIStackView(arrangedSubviews: [label, picker, deleteButton])
+        let row = UIStackView(arrangedSubviews: [picker, freqLabel, deleteButton])
         row.axis = .horizontal
         row.alignment = .center
-        row.distribution = .equalSpacing
+        row.spacing = 8
         row.isLayoutMarginsRelativeArrangement = true
         row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
 
@@ -317,20 +316,11 @@ final class MedicationFormViewController: UIViewController {
         notificationSwitch.isOn = initialMedication?.isEnabled ?? false
 
         let titleLabel = UILabel()
-        titleLabel.text = "알림 받기"
+        titleLabel.text = "알림 설정"
         titleLabel.font = AranFont.bodyUI()
         titleLabel.textColor = .label
 
-        let subLabel = UILabel()
-        subLabel.text = "복용 시간에 알림"
-        subLabel.font = AranFont.captionUI()
-        subLabel.textColor = .secondaryLabel
-
-        let labelStack = UIStackView(arrangedSubviews: [titleLabel, subLabel])
-        labelStack.axis = .vertical
-        labelStack.spacing = 2
-
-        return makePlainRow(labelView: labelStack, detailView: notificationSwitch)
+        return makePlainRow(labelView: titleLabel, detailView: notificationSwitch)
     }
 
     // MARK: - Layout Helpers
@@ -378,13 +368,6 @@ final class MedicationFormViewController: UIViewController {
         return fieldStack
     }
 
-    private func makePlainRow(label: String, detailView: UIView) -> UIView {
-        let labelView = UILabel()
-        labelView.text = label
-        labelView.font = AranFont.bodyUI()
-        return makePlainRow(labelView: labelView, detailView: detailView)
-    }
-
     private func makePlainRow(labelView: UIView, detailView: UIView) -> UIView {
         let row = UIStackView(arrangedSubviews: [labelView, detailView])
         row.axis = .horizontal
@@ -393,7 +376,6 @@ final class MedicationFormViewController: UIViewController {
         row.spacing = 12
         row.isLayoutMarginsRelativeArrangement = true
         row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
-
         return row
     }
 
@@ -422,10 +404,18 @@ final class MedicationFormViewController: UIViewController {
             .bind(to: endDateRelay)
             .disposed(by: disposeBag)
 
+        notificationSwitch.rx.isOn
+            .skip(1)
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in
+                self?.checkNotificationPermission()
+            })
+            .disposed(by: disposeBag)
+
         let input = MedicationFormViewModel.Input(
             drugNameChanged: drugNameField.rx.text.orEmpty.asObservable(),
             typeSelected: typeSelected.asObservable(),
-            componentChanged: componentField.rx.text.orEmpty.asObservable(),
+            componentChanged: Observable.just(initialComponent),
             dosageChanged: dosageField.rx.text.orEmpty.asObservable(),
             timesChanged: timesRelay.asObservable(),
             startDateChanged: startDateRelay.asObservable(),
@@ -492,14 +482,37 @@ final class MedicationFormViewController: UIViewController {
         })
         present(alert, animated: true)
     }
+
+    private func checkNotificationPermission() {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard settings.authorizationStatus == .denied else { return }
+            DispatchQueue.main.async {
+                self?.notificationSwitch.setOn(false, animated: true)
+                self?.presentPermissionDeniedAlert()
+            }
+        }
+    }
+
+    private func presentPermissionDeniedAlert() {
+        let alert = UIAlertController(
+            title: "알림 권한이 필요해요",
+            message: "설정에서 알림을 허용해주세요.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "설정으로 이동", style: .default) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        })
+        present(alert, animated: true)
+    }
 }
 
 extension MedicationFormViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case drugNameField:
-            componentField.becomeFirstResponder()
-        case componentField:
             dosageField.becomeFirstResponder()
         default:
             textField.resignFirstResponder()

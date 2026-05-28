@@ -43,11 +43,8 @@ final class MedicationFormViewModel {
         let endDate = input.endDateChanged.startWith(nil)
         let isNotificationEnabled = input.isNotificationEnabled.startWith(false)
 
-        let isSaveEnabled = Observable
-            .combineLatest(drugName, dosage) { name, dos in
-                !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-                    !dos.trimmingCharacters(in: .whitespaces).isEmpty
-            }
+        let isSaveEnabled = drugName
+            .map { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: false)
 

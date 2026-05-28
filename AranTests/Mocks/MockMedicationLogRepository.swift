@@ -20,10 +20,21 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
         }
     }
 
+    func fetch(medicationId: UUID, date: Date, timeIndex: Int) async throws -> MedicationLog? {
+        let day = Calendar.current.startOfDay(for: date)
+        return logs.first {
+            $0.medicationId == medicationId
+                && Calendar.current.isDate($0.logDate, inSameDayAs: day)
+                && $0.timeIndex == timeIndex
+        }
+    }
+
     func upsert(_ log: MedicationLog) async throws {
         let day = Calendar.current.startOfDay(for: log.logDate)
         if let index = logs.firstIndex(where: {
-            $0.medicationId == log.medicationId && Calendar.current.isDate($0.logDate, inSameDayAs: day)
+            $0.medicationId == log.medicationId
+                && Calendar.current.isDate($0.logDate, inSameDayAs: day)
+                && $0.timeIndex == log.timeIndex
         }) {
             logs[index] = log
         } else {
