@@ -25,27 +25,38 @@ enum DrugRouter {
         }
     }
 
+    private static let queryValueAllowed: CharacterSet = {
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "+&=/")
+        return allowed
+    }()
+
     func asURLRequest() throws -> URLRequest {
         guard var components = URLComponents(string: baseURLString + path) else {
-            throw AppError.invalidInput("Invalid URL")
+            throw URLError(.badURL)
         }
-        var queryItems = [
+        var items = [
             URLQueryItem(name: "serviceKey", value: serviceKey),
             URLQueryItem(name: "type", value: "json"),
         ]
         switch self {
         case let .search(keyword, pageNo, _, _):
-            queryItems += [
+            items += [
                 URLQueryItem(name: "itemName", value: keyword),
                 URLQueryItem(name: "pageNo", value: "\(pageNo)"),
                 URLQueryItem(name: "numOfRows", value: "20"),
             ]
         case let .detail(itemSeq, _, _):
-            queryItems.append(URLQueryItem(name: "itemSeq", value: itemSeq))
+            items.append(URLQueryItem(name: "itemSeq", value: itemSeq))
         }
-        components.queryItems = queryItems
+        components.percentEncodedQueryItems = items.map {
+            URLQueryItem(
+                name: $0.name,
+                value: $0.value?.addingPercentEncoding(withAllowedCharacters: Self.queryValueAllowed) ?? $0.value
+            )
+        }
         guard let url = components.url else {
-            throw AppError.invalidInput("Invalid URL components")
+            throw URLError(.badURL)
         }
         return URLRequest(url: url)
     }
