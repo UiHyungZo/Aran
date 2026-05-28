@@ -14,6 +14,7 @@ struct TransferInputFormView: View {
     @State private var embryoGrade = ""
     @State private var embryoCount = 1
     @State private var transferType: TransferType = .frozen
+    @FocusState private var isFocused: Bool
 
     init(viewModel: ProcedureRecordViewModel, initialCycleNumber: Int = 1) {
         self.viewModel = viewModel
@@ -37,6 +38,7 @@ struct TransferInputFormView: View {
                         Text("등급")
                         Spacer()
                         TextField("예: 3AA", text: $embryoGrade)
+                            .focused($isFocused)
                             .multilineTextAlignment(.trailing)
                     }
                     Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1...5)
@@ -48,6 +50,7 @@ struct TransferInputFormView: View {
                     .pickerStyle(.segmented)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("이식 기록 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -68,6 +71,10 @@ struct TransferInputFormView: View {
                         }
                     }
                     .disabled(!isValid)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }

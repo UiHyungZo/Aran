@@ -50,6 +50,9 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .systemBackground
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
 
         let titleLabel = UILabel()
         titleLabel.text = isEditMode ? "검사 수치 수정" : "검사 수치 추가"
@@ -87,6 +90,7 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func setupScrollView(below anchor: UIView) {
         scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .onDrag
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -406,6 +410,10 @@ final class HealthRecordFormViewController: UIViewController {
         } else {
             dismiss(animated: true)
         }
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     private var isEditMode: Bool {

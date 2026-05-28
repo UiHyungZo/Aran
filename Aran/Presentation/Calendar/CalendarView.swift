@@ -12,6 +12,7 @@ struct CalendarView: View {
     @State private var editingVisit: HospitalVisit?
     @State private var isMenstrualSheetPresented: Bool = false
     @State private var isHealthRecordSheetPresented: Bool = false
+    @FocusState private var isDiaryFocused: Bool
 
     init(viewModel: CalendarViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -464,6 +465,7 @@ struct CalendarView: View {
 
             ZStack(alignment: .bottomTrailing) {
                 TextEditor(text: $diaryText)
+                    .focused($isDiaryFocused)
                     .frame(height: 120)
                     .padding(8)
                     .background(Color(.secondarySystemBackground))
@@ -513,6 +515,7 @@ struct CalendarView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: -4)
+        .onTapGesture { isDiaryFocused = false }
         .gesture(
             DragGesture(minimumDistance: 30)
                 .onEnded { value in
@@ -594,6 +597,7 @@ private struct CalendarHospitalVisitFormSheet: View {
 
     @State private var selectedTypes: Set<String>
     @State private var memo = ""
+    @FocusState private var isFocused: Bool
 
     private let visitTypes = ["내원", "채혈", "초음파"]
 
@@ -613,6 +617,7 @@ private struct CalendarHospitalVisitFormSheet: View {
 
                 Section("메모 (선택)") {
                     TextField("예: 담당 의사 면담", text: $memo)
+                        .focused($isFocused)
                 }
 
                 if let visit = existingVisit {
@@ -629,6 +634,7 @@ private struct CalendarHospitalVisitFormSheet: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle(existingVisit == nil ? "병원 일정 추가" : "병원 일정 수정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -654,6 +660,10 @@ private struct CalendarHospitalVisitFormSheet: View {
                         }
                     }
                     .disabled(selectedTypes.isEmpty)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }
@@ -711,6 +721,7 @@ private struct CalendarHealthRecordInputSheet: View {
     @State private var unitText = HealthRecordType.defaultUnits[HealthRecordType.fsh] ?? ""
     @State private var date: Date
     @State private var note = ""
+    @FocusState private var isFocused: Bool
 
     private let items = HealthRecordType.defaults
 
@@ -736,8 +747,10 @@ private struct CalendarHealthRecordInputSheet: View {
                 Section("수치") {
                     HStack {
                         TextField("수치", text: $valueText)
+                            .focused($isFocused)
                             .keyboardType(.decimalPad)
                         TextField("단위", text: $unitText)
+                            .focused($isFocused)
                             .multilineTextAlignment(.trailing)
                     }
                 }
@@ -749,8 +762,10 @@ private struct CalendarHealthRecordInputSheet: View {
 
                 Section("메모 (선택)") {
                     TextField("메모", text: $note)
+                        .focused($isFocused)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("검사 수치 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -776,6 +791,10 @@ private struct CalendarHealthRecordInputSheet: View {
                         Double(valueText.replacingOccurrences(of: ",", with: ".")) == nil
                             || unitText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                     )
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }

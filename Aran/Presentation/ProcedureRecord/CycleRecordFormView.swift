@@ -15,6 +15,7 @@ struct CycleRecordFormView: View {
     @State private var fertilizedCount = 0
     @State private var frozenCount = 0
     @State private var embryoGradesText = ""
+    @FocusState private var isFocused: Bool
 
     private var embryoGrades: [String] {
         embryoGradesText
@@ -39,8 +40,10 @@ struct CycleRecordFormView: View {
                     Stepper("수정 \(fertilizedCount)개", value: $fertilizedCount, in: 0...retrievalCount)
                     Stepper("동결 \(frozenCount)개", value: $frozenCount, in: 0...fertilizedCount)
                     TextField("배아 등급 예: 3AA, 4AB", text: $embryoGradesText)
+                        .focused($isFocused)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .onChange(of: retrievalCount) { _, newValue in
                 fertilizedCount = min(fertilizedCount, newValue)
                 frozenCount = min(frozenCount, fertilizedCount)
@@ -69,6 +72,10 @@ struct CycleRecordFormView: View {
                         }
                     }
                     .disabled(retrievalCount == 0)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }

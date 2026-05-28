@@ -234,6 +234,7 @@ private struct DiaryEditSheet: View {
 
     @State private var diaryEmoji = ""
     @State private var diaryText = ""
+    @FocusState private var isDiaryFocused: Bool
 
     private let emojiOptions = ["😊", "😟", "😰", "😣", "🥰"]
 
@@ -284,6 +285,7 @@ private struct DiaryEditSheet: View {
 
             ZStack(alignment: .bottomTrailing) {
                 TextEditor(text: $diaryText)
+                    .focused($isDiaryFocused)
                     .frame(height: 120)
                     .padding(8)
                     .background(Color(.secondarySystemBackground))
@@ -329,6 +331,7 @@ private struct DiaryEditSheet: View {
             .padding(.bottom, 32)
         }
         .presentationDetents([.medium])
+        .onTapGesture { isDiaryFocused = false }
         .onAppear {
             if let diary = viewModel.selectedRecord?.diary {
                 diaryEmoji = diary.emoji ?? ""
@@ -346,6 +349,7 @@ private struct HospitalVisitFormSheet: View {
 
     @State private var visitType = "내원"
     @State private var memo = ""
+    @FocusState private var isFocused: Bool
 
     private let visitTypes = ["내원", "채혈", "초음파"]
 
@@ -363,8 +367,10 @@ private struct HospitalVisitFormSheet: View {
 
                 Section("메모 (선택)") {
                     TextField("예: 담당 의사 면담", text: $memo)
+                        .focused($isFocused)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("병원 일정 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -380,6 +386,10 @@ private struct HospitalVisitFormSheet: View {
                             dismiss()
                         }
                     }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }
@@ -423,6 +433,7 @@ private struct TransferRecordFormView: View {
     @State private var embryoCount = 1
     @State private var transferType: TransferType = .fresh
     @State private var result: TransferResult = .pending
+    @FocusState private var isFocused: Bool
 
     enum FormMode: String, CaseIterable, Identifiable {
         case retrieval = "채취"
@@ -446,6 +457,7 @@ private struct TransferRecordFormView: View {
                 } else {
                     Stepper("\(cycleNumber)차 시술", value: $cycleNumber, in: 1 ... 20)
                     TextField("배아 등급 예: 3AA", text: $embryoGrade)
+                        .focused($isFocused)
                     Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1 ... 10)
                     Picker("이식 유형", selection: $transferType) {
                         Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
@@ -458,6 +470,7 @@ private struct TransferRecordFormView: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("채취 / 이식 기록")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -482,6 +495,10 @@ private struct TransferRecordFormView: View {
                             dismiss()
                         }
                     }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }

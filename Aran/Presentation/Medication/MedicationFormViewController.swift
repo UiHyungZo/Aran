@@ -66,6 +66,9 @@ final class MedicationFormViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .systemBackground
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
         title = initialMedication == nil ? "약 등록" : "약 수정"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close,
@@ -103,6 +106,7 @@ final class MedicationFormViewController: UIViewController {
 
     private func setupScrollView() {
         scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .onDrag
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -151,6 +155,10 @@ final class MedicationFormViewController: UIViewController {
         dosageField.font = AranFont.bodyUI()
         dosageField.clearButtonMode = .whileEditing
         dosageField.returnKeyType = .done
+
+        drugNameField.delegate = self
+        componentField.delegate = self
+        dosageField.delegate = self
 
         let selectedType = initialMedication?.type ?? .oral
         typeSegment.selectedSegmentIndex = MedicationType.allCases.firstIndex(of: selectedType) ?? 0
@@ -467,6 +475,10 @@ final class MedicationFormViewController: UIViewController {
         actions.onCancel()
     }
 
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
     private func deleteTapped() {
         guard let initialMedication else { return }
         let alert = UIAlertController(
@@ -479,5 +491,19 @@ final class MedicationFormViewController: UIViewController {
             self?.actions.onDelete(initialMedication)
         })
         present(alert, animated: true)
+    }
+}
+
+extension MedicationFormViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField {
+        case drugNameField:
+            componentField.becomeFirstResponder()
+        case componentField:
+            dosageField.becomeFirstResponder()
+        default:
+            textField.resignFirstResponder()
+        }
+        return true
     }
 }

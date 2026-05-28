@@ -90,6 +90,7 @@ struct DrugSearchView: View {
             TextField("약 이름으로 검색하세요", text: $viewModel.searchText)
                 .focused($isSearchFocused)
                 .submitLabel(.search)
+                .onSubmit { isSearchFocused = false }
 
             if !viewModel.searchText.isEmpty {
                 Button {
@@ -198,6 +199,7 @@ struct DrugSearchView: View {
             }
         }
         .listStyle(.plain)
+        .scrollDismissesKeyboard(.immediately)
     }
 
     private var loadingView: some View {
@@ -261,6 +263,7 @@ struct DrugSearchView: View {
                     .scaleEffect(1.4)
             }
         }
+        .scrollDismissesKeyboard(.immediately)
     }
 
     private var emptyView: some View {

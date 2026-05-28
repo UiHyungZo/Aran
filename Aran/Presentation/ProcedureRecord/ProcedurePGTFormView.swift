@@ -17,6 +17,7 @@ struct ProcedurePGTFormView: View {
     @State private var abnormalCount = 0
     @State private var mosaicCount = 0
     @State private var memo = ""
+    @FocusState private var isFocused: Bool
 
     private var isValid: Bool {
         !selectedType.showsEmbryoCounts || normalCount + abnormalCount + mosaicCount > 0
@@ -44,8 +45,10 @@ struct ProcedurePGTFormView: View {
 
                 Section("메모") {
                     TextField("선택", text: $memo, axis: .vertical)
+                        .focused($isFocused)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("검사 기록 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -68,6 +71,10 @@ struct ProcedurePGTFormView: View {
                         }
                     }
                     .disabled(!isValid)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") { isFocused = false }
                 }
             }
         }
