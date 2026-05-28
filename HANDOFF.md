@@ -33,6 +33,7 @@
 | 알림 개별 ON/OFF | `Presentation/Medication/MedicationListViewController.swift` | ✅ |
 | 최근 검색어 (UserDefaults) | `Presentation/DrugInfo/DrugInfoViewModel.swift` | ✅ |
 | build-debug.sh 시뮬레이터 버전 수정 | `scripts/build-debug.sh` | ✅ |
+| 전체 화면 키보드 Dismiss UX 개선 | `DrugSearchView`, `CalendarView`, `DateDetailSheet`, `CycleRecordFormView`, `ProcedurePGTFormView`, `TransferInputFormView`, `MedicationFormViewController`, `HealthRecordFormViewController` | ✅ |
 
 ---
 
@@ -51,6 +52,7 @@
 ## 알려진 이슈
 
 - CalendarView.swift: SourceKit 경고 다수 — 빌드/테스트는 정상. 무시해도 됨.
+- `.scrollDismissesKeyboard(.interactively)` iOS 26 시뮬레이터에서 미작동 확인. `keyboard.md` v3 기준으로 `.immediately` 교체 필요 (Codex 작업 예정).
 
 ---
 

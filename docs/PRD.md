@@ -159,6 +159,16 @@ Aran은 IVF 치료 흐름을 관리하는 iOS 포트폴리오 앱이다.
 
 ---
 
+## v14.1 변경사항
+
+- 전체 화면 키보드 Dismiss UX 개선
+  - UIKit 화면(약 등록/수정, 검사 수치 입력): 배경 탭 dismiss, 스크롤 dismiss, Return 키 포커스 체이닝
+  - SwiftUI Form 화면(차수/PGT/이식 기록, 병원 일정, 검사 수치 입력 시트): 스크롤 dismiss + 키보드 위 "완료" 버튼
+  - SwiftUI TextEditor(감정 일기): 패널/시트 내 바깥 영역 탭 dismiss
+  - 약 정보 검색: Search 키 dismiss, 결과 스크롤 dismiss
+
+---
+
 ## v14.0 변경사항
 
 - 복용 약 체크 캘린더 연동 — MedicationLog 모델 신규 추가
