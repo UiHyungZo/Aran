@@ -1,6 +1,14 @@
 import Foundation
 
-final class HospitalVisitUseCase {
+protocol HospitalVisitUseCaseProtocol {
+    func fetchAll() async throws -> [HospitalVisit]
+    func fetch(date: Date) async throws -> [HospitalVisit]
+    func save(visitDate: Date, visitTypes: [String], memo: String?) async throws
+    func update(_ visit: HospitalVisit) async throws
+    func delete(id: UUID) async throws
+}
+
+final class HospitalVisitUseCase: HospitalVisitUseCaseProtocol {
     private let repository: HospitalVisitRepositoryProtocol
 
     init(repository: HospitalVisitRepositoryProtocol) {

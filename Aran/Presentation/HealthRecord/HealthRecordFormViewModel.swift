@@ -25,11 +25,11 @@ final class HealthRecordFormViewModel {
         let error: Driver<String>
     }
 
-    private let useCase: HealthRecordUseCase
+    private let useCase: HealthRecordUseCaseProtocol
     private let mode: FormMode
     private let disposeBag = DisposeBag()
 
-    init(useCase: HealthRecordUseCase, mode: FormMode = .add) {
+    init(useCase: HealthRecordUseCaseProtocol, mode: FormMode = .add) {
         self.useCase = useCase
         self.mode = mode
     }

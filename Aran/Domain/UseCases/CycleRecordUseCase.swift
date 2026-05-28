@@ -1,6 +1,22 @@
 import Foundation
 
-final class CycleRecordUseCase {
+protocol CycleRecordUseCaseProtocol {
+    func fetchAll() async throws -> [CycleRecord]
+    func fetch(date: Date) async throws -> CycleRecord?
+    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws
+    func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws
+    func removeTransferEvent(transferID: UUID) async throws
+    func saveDiary(emoji: String?, text: String, for date: Date) async throws
+    func estimateOvulation(from periodStart: Date, cycleLength: Int) -> Date
+}
+
+extension CycleRecordUseCaseProtocol {
+    func addEvent(_ event: DayEvent, to date: Date) async throws {
+        try await addEvent(event, to: date, cycleNumber: 1)
+    }
+}
+
+final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
     private let repository: CycleRecordRepositoryProtocol
 
     init(repository: CycleRecordRepositoryProtocol) {

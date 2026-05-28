@@ -1,12 +1,20 @@
 import Foundation
 
-final class MedicationUseCase {
+protocol MedicationUseCaseProtocol {
+    func fetchAll() async throws -> [Medication]
+    func save(_ medication: Medication) async throws
+    func update(_ medication: Medication) async throws
+    func toggle(medication: Medication) async throws
+    func delete(medication: Medication) async throws
+}
+
+final class MedicationUseCase: MedicationUseCaseProtocol {
     private let medicationRepository: MedicationRepositoryProtocol
-    private let notificationUseCase: MedicationNotificationUseCase
+    private let notificationUseCase: MedicationNotificationUseCaseProtocol
 
     init(
         medicationRepository: MedicationRepositoryProtocol,
-        notificationUseCase: MedicationNotificationUseCase
+        notificationUseCase: MedicationNotificationUseCaseProtocol
     ) {
         self.medicationRepository = medicationRepository
         self.notificationUseCase = notificationUseCase

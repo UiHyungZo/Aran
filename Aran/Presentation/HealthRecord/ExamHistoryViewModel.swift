@@ -16,11 +16,11 @@ final class ExamHistoryViewModel {
         let error: Driver<String>
     }
 
-    private let useCase: HealthRecordUseCase
+    private let useCase: HealthRecordUseCaseProtocol
     let type: String
     private let disposeBag = DisposeBag()
 
-    init(useCase: HealthRecordUseCase, type: String) {
+    init(useCase: HealthRecordUseCaseProtocol, type: String) {
         self.useCase = useCase
         self.type = type
     }

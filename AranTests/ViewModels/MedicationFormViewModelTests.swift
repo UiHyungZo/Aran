@@ -4,28 +4,21 @@ import RxSwift
 import XCTest
 
 final class MedicationFormViewModelTests: XCTestCase {
-    private var medicationRepo: MockMedicationRepository!
-    private var notificationRepo: MockNotificationRepository!
+    private var mockUseCase: MockMedicationUseCase!
     private var sut: MedicationFormViewModel!
     private var disposeBag: DisposeBag!
 
     override func setUp() {
         super.setUp()
-        medicationRepo = MockMedicationRepository()
-        notificationRepo = MockNotificationRepository()
-        let useCase = MedicationUseCase(
-            medicationRepository: medicationRepo,
-            notificationRepository: notificationRepo
-        )
-        sut = MedicationFormViewModel(medicationUseCase: useCase)
+        mockUseCase = MockMedicationUseCase()
+        sut = MedicationFormViewModel(medicationUseCase: mockUseCase)
         disposeBag = DisposeBag()
     }
 
     override func tearDown() {
         sut = nil
         disposeBag = nil
-        medicationRepo = nil
-        notificationRepo = nil
+        mockUseCase = nil
         super.tearDown()
     }
 
@@ -117,7 +110,7 @@ final class MedicationFormViewModelTests: XCTestCase {
 
     func testSave_onFailure_emitsError() {
         // given
-        medicationRepo.shouldThrow = AppError.storageError(NSError(domain: "test", code: -1))
+        mockUseCase.shouldThrow = AppError.storageError(NSError(domain: "test", code: -1))
         let saveTapped = PublishSubject<Void>()
         let input = makeInput(drugName: "약A", dosage: "50mg", saveTapped: saveTapped.asObservable())
         let output = sut.transform(input: input)
@@ -138,12 +131,8 @@ final class MedicationFormViewModelTests: XCTestCase {
     func testSave_whenInitialMedicationExists_updatesExistingMedication() {
         // given
         let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
-        let useCase = MedicationUseCase(
-            medicationRepository: medicationRepo,
-            notificationRepository: notificationRepo
-        )
         sut = MedicationFormViewModel(
-            medicationUseCase: useCase,
+            medicationUseCase: mockUseCase,
             initialMedication: initialMedication
         )
 
@@ -161,10 +150,10 @@ final class MedicationFormViewModelTests: XCTestCase {
 
         // then
         wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(medicationRepo.savedMedications.isEmpty)
-        XCTAssertEqual(medicationRepo.updatedMedications.first?.id, initialMedication.id)
-        XCTAssertEqual(medicationRepo.updatedMedications.first?.drugName, "수정약")
-        XCTAssertEqual(medicationRepo.updatedMedications.first?.dosage, "200mg")
+        XCTAssertTrue(mockUseCase.savedMedications.isEmpty)
+        XCTAssertEqual(mockUseCase.updatedMedications.first?.id, initialMedication.id)
+        XCTAssertEqual(mockUseCase.updatedMedications.first?.drugName, "수정약")
+        XCTAssertEqual(mockUseCase.updatedMedications.first?.dosage, "200mg")
     }
 
     func testSave_whenComponentFilled_savesComponent() {
@@ -188,7 +177,7 @@ final class MedicationFormViewModelTests: XCTestCase {
 
         // then
         wait(for: [expectation], timeout: 2.0)
-        XCTAssertEqual(medicationRepo.savedMedications.first?.component, "Follitropin alfa")
+        XCTAssertEqual(mockUseCase.savedMedications.first?.component, "Follitropin alfa")
     }
 }
 

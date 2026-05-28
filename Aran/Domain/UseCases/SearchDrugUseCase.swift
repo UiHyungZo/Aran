@@ -1,6 +1,11 @@
 import Foundation
 
-final class SearchDrugUseCase {
+protocol SearchDrugUseCaseProtocol {
+    func execute(keyword: String, pageNo: Int) async throws -> [Drug]
+    func detail(itemSeq: String) async throws -> Drug
+}
+
+final class SearchDrugUseCase: SearchDrugUseCaseProtocol {
     private let repository: DrugRepositoryProtocol
 
     init(repository: DrugRepositoryProtocol) {

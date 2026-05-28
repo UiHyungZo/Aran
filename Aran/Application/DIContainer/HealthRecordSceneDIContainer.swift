@@ -17,8 +17,8 @@ final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencie
     private lazy var healthRecordRepository: HealthRecordRepositoryProtocol =
         HealthRecordRepository(context: dependencies.modelContext)
 
-    private lazy var healthRecordUseCase: HealthRecordUseCase =
-        .init(repository: healthRecordRepository)
+    private lazy var healthRecordUseCase: HealthRecordUseCaseProtocol =
+        HealthRecordUseCase(repository: healthRecordRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies

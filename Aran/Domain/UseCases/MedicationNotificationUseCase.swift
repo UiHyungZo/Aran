@@ -1,6 +1,14 @@
 import Foundation
 
-final class MedicationNotificationUseCase {
+protocol MedicationNotificationUseCaseProtocol {
+    func prepareForSave(_ medication: Medication) async throws -> Medication
+    func prepareForUpdate(_ medication: Medication) async throws -> Medication
+    func enable(_ medication: Medication) async throws -> Medication
+    func disable(_ medication: Medication) async throws -> Medication
+    func cancel(for medication: Medication) async throws
+}
+
+final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol {
     private let notificationRepository: NotificationRepositoryProtocol
 
     init(notificationRepository: NotificationRepositoryProtocol) {

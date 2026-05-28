@@ -1,0 +1,38 @@
+@testable import Aran
+import Foundation
+
+final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
+    var stubbedAll: [CycleRecord] = []
+    var stubbedRecord: CycleRecord?
+    var shouldThrow: Error?
+
+    func fetchAll() async throws -> [CycleRecord] {
+        if let error = shouldThrow { throw error }
+        return stubbedAll
+    }
+
+    func fetch(date: Date) async throws -> CycleRecord? {
+        if let error = shouldThrow { throw error }
+        return stubbedRecord
+    }
+
+    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
+    func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
+    func removeTransferEvent(transferID: UUID) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
+    func saveDiary(emoji: String?, text: String, for date: Date) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
+    func estimateOvulation(from periodStart: Date, cycleLength: Int) -> Date {
+        Calendar.current.date(byAdding: .day, value: cycleLength - 14, to: periodStart) ?? periodStart
+    }
+}

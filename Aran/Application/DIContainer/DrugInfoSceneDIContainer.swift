@@ -12,8 +12,8 @@ final class DrugInfoSceneDIContainer {
     private lazy var drugRepository: DrugRepositoryProtocol =
         DrugRepository(serviceKey: dependencies.drugServiceKey, baseURL: dependencies.drugAPIEndpoint)
 
-    private lazy var searchDrugUseCase: SearchDrugUseCase =
-        .init(repository: drugRepository)
+    private lazy var searchDrugUseCase: SearchDrugUseCaseProtocol =
+        SearchDrugUseCase(repository: drugRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies

@@ -50,14 +50,14 @@ final class ProcedureRecordViewModel: ObservableObject {
     @Published var isFormPresented = false
     @Published var errorMessage: String?
 
-    private let transferRecordUseCase: TransferRecordUseCase
-    private let cycleRecordUseCase: CycleRecordUseCase
-    private let pgtRecordUseCase: PGTRecordUseCase
+    private let transferRecordUseCase: TransferRecordUseCaseProtocol
+    private let cycleRecordUseCase: CycleRecordUseCaseProtocol
+    private let pgtRecordUseCase: PGTRecordUseCaseProtocol
 
     init(
-        transferRecordUseCase: TransferRecordUseCase,
-        cycleRecordUseCase: CycleRecordUseCase,
-        pgtRecordUseCase: PGTRecordUseCase
+        transferRecordUseCase: TransferRecordUseCaseProtocol,
+        cycleRecordUseCase: CycleRecordUseCaseProtocol,
+        pgtRecordUseCase: PGTRecordUseCaseProtocol
     ) {
         self.transferRecordUseCase = transferRecordUseCase
         self.cycleRecordUseCase = cycleRecordUseCase

@@ -1,6 +1,15 @@
 import Foundation
 
-final class TransferRecordUseCase {
+protocol TransferRecordUseCaseProtocol {
+    func fetchAll() async throws -> [TransferRecord]
+    func fetch(id: UUID) async throws -> TransferRecord?
+    func fetch(for date: Date) async throws -> [TransferRecord]
+    func save(_ record: TransferRecord) async throws
+    func update(_ record: TransferRecord) async throws
+    func delete(id: UUID) async throws
+}
+
+final class TransferRecordUseCase: TransferRecordUseCaseProtocol {
     private let repository: TransferRecordRepositoryProtocol
 
     init(repository: TransferRecordRepositoryProtocol) {

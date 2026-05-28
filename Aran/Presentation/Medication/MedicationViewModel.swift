@@ -15,10 +15,10 @@ final class MedicationViewModel {
         let error: Driver<String>
     }
 
-    private let medicationUseCase: MedicationUseCase
+    private let medicationUseCase: MedicationUseCaseProtocol
     private let disposeBag = DisposeBag()
 
-    init(medicationUseCase: MedicationUseCase) {
+    init(medicationUseCase: MedicationUseCaseProtocol) {
         self.medicationUseCase = medicationUseCase
     }
 

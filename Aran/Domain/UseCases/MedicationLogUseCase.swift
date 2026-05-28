@@ -1,6 +1,13 @@
 import Foundation
 
-final class MedicationLogUseCase {
+protocol MedicationLogUseCaseProtocol {
+    func fetchAll() async throws -> [MedicationLog]
+    func fetch(date: Date) async throws -> [MedicationLog]
+    func fetch(medicationId: UUID, date: Date) async throws -> MedicationLog?
+    func toggle(medicationId: UUID, date: Date) async throws
+}
+
+final class MedicationLogUseCase: MedicationLogUseCaseProtocol {
     private let repository: MedicationLogRepositoryProtocol
 
     init(repository: MedicationLogRepositoryProtocol) {

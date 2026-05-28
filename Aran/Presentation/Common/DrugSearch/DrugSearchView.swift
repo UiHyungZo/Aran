@@ -233,7 +233,7 @@ struct DrugSearchView: View {
                 }
 
                 Button {
-                    onRegisterDrug("", "")
+                    onRegisterDrug("", "", "")
                 } label: {
                     Text("직접 입력하기")
                         .font(.system(size: 15, weight: .medium))
@@ -310,7 +310,7 @@ struct DrugSearchView: View {
                         .font(.system(size: 13))
                         .foregroundStyle(Color.secondary)
                     Button {
-                        onRegisterDrug("", "")
+                        onRegisterDrug("", "", "")
                     } label: {
                         Text("직접 입력하기")
                             .font(.system(size: 14, weight: .medium))

@@ -1,6 +1,12 @@
 import Foundation
 
-final class DiaryEntryUseCase {
+protocol DiaryEntryUseCaseProtocol {
+    func fetchAll() async throws -> [DiaryEntry]
+    func fetch(date: Date) async throws -> DiaryEntry?
+    func save(date: Date, emoji: String?, content: String) async throws
+}
+
+final class DiaryEntryUseCase: DiaryEntryUseCaseProtocol {
     private let repository: DiaryEntryRepositoryProtocol
 
     init(repository: DiaryEntryRepositoryProtocol) {

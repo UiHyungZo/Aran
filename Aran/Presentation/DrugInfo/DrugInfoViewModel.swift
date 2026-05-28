@@ -20,12 +20,12 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var detailError: String?
     @Published var favoriteItemSeqs: Set<String> = []
 
-    private let searchDrugUseCase: SearchDrugUseCase
+    private let searchDrugUseCase: SearchDrugUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
     private let recentSearchesKey = "recentDrugSearches"
     private let favoritesKey = "favoriteDrugItemSeqs"
 
-    init(searchDrugUseCase: SearchDrugUseCase) {
+    init(searchDrugUseCase: SearchDrugUseCaseProtocol) {
         self.searchDrugUseCase = searchDrugUseCase
         loadRecentSearches()
         loadFavorites()

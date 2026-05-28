@@ -1,6 +1,14 @@
 import Foundation
 
-final class MenstrualCycleUseCase {
+protocol MenstrualCycleUseCaseProtocol {
+    func fetchAll() async throws -> [MenstrualCycle]
+    func fetch(date: Date) async throws -> MenstrualCycle?
+    func save(startDate: Date, cycleLength: Int) async throws
+    func calculateOvulationDate(startDate: Date, cycleLength: Int) -> Date
+    func periodDates(for cycle: MenstrualCycle) -> [Date]
+}
+
+final class MenstrualCycleUseCase: MenstrualCycleUseCaseProtocol {
     private let repository: MenstrualCycleRepositoryProtocol
 
     init(repository: MenstrualCycleRepositoryProtocol) {

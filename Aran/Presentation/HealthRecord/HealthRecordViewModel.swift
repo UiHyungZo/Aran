@@ -22,10 +22,10 @@ final class HealthRecordViewModel {
         let error: Driver<String>
     }
 
-    private let useCase: HealthRecordUseCase
+    private let useCase: HealthRecordUseCaseProtocol
     private let disposeBag = DisposeBag()
 
-    init(useCase: HealthRecordUseCase) {
+    init(useCase: HealthRecordUseCaseProtocol) {
         self.useCase = useCase
     }
 

@@ -1,6 +1,15 @@
 import Foundation
 
-final class HealthRecordUseCase {
+protocol HealthRecordUseCaseProtocol {
+    func fetchAll() async throws -> [HealthRecord]
+    func fetch(type: String) async throws -> [HealthRecord]
+    func save(type: String, value: Double, unit: String, recordDate: Date, memo: String?) async throws
+    func update(_ record: HealthRecord) async throws
+    func fetchLatestPerItem() async throws -> [String: [HealthRecord]]
+    func delete(id: UUID) async throws
+}
+
+final class HealthRecordUseCase: HealthRecordUseCaseProtocol {
     private let repository: HealthRecordRepositoryProtocol
 
     init(repository: HealthRecordRepositoryProtocol) {

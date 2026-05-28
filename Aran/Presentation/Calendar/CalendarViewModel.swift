@@ -18,25 +18,25 @@ final class CalendarViewModel: ObservableObject {
     @Published var diaryEntries: [Date: DiaryEntry] = [:]
     @Published var selectedDiary: DiaryEntry?
 
-    private let cycleRecordUseCase: CycleRecordUseCase
-    private let healthRecordUseCase: HealthRecordUseCase
-    private let transferRecordUseCase: TransferRecordUseCase
-    private let medicationUseCase: MedicationUseCase
-    private let hospitalVisitUseCase: HospitalVisitUseCase
-    private let menstrualCycleUseCase: MenstrualCycleUseCase
-    private let medicationLogUseCase: MedicationLogUseCase
-    private let diaryEntryUseCase: DiaryEntryUseCase
+    private let cycleRecordUseCase: CycleRecordUseCaseProtocol
+    private let healthRecordUseCase: HealthRecordUseCaseProtocol
+    private let transferRecordUseCase: TransferRecordUseCaseProtocol
+    private let medicationUseCase: MedicationUseCaseProtocol
+    private let hospitalVisitUseCase: HospitalVisitUseCaseProtocol
+    private let menstrualCycleUseCase: MenstrualCycleUseCaseProtocol
+    private let medicationLogUseCase: MedicationLogUseCaseProtocol
+    private let diaryEntryUseCase: DiaryEntryUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
 
     init(
-        cycleRecordUseCase: CycleRecordUseCase,
-        healthRecordUseCase: HealthRecordUseCase,
-        transferRecordUseCase: TransferRecordUseCase,
-        medicationUseCase: MedicationUseCase,
-        hospitalVisitUseCase: HospitalVisitUseCase,
-        menstrualCycleUseCase: MenstrualCycleUseCase,
-        medicationLogUseCase: MedicationLogUseCase,
-        diaryEntryUseCase: DiaryEntryUseCase
+        cycleRecordUseCase: CycleRecordUseCaseProtocol,
+        healthRecordUseCase: HealthRecordUseCaseProtocol,
+        transferRecordUseCase: TransferRecordUseCaseProtocol,
+        medicationUseCase: MedicationUseCaseProtocol,
+        hospitalVisitUseCase: HospitalVisitUseCaseProtocol,
+        menstrualCycleUseCase: MenstrualCycleUseCaseProtocol,
+        medicationLogUseCase: MedicationLogUseCaseProtocol,
+        diaryEntryUseCase: DiaryEntryUseCaseProtocol
     ) {
         self.cycleRecordUseCase = cycleRecordUseCase
         self.healthRecordUseCase = healthRecordUseCase

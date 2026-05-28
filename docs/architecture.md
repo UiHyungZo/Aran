@@ -713,9 +713,12 @@ Mock 예시:
 5. 유지보수 가능한 파일 구조
 6. 과하지 않은 추상화
 
+지향:
+
+* UseCase는 Protocol을 정의하고 구현체를 분리한다 (ViewModel 격리 테스트 가능)
+
 지양:
 
-* 사용 사례가 1개뿐인 불필요한 Protocol
 * 과도한 Generic 기반 추상화
 * Feature 내부 RxSwift / Combine 혼합
 * ViewModel에 모든 로직 집중

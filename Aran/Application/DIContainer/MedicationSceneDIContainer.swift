@@ -22,8 +22,8 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
     private lazy var notificationRepository: NotificationRepositoryProtocol =
         NotificationManager()
 
-    private lazy var medicationUseCase: MedicationUseCase =
-        .init(
+    private lazy var medicationUseCase: MedicationUseCaseProtocol =
+        MedicationUseCase(
             medicationRepository: medicationRepository,
             notificationRepository: notificationRepository
         )
@@ -31,8 +31,8 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
     private lazy var drugRepository: DrugRepositoryProtocol =
         DrugRepository(serviceKey: dependencies.drugServiceKey, baseURL: dependencies.drugAPIEndpoint)
 
-    private lazy var searchDrugUseCase: SearchDrugUseCase =
-        .init(repository: drugRepository)
+    private lazy var searchDrugUseCase: SearchDrugUseCaseProtocol =
+        SearchDrugUseCase(repository: drugRepository)
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies

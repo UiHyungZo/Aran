@@ -21,11 +21,11 @@ final class MedicationFormViewModel {
         let error: Driver<String>
     }
 
-    private let medicationUseCase: MedicationUseCase
+    private let medicationUseCase: MedicationUseCaseProtocol
     private let initialMedication: Medication?
     private let disposeBag = DisposeBag()
 
-    init(medicationUseCase: MedicationUseCase, initialMedication: Medication? = nil) {
+    init(medicationUseCase: MedicationUseCaseProtocol, initialMedication: Medication? = nil) {
         self.medicationUseCase = medicationUseCase
         self.initialMedication = initialMedication
     }

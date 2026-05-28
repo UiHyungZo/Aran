@@ -1,6 +1,13 @@
 import Foundation
 
-final class PGTRecordUseCase {
+protocol PGTRecordUseCaseProtocol {
+    func fetchAll() async throws -> [PGTRecord]
+    func fetch(cycleRecordId: UUID) async throws -> [PGTRecord]
+    func save(cycleRecordId: UUID, testDate: Date, type: PGTType, normalCount: Int, abnormalCount: Int, mosaicCount: Int, memo: String?) async throws
+    func delete(id: UUID) async throws
+}
+
+final class PGTRecordUseCase: PGTRecordUseCaseProtocol {
     private let repository: PGTRecordRepositoryProtocol
 
     init(repository: PGTRecordRepositoryProtocol) {
