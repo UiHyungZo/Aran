@@ -16,12 +16,28 @@ final class MedicationListViewController: UIViewController {
     private let viewWillAppearSubject = PublishSubject<Void>()
 
     private var medications: [Medication] = []
-    private var activeMedications: [Medication] {
-        medications.filter(\.isEnabled)
+    private struct MedicationSection {
+        let title: String
+        let medications: [Medication]
     }
 
-    private var inactiveMedications: [Medication] {
-        medications.filter { !$0.isEnabled }
+    private var alarmMedicationKeys: Set<String> {
+        Set(medications.filter(\.isEnabled).map(groupKey(for:)))
+    }
+
+    private var alarmMedications: [Medication] {
+        medications.filter { alarmMedicationKeys.contains(groupKey(for: $0)) }
+    }
+
+    private var nonAlarmMedications: [Medication] {
+        medications.filter { !alarmMedicationKeys.contains(groupKey(for: $0)) }
+    }
+
+    private var sections: [MedicationSection] {
+        [
+            MedicationSection(title: "알림", medications: alarmMedications),
+            MedicationSection(title: "미알림", medications: nonAlarmMedications),
+        ].filter { !$0.medications.isEmpty }
     }
 
     init(viewModel: MedicationViewModel, actions: MedicationListActions) {
@@ -131,7 +147,16 @@ final class MedicationListViewController: UIViewController {
     }
 
     private func medication(at indexPath: IndexPath) -> Medication {
-        indexPath.section == 0 ? activeMedications[indexPath.row] : inactiveMedications[indexPath.row]
+        sections[indexPath.section].medications[indexPath.row]
+    }
+
+    private func groupKey(for medication: Medication) -> String {
+        medication.drugName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    private func sectionTitle(at section: Int) -> String {
+        let medicationSection = sections[section]
+        return "\(medicationSection.title) (\(medicationSection.medications.count))"
     }
 }
 
@@ -139,11 +164,11 @@ final class MedicationListViewController: UIViewController {
 
 extension MedicationListViewController: UITableViewDataSource {
     func numberOfSections(in _: UITableView) -> Int {
-        inactiveMedications.isEmpty ? 1 : 2
+        sections.count
     }
 
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
-        section == 0 ? activeMedications.count : inactiveMedications.count
+        sections[section].medications.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -154,12 +179,15 @@ extension MedicationListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let medication = medication(at: indexPath)
-        cell.configure(with: medication)
+        cell.configure(
+            with: medication,
+            isInAlarmGroup: alarmMedicationKeys.contains(groupKey(for: medication))
+        )
         return cell
     }
 
     func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
-        section == 0 ? "복용 중 (\(activeMedications.count))" : "중단됨 (\(inactiveMedications.count))"
+        sectionTitle(at: section)
     }
 }
 
@@ -182,7 +210,7 @@ extension MedicationListViewController: UITableViewDelegate {
             completion(true)
         }
 
-        let toggleTitle = medication.isEnabled ? "중단" : "재개"
+        let toggleTitle = medication.isEnabled ? "알림 끄기" : "알림 켜기"
         let toggleAction = UIContextualAction(style: .normal, title: toggleTitle) { [weak self] _, _, completion in
             self?.toggleRelay.accept(medication)
             completion(true)
@@ -194,7 +222,7 @@ extension MedicationListViewController: UITableViewDelegate {
 
     func tableView(_: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
-        label.text = section == 0 ? "복용 중 (\(activeMedications.count))" : "중단됨 (\(inactiveMedications.count))"
+        label.text = sectionTitle(at: section)
         label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .secondaryLabel
 

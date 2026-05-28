@@ -55,19 +55,21 @@ final class MedicationCell: UITableViewCell {
         ])
     }
 
-    func configure(with medication: Medication) {
+    func configure(with medication: Medication, isInAlarmGroup: Bool) {
         nameLabel.text = medication.drugName
 
-        if medication.isEnabled {
+        if isInAlarmGroup {
             statusButton.setImage(UIImage(systemName: "circle.fill"), for: .normal)
             statusButton.tintColor = typeColor(for: medication.type)
-            subtitleLabel.text = formattedTimes(medication.schedule.sortedTimeSlots.map(\.time))
+            subtitleLabel.text = medication.isEnabled
+                ? formattedTimes(medication.schedule.sortedTimeSlots.map(\.time))
+                : "같은 약품 알림 켜짐"
             subtitleLabel.textColor = .secondaryLabel
             nameLabel.textColor = .label
         } else {
             statusButton.setImage(UIImage(systemName: "circle"), for: .normal)
             statusButton.tintColor = .tertiaryLabel
-            subtitleLabel.text = formattedStopDate(medication)
+            subtitleLabel.text = "알림 없음"
             subtitleLabel.textColor = .tertiaryLabel
             nameLabel.textColor = .secondaryLabel
         }
@@ -81,14 +83,6 @@ final class MedicationCell: UITableViewCell {
         let timeStr = formatter.string(from: first)
         let suffix = dates.count > 1 ? " 외 \(dates.count - 1)개" : ""
         return "\(timeStr)\(suffix) · 매일"
-    }
-
-    private func formattedStopDate(_ medication: Medication) -> String {
-        let date = medication.schedule.endDate ?? medication.createdAt
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M/d"
-        return "중단일 \(formatter.string(from: date))"
     }
 
     private func typeColor(for type: MedicationType) -> UIColor {

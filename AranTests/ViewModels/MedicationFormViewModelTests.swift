@@ -157,6 +157,59 @@ final class MedicationFormViewModelTests: XCTestCase {
         XCTAssertEqual(mockUseCase.updatedMedications.first?.dosage, "200mg")
     }
 
+    func testSave_whenInitialMedicationExists_preservesMatchingTimeSlotID() {
+        // given
+        let slotID = UUID()
+        let medicationID = UUID()
+        let existingTime = makeTime(hour: 9, minute: 30)
+        let initialMedication = Medication(
+            id: medicationID,
+            drugName: "기존약",
+            dosage: "100mg",
+            type: .oral,
+            schedule: MedicationSchedule(
+                timeSlots: [
+                    MedicationTimeSlot(
+                        id: slotID,
+                        time: existingTime,
+                        isEnabled: true,
+                        medicationID: medicationID
+                    )
+                ],
+                startDate: Date(),
+                endDate: nil
+            ),
+            isEnabled: true,
+            notificationIDs: [],
+            createdAt: Date()
+        )
+        sut = MedicationFormViewModel(
+            medicationUseCase: mockUseCase,
+            initialMedication: initialMedication
+        )
+
+        let saveTapped = PublishSubject<Void>()
+        let input = makeInput(
+            drugName: "수정약",
+            dosage: "200mg",
+            times: [existingTime],
+            saveTapped: saveTapped.asObservable()
+        )
+        let output = sut.transform(input: input)
+
+        let expectation = XCTestExpectation(description: "update completed")
+        output.saveCompleted
+            .drive(onNext: { expectation.fulfill() })
+            .disposed(by: disposeBag)
+
+        // when
+        saveTapped.onNext(())
+
+        // then
+        wait(for: [expectation], timeout: 2.0)
+        XCTAssertEqual(mockUseCase.updatedMedications.first?.schedule.timeSlots.first?.id, slotID)
+    }
+
     func testSave_whenComponentFilled_savesComponent() {
         // given
         let saveTapped = PublishSubject<Void>()
@@ -189,6 +242,7 @@ private extension MedicationFormViewModelTests {
         drugName: String = "",
         component: String = "",
         dosage: String = "",
+        times: [Date] = [Date()],
         saveTapped: Observable<Void> = .empty()
     ) -> MedicationFormViewModel.Input {
         MedicationFormViewModel.Input(
@@ -196,7 +250,7 @@ private extension MedicationFormViewModelTests {
             typeSelected: .just(.oral),
             componentChanged: .just(component),
             dosageChanged: .just(dosage),
-            timesChanged: .just([Date()]),
+            timesChanged: .just(times),
             startDateChanged: .just(Date()),
             endDateChanged: .just(nil),
             isNotificationEnabled: .just(false),
@@ -219,5 +273,9 @@ private extension MedicationFormViewModelTests {
             notificationIDs: [],
             createdAt: Date()
         )
+    }
+
+    func makeTime(hour: Int, minute: Int = 0) -> Date {
+        Calendar.current.date(from: DateComponents(year: 2026, month: 5, day: 1, hour: hour, minute: minute)) ?? Date()
     }
 }

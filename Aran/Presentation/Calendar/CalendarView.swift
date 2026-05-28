@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CalendarView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel: CalendarViewModel
     @State private var pageIndex: Int = 1
     @State private var calendarID: UUID = .init()
@@ -109,6 +110,10 @@ struct CalendarView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .task { await viewModel.loadMonthRecords() }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
+            Task { await viewModel.loadMonthRecords() }
+        }
     }
 
     // MARK: - 월 헤더

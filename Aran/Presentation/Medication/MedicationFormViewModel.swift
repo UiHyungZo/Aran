@@ -86,14 +86,11 @@ final class MedicationFormViewModel {
                 let defaultTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: startDate) ?? startDate
                 let medicationId = self.initialMedication?.id ?? UUID()
                 let slotTimes = times.isEmpty ? [defaultTime] : times
-                let timeSlots = slotTimes.map {
-                    MedicationTimeSlot(
-                        id: UUID(),
-                        time: $0,
-                        isEnabled: notificationsEnabled,
-                        medicationID: medicationId
-                    )
-                }
+                let timeSlots = self.makeTimeSlots(
+                    from: slotTimes,
+                    medicationId: medicationId,
+                    notificationsEnabled: notificationsEnabled
+                )
                 let schedule = MedicationSchedule(
                     timeSlots: timeSlots,
                     startDate: startDate,
@@ -140,5 +137,35 @@ final class MedicationFormViewModel {
             error: errorRelay.asDriver(onErrorJustReturn: ""),
             notificationPermissionDenied: notificationPermissionDeniedRelay.asDriver(onErrorJustReturn: ())
         )
+    }
+
+    private func makeTimeSlots(
+        from slotTimes: [Date],
+        medicationId: UUID,
+        notificationsEnabled: Bool
+    ) -> [MedicationTimeSlot] {
+        var reusableSlots = initialMedication?.schedule.sortedTimeSlots ?? []
+        return slotTimes.map { time in
+            let id = reuseSlotID(for: time, from: &reusableSlots) ?? UUID()
+            return MedicationTimeSlot(
+                id: id,
+                time: time,
+                isEnabled: notificationsEnabled,
+                medicationID: medicationId
+            )
+        }
+    }
+
+    private func reuseSlotID(for time: Date, from reusableSlots: inout [MedicationTimeSlot]) -> UUID? {
+        guard let index = reusableSlots.firstIndex(where: { isSameClockTime($0.time, time) }) else {
+            return nil
+        }
+        return reusableSlots.remove(at: index).id
+    }
+
+    private func isSameClockTime(_ lhs: Date, _ rhs: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.component(.hour, from: lhs) == calendar.component(.hour, from: rhs)
+            && calendar.component(.minute, from: lhs) == calendar.component(.minute, from: rhs)
     }
 }

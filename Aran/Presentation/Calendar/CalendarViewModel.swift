@@ -237,20 +237,7 @@ final class CalendarViewModel: ObservableObject {
         do {
             try await medicationLogUseCase.toggle(medicationId: medicationId, date: date, timeSlotID: timeSlotID)
             let key = Calendar.current.startOfDay(for: date)
-            if let idx = medicationLogs[key]?.firstIndex(where: {
-                $0.medicationId == medicationId && $0.timeSlotID == timeSlotID
-            }) {
-                medicationLogs[key]?[idx].isTaken.toggle()
-            } else {
-                let newLog = MedicationLog(
-                    id: UUID(),
-                    medicationId: medicationId,
-                    logDate: key,
-                    isTaken: true,
-                    timeSlotID: timeSlotID
-                )
-                medicationLogs[key, default: []].append(newLog)
-            }
+            medicationLogs[key] = try await medicationLogUseCase.fetch(date: date)
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
         }
