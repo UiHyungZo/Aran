@@ -24,7 +24,7 @@ final class DrugAPIClientTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_searchDrugs_whenValidResponse_thenReturnsDrugArray() async throws {
+    func test_searchDrugs_whenValidResponse_thenReturnsDrugSearchResult() async throws {
         // given
         MockURLProtocol.requestHandler = { _ in
             let response = HTTPURLResponse(
@@ -56,8 +56,10 @@ final class DrugAPIClientTests: XCTestCase {
         let result = try await sut.searchDrugs(keyword: "프로게스테론", pageNo: 1)
 
         // then
-        XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result.first?.itemName, "프로게스테론질정")
+        XCTAssertEqual(result.drugs.count, 1)
+        XCTAssertEqual(result.drugs.first?.itemName, "프로게스테론질정")
+        XCTAssertEqual(result.totalCount, 1)
+        XCTAssertEqual(result.pageNo, 1)
     }
 
     func test_searchDrugs_whenServerReturns500_thenThrowsError() async {
@@ -81,7 +83,7 @@ final class DrugAPIClientTests: XCTestCase {
         }
     }
 
-    func test_searchDrugs_whenResponseIsEmpty_thenReturnsEmptyArray() async throws {
+    func test_searchDrugs_whenResponseIsEmpty_thenReturnsEmptyResult() async throws {
         // given
         MockURLProtocol.requestHandler = { _ in
             let response = HTTPURLResponse(
@@ -107,7 +109,9 @@ final class DrugAPIClientTests: XCTestCase {
         let result = try await sut.searchDrugs(keyword: "없는약", pageNo: 1)
 
         // then
-        XCTAssertTrue(result.isEmpty)
+        XCTAssertTrue(result.drugs.isEmpty)
+        XCTAssertEqual(result.totalCount, 0)
+        XCTAssertEqual(result.pageNo, 1)
     }
 
     func test_searchDrugs_whenDecodingFails_thenThrowsError() async {

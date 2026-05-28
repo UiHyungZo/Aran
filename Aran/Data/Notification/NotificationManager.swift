@@ -9,14 +9,14 @@ final class NotificationManager: NotificationRepositoryProtocol {
         guard granted else { throw AppError.notificationError(NotificationError.permissionDenied) }
 
         var ids: [String] = []
-        for time in medication.schedule.times {
-            let id = "\(medication.id.uuidString)-\(time.timeIntervalSince1970)"
+        for slot in medication.schedule.timeSlots where slot.isEnabled {
+            let id = slot.id.uuidString
             let content = UNMutableNotificationContent()
             content.title = "복약 알림"
             content.body = "\(medication.drugName) \(medication.dosage) 복용 시간입니다."
             content.sound = .default
 
-            let components = Calendar.current.dateComponents([.hour, .minute], from: time)
+            let components = Calendar.current.dateComponents([.hour, .minute], from: slot.time)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
             let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
 

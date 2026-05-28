@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import XCTest
 
+@MainActor
 final class MedicationFormViewModelTests: XCTestCase {
     private var mockUseCase: MockMedicationUseCase!
     private var sut: MedicationFormViewModel!
@@ -56,7 +57,7 @@ final class MedicationFormViewModelTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
-    func testIsSaveEnabled_whenDosageEmpty_isFalse() {
+    func testIsSaveEnabled_whenDosageEmpty_isTrue() {
         // given
         let input = makeInput(drugName: "프로게스테론", dosage: "")
 
@@ -69,7 +70,7 @@ final class MedicationFormViewModelTests: XCTestCase {
             .drive(onNext: { result = $0 })
             .disposed(by: disposeBag)
 
-        XCTAssertFalse(result)
+        XCTAssertTrue(result)
     }
 
     func testIsSaveEnabled_whenNameWhitespaceOnly_isFalse() {

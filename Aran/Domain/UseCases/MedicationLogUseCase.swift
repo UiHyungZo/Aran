@@ -4,7 +4,7 @@ protocol MedicationLogUseCaseProtocol {
     func fetchAll() async throws -> [MedicationLog]
     func fetch(date: Date) async throws -> [MedicationLog]
     func fetch(medicationId: UUID, date: Date) async throws -> MedicationLog?
-    func toggle(medicationId: UUID, date: Date, timeIndex: Int) async throws
+    func toggle(medicationId: UUID, date: Date, timeSlotID: UUID) async throws
 }
 
 final class MedicationLogUseCase: MedicationLogUseCaseProtocol {
@@ -26,8 +26,8 @@ final class MedicationLogUseCase: MedicationLogUseCaseProtocol {
         try await repository.fetch(medicationId: medicationId, date: date)
     }
 
-    func toggle(medicationId: UUID, date: Date, timeIndex: Int) async throws {
-        if var existing = try await repository.fetch(medicationId: medicationId, date: date, timeIndex: timeIndex) {
+    func toggle(medicationId: UUID, date: Date, timeSlotID: UUID) async throws {
+        if var existing = try await repository.fetch(medicationId: medicationId, date: date, timeSlotID: timeSlotID) {
             existing.isTaken.toggle()
             try await repository.upsert(existing)
         } else {
@@ -36,7 +36,7 @@ final class MedicationLogUseCase: MedicationLogUseCaseProtocol {
                 medicationId: medicationId,
                 logDate: Calendar.current.startOfDay(for: date),
                 isTaken: true,
-                timeIndex: timeIndex
+                timeSlotID: timeSlotID
             )
             try await repository.upsert(log)
         }

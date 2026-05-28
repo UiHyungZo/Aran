@@ -94,6 +94,7 @@ final class MedicationListViewController: UIViewController {
         let input = MedicationViewModel.Input(
             viewDidLoad: viewWillAppearSubject.asObservable(),
             toggleMedication: toggleRelay.asObservable(),
+            toggleTimeSlot: .empty(),
             deleteMedication: deleteRelay.asObservable()
         )
 

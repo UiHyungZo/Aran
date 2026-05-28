@@ -6,6 +6,7 @@ final class MockMedicationUseCase: MedicationUseCaseProtocol {
     var savedMedications: [Medication] = []
     var updatedMedications: [Medication] = []
     var toggledMedications: [Medication] = []
+    var toggledTimeSlots: [(medication: Medication, slotID: UUID)] = []
     var deletedMedications: [Medication] = []
     var shouldThrow: Error?
 
@@ -27,6 +28,11 @@ final class MockMedicationUseCase: MedicationUseCaseProtocol {
     func toggle(medication: Medication) async throws {
         if let error = shouldThrow { throw error }
         toggledMedications.append(medication)
+    }
+
+    func toggleTimeSlot(medication: Medication, timeSlotID: UUID) async throws {
+        if let error = shouldThrow { throw error }
+        toggledTimeSlots.append((medication, timeSlotID))
     }
 
     func delete(medication: Medication) async throws {

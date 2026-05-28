@@ -199,7 +199,7 @@ struct DrugSearchView: View {
             }
         }
         .listStyle(.plain)
-        .scrollDismissesKeyboard(.immediately)
+        .scrollDismissesKeyboard(.never)
     }
 
     private var loadingView: some View {

@@ -342,32 +342,26 @@ struct CalendarView: View {
             .padding(.bottom, meds.isEmpty ? 12 : 6)
 
             ForEach(meds) { med in
-                let sortedPairs = med.schedule.times.enumerated()
-                    .sorted { a, b in
-                        let cal = Calendar.current
-                        let aMin = cal.component(.hour, from: a.element) * 60 + cal.component(.minute, from: a.element)
-                        let bMin = cal.component(.hour, from: b.element) * 60 + cal.component(.minute, from: b.element)
-                        return aMin < bMin
-                    }
-                ForEach(sortedPairs, id: \.offset) { pair in
+                let sortedSlots = med.schedule.sortedTimeSlots
+                ForEach(sortedSlots, id: \.id) { slot in
                     Button {
                         Task {
                             await viewModel.toggleMedicationLog(
                                 medicationId: med.id,
                                 date: viewModel.selectedDate,
-                                timeIndex: pair.offset
+                                timeSlotID: slot.id
                             )
                         }
                     } label: {
                         HStack {
                             medicationCheckmark(
-                                isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate, timeIndex: pair.offset)
+                                isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate, timeSlotID: slot.id)
                             )
                             Text(med.drugName)
                                 .font(AranFont.body())
                                 .foregroundStyle(.primary)
                             Spacer()
-                            Text(formattedTime(pair.element))
+                            Text(formattedTime(slot.time))
                                 .font(AranFont.caption())
                                 .foregroundStyle(.secondary)
                         }

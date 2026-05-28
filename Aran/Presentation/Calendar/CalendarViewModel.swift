@@ -121,10 +121,10 @@ final class CalendarViewModel: ObservableObject {
         hospitalVisits[Calendar.current.startOfDay(for: date)] ?? []
     }
 
-    func isMedicationTaken(_ medication: Medication, on date: Date, timeIndex: Int) -> Bool {
+    func isMedicationTaken(_ medication: Medication, on date: Date, timeSlotID: UUID) -> Bool {
         let key = Calendar.current.startOfDay(for: date)
         return medicationLogs[key]?.first {
-            $0.medicationId == medication.id && $0.timeIndex == timeIndex
+            $0.medicationId == medication.id && $0.timeSlotID == timeSlotID
         }?.isTaken ?? false
     }
 
@@ -233,16 +233,22 @@ final class CalendarViewModel: ObservableObject {
         menstrualCycleUseCase.calculateOvulationDate(startDate: startDate, cycleLength: cycleLength)
     }
 
-    func toggleMedicationLog(medicationId: UUID, date: Date, timeIndex: Int) async {
+    func toggleMedicationLog(medicationId: UUID, date: Date, timeSlotID: UUID) async {
         do {
-            try await medicationLogUseCase.toggle(medicationId: medicationId, date: date, timeIndex: timeIndex)
+            try await medicationLogUseCase.toggle(medicationId: medicationId, date: date, timeSlotID: timeSlotID)
             let key = Calendar.current.startOfDay(for: date)
             if let idx = medicationLogs[key]?.firstIndex(where: {
-                $0.medicationId == medicationId && $0.timeIndex == timeIndex
+                $0.medicationId == medicationId && $0.timeSlotID == timeSlotID
             }) {
                 medicationLogs[key]?[idx].isTaken.toggle()
             } else {
-                let newLog = MedicationLog(id: UUID(), medicationId: medicationId, logDate: key, isTaken: true, timeIndex: timeIndex)
+                let newLog = MedicationLog(
+                    id: UUID(),
+                    medicationId: medicationId,
+                    logDate: key,
+                    isTaken: true,
+                    timeSlotID: timeSlotID
+                )
                 medicationLogs[key, default: []].append(newLog)
             }
         } catch {

@@ -20,12 +20,12 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
         }
     }
 
-    func fetch(medicationId: UUID, date: Date, timeIndex: Int) async throws -> MedicationLog? {
+    func fetch(medicationId: UUID, date: Date, timeSlotID: UUID) async throws -> MedicationLog? {
         let day = Calendar.current.startOfDay(for: date)
         return logs.first {
             $0.medicationId == medicationId
                 && Calendar.current.isDate($0.logDate, inSameDayAs: day)
-                && $0.timeIndex == timeIndex
+                && $0.timeSlotID == timeSlotID
         }
     }
 
@@ -34,7 +34,7 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
         if let index = logs.firstIndex(where: {
             $0.medicationId == log.medicationId
                 && Calendar.current.isDate($0.logDate, inSameDayAs: day)
-                && $0.timeIndex == log.timeIndex
+                && $0.timeSlotID == log.timeSlotID
         }) {
             logs[index] = log
         } else {

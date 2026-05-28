@@ -62,18 +62,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private static func makeModelContainer() throws -> ModelContainer {
-        let schema = Schema([
-            CycleRecordModel.self,
-            MedicationModel.self,
-            HealthRecordModel.self,
-            TransferRecordModel.self,
-            PGTRecordModel.self
-        ])
+        let schema = Schema(AppSchemaV2.models)
         let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
         let configuration = ModelConfiguration(schema: schema, url: storeURL)
 
         do {
-            return try ModelContainer(for: schema, configurations: [configuration])
+            return try ModelContainer(
+                for: schema,
+                migrationPlan: AppMigrationPlan.self,
+                configurations: [configuration]
+            )
         } catch {
             resetLocalStore(at: storeURL)
             return try ModelContainer(for: schema, configurations: [configuration])

@@ -5,5 +5,5 @@ struct MedicationLog: Identifiable {
     var medicationId: UUID
     var logDate: Date
     var isTaken: Bool
-    var timeIndex: Int
+    var timeSlotID: UUID
 }

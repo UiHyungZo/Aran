@@ -5,6 +5,7 @@ protocol MedicationUseCaseProtocol {
     func save(_ medication: Medication) async throws
     func update(_ medication: Medication) async throws
     func toggle(medication: Medication) async throws
+    func toggleTimeSlot(medication: Medication, timeSlotID: UUID) async throws
     func delete(medication: Medication) async throws
 }
 
@@ -52,6 +53,17 @@ final class MedicationUseCase: MedicationUseCaseProtocol {
             updated = try await notificationUseCase.enable(medication)
         }
         try await medicationRepository.update(updated)
+    }
+
+    func toggleTimeSlot(medication: Medication, timeSlotID: UUID) async throws {
+        var updated = medication
+        guard let index = updated.schedule.timeSlots.firstIndex(where: { $0.id == timeSlotID }) else {
+            throw AppError.invalidInput("복용 시간 정보를 찾을 수 없습니다.")
+        }
+
+        updated.schedule.timeSlots[index].isEnabled.toggle()
+        updated.isEnabled = updated.schedule.timeSlots.contains(where: \.isEnabled)
+        try await update(updated)
     }
 
     func delete(medication: Medication) async throws {

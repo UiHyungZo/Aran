@@ -18,6 +18,11 @@ final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol
     func prepareForSave(_ medication: Medication) async throws -> Medication {
         var updated = medication
         guard medication.isEnabled else {
+            updated.schedule.timeSlots = updated.schedule.timeSlots.map { slot in
+                var mutable = slot
+                mutable.isEnabled = false
+                return mutable
+            }
             updated.notificationIDs = []
             return updated
         }
@@ -32,6 +37,11 @@ final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol
         }
 
         guard medication.isEnabled else {
+            updated.schedule.timeSlots = updated.schedule.timeSlots.map { slot in
+                var mutable = slot
+                mutable.isEnabled = false
+                return mutable
+            }
             updated.notificationIDs = []
             return updated
         }
@@ -43,6 +53,11 @@ final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol
     func enable(_ medication: Medication) async throws -> Medication {
         var updated = medication
         updated.isEnabled = true
+        updated.schedule.timeSlots = updated.schedule.timeSlots.map { slot in
+            var mutable = slot
+            mutable.isEnabled = true
+            return mutable
+        }
         updated.notificationIDs = try await notificationRepository.schedule(for: updated)
         return updated
     }
@@ -50,6 +65,11 @@ final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol
     func disable(_ medication: Medication) async throws -> Medication {
         var updated = medication
         updated.isEnabled = false
+        updated.schedule.timeSlots = updated.schedule.timeSlots.map { slot in
+            var mutable = slot
+            mutable.isEnabled = false
+            return mutable
+        }
         try await notificationRepository.cancel(notificationIDs: medication.notificationIDs)
         updated.notificationIDs = []
         return updated

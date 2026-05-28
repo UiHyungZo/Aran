@@ -2,12 +2,16 @@ import Foundation
 
 enum MedicationLogMapper {
     static func toDomain(_ model: MedicationLogModel) -> MedicationLog {
-        MedicationLog(
+        let resolvedSlotID = model.timeSlotID ?? MedicationLegacySlotID.make(
+            medicationID: model.medicationId,
+            index: model.timeIndex
+        )
+        return MedicationLog(
             id: model.id,
             medicationId: model.medicationId,
             logDate: model.logDate,
             isTaken: model.isTaken,
-            timeIndex: model.timeIndex
+            timeSlotID: resolvedSlotID
         )
     }
 
@@ -17,7 +21,7 @@ enum MedicationLogMapper {
             medicationId: entity.medicationId,
             logDate: entity.logDate,
             isTaken: entity.isTaken,
-            timeIndex: entity.timeIndex
+            timeSlotID: entity.timeSlotID
         )
     }
 }

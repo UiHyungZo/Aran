@@ -143,6 +143,53 @@ final class MedicationUseCaseTests: XCTestCase {
         XCTAssertEqual(medicationRepo.updatedMedications.first?.notificationIDs, ["new-id"])
     }
 
+    // MARK: - toggleTimeSlot
+
+    func testToggleTimeSlot_whenBothSlotsEnabled_keepsMedicationEnabled() async throws {
+        // given
+        let medicationId = UUID()
+        let slot1 = MedicationTimeSlot(id: UUID(), time: makeTime(hour: 9), isEnabled: true, medicationID: medicationId)
+        let slot2 = MedicationTimeSlot(id: UUID(), time: makeTime(hour: 21), isEnabled: true, medicationID: medicationId)
+        let medication = makeMedicationWithSlots(id: medicationId, slots: [slot1, slot2], isEnabled: true)
+
+        // when
+        try await sut.toggleTimeSlot(medication: medication, timeSlotID: slot1.id)
+
+        // then
+        let updated = medicationRepo.updatedMedications.first
+        XCTAssertEqual(updated?.schedule.timeSlots.first(where: { $0.id == slot1.id })?.isEnabled, false)
+        XCTAssertTrue(updated?.isEnabled ?? false, "slot2가 enabled이므로 medication.isEnabled는 true를 유지해야 한다")
+    }
+
+    func testToggleTimeSlot_whenLastEnabledSlot_setsMedicationDisabled() async throws {
+        // given
+        let medicationId = UUID()
+        let slot1 = MedicationTimeSlot(id: UUID(), time: makeTime(hour: 9), isEnabled: true, medicationID: medicationId)
+        let slot2 = MedicationTimeSlot(id: UUID(), time: makeTime(hour: 21), isEnabled: false, medicationID: medicationId)
+        let medication = makeMedicationWithSlots(id: medicationId, slots: [slot1, slot2], isEnabled: true)
+
+        // when
+        try await sut.toggleTimeSlot(medication: medication, timeSlotID: slot1.id)
+
+        // then
+        let updated = medicationRepo.updatedMedications.first
+        XCTAssertFalse(updated?.isEnabled ?? true, "마지막 enabled 슬롯을 끄면 medication.isEnabled가 false여야 한다")
+        XCTAssertEqual(updated?.schedule.timeSlots.first(where: { $0.id == slot2.id })?.isEnabled, false)
+    }
+
+    func testToggleTimeSlot_withUnknownID_throwsError() async throws {
+        // given
+        let medication = makeMedication()
+
+        // when / then
+        do {
+            try await sut.toggleTimeSlot(medication: medication, timeSlotID: UUID())
+            XCTFail("존재하지 않는 슬롯 ID로 호출 시 에러가 발생해야 한다")
+        } catch {
+            // expected
+        }
+    }
+
     // MARK: - delete
 
     func testDelete_cancelsNotificationAndDeletesFromRepo() async throws {
@@ -192,5 +239,27 @@ private extension MedicationUseCaseTests {
             notificationIDs: notificationIDs,
             createdAt: Date()
         )
+    }
+
+    func makeMedicationWithSlots(
+        id: UUID = UUID(),
+        slots: [MedicationTimeSlot],
+        isEnabled: Bool = true,
+        notificationIDs: [String] = []
+    ) -> Medication {
+        Medication(
+            id: id,
+            drugName: "테스트약",
+            dosage: "100mg",
+            type: .oral,
+            schedule: MedicationSchedule(timeSlots: slots, startDate: Date(), endDate: nil),
+            isEnabled: isEnabled,
+            notificationIDs: notificationIDs,
+            createdAt: Date()
+        )
+    }
+
+    func makeTime(hour: Int) -> Date {
+        Calendar.current.date(bySettingHour: hour, minute: 0, second: 0, of: Date()) ?? Date()
     }
 }

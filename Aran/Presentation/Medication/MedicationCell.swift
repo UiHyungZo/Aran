@@ -61,7 +61,7 @@ final class MedicationCell: UITableViewCell {
         if medication.isEnabled {
             statusButton.setImage(UIImage(systemName: "circle.fill"), for: .normal)
             statusButton.tintColor = typeColor(for: medication.type)
-            subtitleLabel.text = formattedTimes(medication.schedule.times)
+            subtitleLabel.text = formattedTimes(medication.schedule.sortedTimeSlots.map(\.time))
             subtitleLabel.textColor = .secondaryLabel
             nameLabel.textColor = .label
         } else {

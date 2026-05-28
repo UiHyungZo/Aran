@@ -17,6 +17,51 @@ final class MedicationNotificationUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - prepareForUpdate
+
+    func testPrepareForUpdate_whenEnabledWithExistingIDs_cancelsOldAndSchedulesNew() async throws {
+        // given
+        repository.scheduleResult = ["new-id"]
+        let medication = makeMedication(isEnabled: true, notificationIDs: ["old-id"])
+
+        // when
+        let result = try await sut.prepareForUpdate(medication)
+
+        // then
+        XCTAssertEqual(repository.cancelledIDs, ["old-id"], "기존 알림을 먼저 취소해야 한다")
+        XCTAssertEqual(repository.scheduledMedications.count, 1, "새 알림을 스케줄해야 한다")
+        XCTAssertEqual(result.notificationIDs, ["new-id"])
+    }
+
+    func testPrepareForUpdate_whenDisabledWithExistingIDs_cancelsOldAndSkipsSchedule() async throws {
+        // given
+        let medication = makeMedication(isEnabled: false, notificationIDs: ["old-id"])
+
+        // when
+        let result = try await sut.prepareForUpdate(medication)
+
+        // then
+        XCTAssertEqual(repository.cancelledIDs, ["old-id"], "기존 알림을 취소해야 한다")
+        XCTAssertTrue(repository.scheduledMedications.isEmpty, "disabled이므로 새 알림을 스케줄하지 않아야 한다")
+        XCTAssertTrue(result.notificationIDs.isEmpty)
+    }
+
+    func testPrepareForUpdate_whenEnabledWithNoExistingIDs_skipsCancelAndSchedulesNew() async throws {
+        // given
+        repository.scheduleResult = ["new-id"]
+        let medication = makeMedication(isEnabled: true, notificationIDs: [])
+
+        // when
+        let result = try await sut.prepareForUpdate(medication)
+
+        // then
+        XCTAssertTrue(repository.cancelledIDs.isEmpty, "취소할 기존 알림이 없으면 cancel을 호출하지 않아야 한다")
+        XCTAssertEqual(repository.scheduledMedications.count, 1)
+        XCTAssertEqual(result.notificationIDs, ["new-id"])
+    }
+
+    // MARK: - prepareForSave
+
     func testPrepareForSave_whenEnabled_schedulesAndStoresIDs() async throws {
         repository.scheduleResult = ["id-1", "id-2"]
         let medication = makeMedication(isEnabled: true)

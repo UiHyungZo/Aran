@@ -36,7 +36,7 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
         return try context.fetch(descriptor).first.map { MedicationLogMapper.toDomain($0) }
     }
 
-    func fetch(medicationId: UUID, date: Date, timeIndex: Int) async throws -> MedicationLog? {
+    func fetch(medicationId: UUID, date: Date, timeSlotID: UUID) async throws -> MedicationLog? {
         let start = Calendar.current.startOfDay(for: date)
         let end = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? start
         let descriptor = FetchDescriptor<MedicationLogModel>(
@@ -45,7 +45,12 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
             }
         )
         return try context.fetch(descriptor)
-            .first { $0.timeIndex == timeIndex }
+            .first {
+                ($0.timeSlotID ?? MedicationLegacySlotID.make(
+                    medicationID: $0.medicationId,
+                    index: $0.timeIndex
+                )) == timeSlotID
+            }
             .map { MedicationLogMapper.toDomain($0) }
     }
 
@@ -59,16 +64,22 @@ final class MedicationLogRepository: MedicationLogRepositoryProtocol {
             }
         )
         let models = try context.fetch(descriptor)
-        if let model = models.first(where: { $0.timeIndex == log.timeIndex }) {
+        if let model = models.first(where: {
+            ($0.timeSlotID ?? MedicationLegacySlotID.make(
+                medicationID: $0.medicationId,
+                index: $0.timeIndex
+            )) == log.timeSlotID
+        }) {
             model.logDate = start
             model.isTaken = log.isTaken
+            model.timeSlotID = log.timeSlotID
         } else {
             context.insert(MedicationLogModel(
                 id: log.id,
                 medicationId: medicationId,
                 logDate: start,
                 isTaken: log.isTaken,
-                timeIndex: log.timeIndex
+                timeSlotID: log.timeSlotID
             ))
         }
         try context.save()

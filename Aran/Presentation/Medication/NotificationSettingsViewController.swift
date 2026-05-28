@@ -3,15 +3,24 @@ import RxSwift
 import UIKit
 
 final class NotificationSettingsViewController: UIViewController {
+    private struct TimeSlotRow {
+        let medication: Medication
+        let slot: MedicationTimeSlot
+    }
+
     private let viewModel: MedicationViewModel
     private let disposeBag = DisposeBag()
 
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let toggleRelay = PublishRelay<Medication>()
+    private let toggleTimeSlotRelay = PublishRelay<MedicationViewModel.TimeSlotToggleRequest>()
     private let viewWillAppearSubject = PublishSubject<Void>()
 
     private var medications: [Medication] = []
-    private var activeMedications: [Medication] { medications.filter(\.isEnabled) }
+    private var slotRows: [TimeSlotRow] {
+        medications.flatMap { medication in
+            medication.schedule.sortedTimeSlots.map { TimeSlotRow(medication: medication, slot: $0) }
+        }
+    }
 
     init(viewModel: MedicationViewModel) {
         self.viewModel = viewModel
@@ -58,7 +67,8 @@ final class NotificationSettingsViewController: UIViewController {
     private func bindViewModel() {
         let input = MedicationViewModel.Input(
             viewDidLoad: viewWillAppearSubject.asObservable(),
-            toggleMedication: toggleRelay.asObservable(),
+            toggleMedication: .empty(),
+            toggleTimeSlot: toggleTimeSlotRelay.asObservable(),
             deleteMedication: .empty()
         )
         let output = viewModel.transform(input: input)
@@ -78,7 +88,7 @@ extension NotificationSettingsViewController: UITableViewDataSource {
     func numberOfSections(in _: UITableView) -> Int { 2 }
 
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
-        section == 0 ? medications.count : 1
+        section == 0 ? slotRows.count : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -87,10 +97,19 @@ extension NotificationSettingsViewController: UITableViewDataSource {
                 withIdentifier: NotificationToggleCell.reuseIdentifier,
                 for: indexPath
             ) as? NotificationToggleCell else { return UITableViewCell() }
-            let medication = medications[indexPath.row]
-            cell.configure(with: medication)
+            let row = slotRows[indexPath.row]
+            cell.configure(
+                medicationName: row.medication.drugName,
+                time: row.slot.time,
+                isEnabled: row.slot.isEnabled
+            )
             cell.onToggle = { [weak self] in
-                self?.toggleRelay.accept(medication)
+                self?.toggleTimeSlotRelay.accept(
+                    MedicationViewModel.TimeSlotToggleRequest(
+                        medication: row.medication,
+                        timeSlotID: row.slot.id
+                    )
+                )
             }
             return cell
         } else {
@@ -98,7 +117,7 @@ extension NotificationSettingsViewController: UITableViewDataSource {
                 withIdentifier: NotificationPreviewCell.reuseIdentifier,
                 for: indexPath
             ) as? NotificationPreviewCell else { return UITableViewCell() }
-            let next = nextUpcoming(from: activeMedications)
+            let next = nextUpcoming(from: medications)
             cell.configure(medication: next?.medication, nextTime: next?.time)
             return cell
         }
@@ -129,8 +148,8 @@ private extension NotificationSettingsViewController {
         var candidates: [(Medication, Date)] = []
 
         for med in medications {
-            for scheduledTime in med.schedule.times {
-                var components = calendar.dateComponents([.hour, .minute], from: scheduledTime)
+            for slot in med.schedule.timeSlots where slot.isEnabled {
+                var components = calendar.dateComponents([.hour, .minute], from: slot.time)
                 let base = calendar.dateComponents([.year, .month, .day], from: now)
                 components.year = base.year
                 components.month = base.month
@@ -197,18 +216,14 @@ private final class NotificationToggleCell: UITableViewCell {
         ])
     }
 
-    func configure(with medication: Medication) {
-        nameLabel.text = medication.drugName
-        toggle.isOn = medication.isEnabled
+    func configure(medicationName: String, time: Date, isEnabled: Bool) {
+        nameLabel.text = medicationName
+        toggle.isOn = isEnabled
 
-        if let first = medication.schedule.times.first {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "ko_KR")
-            formatter.dateFormat = "a h:mm"
-            subtitleLabel.text = "\(formatter.string(from: first)) · 매일"
-        } else {
-            subtitleLabel.text = nil
-        }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "a h:mm"
+        subtitleLabel.text = "\(formatter.string(from: time)) · 매일"
     }
 
     @objc private func toggleChanged() {

@@ -1,6 +1,5 @@
 import RxCocoa
 import RxSwift
-import UserNotifications
 import UIKit
 
 final class MedicationFormViewController: UIViewController {
@@ -220,11 +219,7 @@ final class MedicationFormViewController: UIViewController {
     private func makeTimeRows() -> UIView {
         timePickerContainer.axis = .vertical
         timePickerContainer.spacing = 0
-        let initialTimes = (initialMedication?.schedule.times ?? []).sorted {
-            let cal = Calendar.current
-            return cal.component(.hour, from: $0) * 60 + cal.component(.minute, from: $0)
-                 < cal.component(.hour, from: $1) * 60 + cal.component(.minute, from: $1)
-        }
+        let initialTimes = (initialMedication?.schedule.sortedTimeSlots.map(\.time) ?? [])
         if initialTimes.isEmpty {
             addTimePickerRow()
         } else {
@@ -404,14 +399,6 @@ final class MedicationFormViewController: UIViewController {
             .bind(to: endDateRelay)
             .disposed(by: disposeBag)
 
-        notificationSwitch.rx.isOn
-            .skip(1)
-            .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in
-                self?.checkNotificationPermission()
-            })
-            .disposed(by: disposeBag)
-
         let input = MedicationFormViewModel.Input(
             drugNameChanged: drugNameField.rx.text.orEmpty.asObservable(),
             typeSelected: typeSelected.asObservable(),
@@ -450,6 +437,13 @@ final class MedicationFormViewController: UIViewController {
             })
             .disposed(by: disposeBag)
 
+        output.notificationPermissionDenied
+            .drive(onNext: { [weak self] in
+                self?.notificationSwitch.setOn(false, animated: true)
+                self?.presentPermissionDeniedAlert()
+            })
+            .disposed(by: disposeBag)
+
         saveButton.rx.tap
             .bind(to: saveTappedRelay)
             .disposed(by: disposeBag)
@@ -481,16 +475,6 @@ final class MedicationFormViewController: UIViewController {
             self?.actions.onDelete(initialMedication)
         })
         present(alert, animated: true)
-    }
-
-    private func checkNotificationPermission() {
-        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
-            guard settings.authorizationStatus == .denied else { return }
-            DispatchQueue.main.async {
-                self?.notificationSwitch.setOn(false, animated: true)
-                self?.presentPermissionDeniedAlert()
-            }
-        }
     }
 
     private func presentPermissionDeniedAlert() {

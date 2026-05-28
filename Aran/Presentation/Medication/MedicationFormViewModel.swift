@@ -1,7 +1,9 @@
 import Foundation
-import RxCocoa
-import RxSwift
+@preconcurrency import RxCocoa
+@preconcurrency import RxSwift
+import UserNotifications
 
+@MainActor
 final class MedicationFormViewModel {
     struct Input {
         let drugNameChanged: Observable<String>
@@ -19,6 +21,7 @@ final class MedicationFormViewModel {
         let isSaveEnabled: Driver<Bool>
         let saveCompleted: Driver<Void>
         let error: Driver<String>
+        let notificationPermissionDenied: Driver<Void>
     }
 
     private let medicationUseCase: MedicationUseCaseProtocol
@@ -33,6 +36,25 @@ final class MedicationFormViewModel {
     func transform(input: Input) -> Output {
         let saveCompletedRelay = PublishRelay<Void>()
         let errorRelay = PublishRelay<String>()
+        let notificationPermissionDeniedRelay = PublishRelay<Void>()
+
+        input.isNotificationEnabled
+            .skip(1)
+            .filter { $0 }
+            .flatMapLatest { _ -> Observable<Bool> in
+                Observable.create { observer in
+                    Task {
+                        let settings = await UNUserNotificationCenter.current().notificationSettings()
+                        observer.onNext(settings.authorizationStatus == .denied)
+                        observer.onCompleted()
+                    }
+                    return Disposables.create()
+                }
+            }
+            .filter { $0 }
+            .map { _ in () }
+            .bind(to: notificationPermissionDeniedRelay)
+            .disposed(by: disposeBag)
 
         let drugName = input.drugNameChanged.startWith("")
         let type = input.typeSelected.startWith(.oral)
@@ -62,13 +84,23 @@ final class MedicationFormViewModel {
                 let (times, startDate, endDate, notificationsEnabled) = timesStartEndNotif
 
                 let defaultTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: startDate) ?? startDate
+                let medicationId = self.initialMedication?.id ?? UUID()
+                let slotTimes = times.isEmpty ? [defaultTime] : times
+                let timeSlots = slotTimes.map {
+                    MedicationTimeSlot(
+                        id: UUID(),
+                        time: $0,
+                        isEnabled: notificationsEnabled,
+                        medicationID: medicationId
+                    )
+                }
                 let schedule = MedicationSchedule(
-                    times: times.isEmpty ? [defaultTime] : times,
+                    timeSlots: timeSlots,
                     startDate: startDate,
                     endDate: endDate
                 )
                 let medication = Medication(
-                    id: self.initialMedication?.id ?? UUID(),
+                    id: medicationId,
                     drugName: name.trimmingCharacters(in: .whitespaces),
                     dosage: dosage.trimmingCharacters(in: .whitespaces),
                     component: component.trimmingCharacters(in: .whitespaces),
@@ -105,7 +137,8 @@ final class MedicationFormViewModel {
         return Output(
             isSaveEnabled: isSaveEnabled,
             saveCompleted: saveCompletedRelay.asDriver(onErrorJustReturn: ()),
-            error: errorRelay.asDriver(onErrorJustReturn: "")
+            error: errorRelay.asDriver(onErrorJustReturn: ""),
+            notificationPermissionDenied: notificationPermissionDeniedRelay.asDriver(onErrorJustReturn: ())
         )
     }
 }
