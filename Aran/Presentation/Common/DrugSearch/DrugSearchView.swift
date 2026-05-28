@@ -215,7 +215,7 @@ struct DrugSearchView: View {
     private func resultsView(drugs: [Drug]) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("검색 결과 \(drugs.count)건")
+                Text("검색 결과 \(viewModel.totalCount)건")
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 20)
@@ -230,6 +230,15 @@ struct DrugSearchView: View {
                     }
                     Divider()
                         .padding(.horizontal, 20)
+                }
+
+                if viewModel.hasMorePages {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .onAppear {
+                            Task { await viewModel.loadMore() }
+                        }
                 }
 
                 Button {

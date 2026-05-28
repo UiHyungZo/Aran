@@ -18,12 +18,13 @@ final class SearchDrugUseCaseTests: XCTestCase {
     }
 
     func testExecute_withValidKeyword_returnsSearchResults() async throws {
-        let expected = [makeDrug(name: "프로게스테론")]
-        repository.searchResult = expected
+        let drugs = [makeDrug(name: "프로게스테론")]
+        repository.searchResult = DrugSearchResult(drugs: drugs, totalCount: 1, pageNo: 1)
 
         let result = try await sut.execute(keyword: "프로게스테론")
 
-        XCTAssertEqual(result.map(\.itemSeq), expected.map(\.itemSeq))
+        XCTAssertEqual(result.drugs.map(\.itemSeq), drugs.map(\.itemSeq))
+        XCTAssertEqual(result.totalCount, 1)
         XCTAssertEqual(repository.searchKeywords, ["프로게스테론"])
     }
 

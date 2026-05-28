@@ -20,14 +20,15 @@ final class DrugRepositoryTests: XCTestCase {
     func test_search_whenAPIReturnsItems_thenReturnsDrugs() async throws {
         // given
         let drugs = [makeDrug(name: "프로게스테론")]
-        mockAPIClient.searchResult = .success(drugs)
+        mockAPIClient.searchResult = .success(DrugSearchResult(drugs: drugs, totalCount: 1, pageNo: 1))
 
         // when
         let result = try await sut.search(keyword: "프로게스테론", pageNo: 1)
 
         // then
-        XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result.first?.itemName, "프로게스테론")
+        XCTAssertEqual(result.drugs.count, 1)
+        XCTAssertEqual(result.drugs.first?.itemName, "프로게스테론")
+        XCTAssertEqual(result.totalCount, 1)
     }
 
     func test_search_whenAPIFails_thenThrowsAppError() async {
@@ -51,13 +52,14 @@ final class DrugRepositoryTests: XCTestCase {
 
     func test_search_whenAPIReturnsEmpty_thenReturnsEmptyArray() async throws {
         // given
-        mockAPIClient.searchResult = .success([])
+        mockAPIClient.searchResult = .success(DrugSearchResult(drugs: [], totalCount: 0, pageNo: 1))
 
         // when
         let result = try await sut.search(keyword: "없는약", pageNo: 1)
 
         // then
-        XCTAssertTrue(result.isEmpty)
+        XCTAssertTrue(result.drugs.isEmpty)
+        XCTAssertEqual(result.totalCount, 0)
     }
 }
 

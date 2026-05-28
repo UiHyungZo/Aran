@@ -1,7 +1,7 @@
 import Foundation
 
 protocol SearchDrugUseCaseProtocol {
-    func execute(keyword: String, pageNo: Int) async throws -> [Drug]
+    func execute(keyword: String, pageNo: Int) async throws -> DrugSearchResult
     func detail(itemSeq: String) async throws -> Drug
 }
 
@@ -12,7 +12,7 @@ final class SearchDrugUseCase: SearchDrugUseCaseProtocol {
         self.repository = repository
     }
 
-    func execute(keyword: String, pageNo: Int = 1) async throws -> [Drug] {
+    func execute(keyword: String, pageNo: Int = 1) async throws -> DrugSearchResult {
         guard !keyword.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw AppError.invalidInput("검색어를 입력해주세요.")
         }

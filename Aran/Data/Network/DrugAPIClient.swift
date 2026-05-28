@@ -12,12 +12,13 @@ final class DrugAPIClient: DrugAPIClientProtocol {
         self.session = session
     }
 
-    func searchDrugs(keyword: String, pageNo: Int) async throws -> [Drug] {
+    func searchDrugs(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
         let response = try await session
             .request(try DrugRouter.search(keyword: keyword, pageNo: pageNo, serviceKey: serviceKey, baseURL: baseURL).asURLRequest())
             .serializingDecodable(DrugListResponseDTO.self)
             .value
-        return response.body.items?.map { $0.toDomain() } ?? []
+        let drugs = response.body.items?.map { $0.toDomain() } ?? []
+        return DrugSearchResult(drugs: drugs, totalCount: response.body.totalCount, pageNo: response.body.pageNo)
     }
 
     func fetchDrugDetail(itemSeq: String) async throws -> Drug {

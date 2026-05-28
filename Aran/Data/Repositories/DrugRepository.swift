@@ -11,7 +11,7 @@ final class DrugRepository: DrugRepositoryProtocol {
         self.init(apiClient: DrugAPIClient(serviceKey: serviceKey, baseURL: baseURL))
     }
 
-    func search(keyword: String, pageNo: Int) async throws -> [Drug] {
+    func search(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
         do {
             return try await apiClient.searchDrugs(keyword: keyword, pageNo: pageNo)
         } catch let error as AppError {

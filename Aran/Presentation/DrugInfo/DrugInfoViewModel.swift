@@ -19,11 +19,18 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var showDebugChip: Bool = false
     @Published var detailError: String?
     @Published var favoriteItemSeqs: Set<String> = []
+    @Published var isLoadingMore: Bool = false
 
     private let searchDrugUseCase: SearchDrugUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
     private let recentSearchesKey = "recentDrugSearches"
     private let favoritesKey = "favoriteDrugItemSeqs"
+
+    private var currentPage: Int = 1
+    private(set) var totalCount: Int = 0
+    private var currentKeyword: String = ""
+
+    var hasMorePages: Bool { currentPage * 20 < totalCount }
 
     init(searchDrugUseCase: SearchDrugUseCaseProtocol) {
         self.searchDrugUseCase = searchDrugUseCase
@@ -52,16 +59,24 @@ final class DrugInfoViewModel: ObservableObject {
         let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedKeyword.isEmpty else { return }
 
+        currentPage = 1
+        currentKeyword = trimmedKeyword
+        totalCount = 0
+
         viewState = .loading
         showDebugChip = false
         do {
-            let drugs = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
-            viewState = deduplicated(drugs).isEmpty ? .empty : .results(deduplicated(drugs))
+            let result = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
+            totalCount = result.totalCount
+            let drugs = deduplicated(result.drugs)
+            viewState = drugs.isEmpty ? .empty : .results(drugs)
             saveRecentSearch(trimmedKeyword)
         } catch {
             do {
-                let drugs = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
-                viewState = deduplicated(drugs).isEmpty ? .empty : .results(deduplicated(drugs))
+                let result = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
+                totalCount = result.totalCount
+                let drugs = deduplicated(result.drugs)
+                viewState = drugs.isEmpty ? .empty : .results(drugs)
                 saveRecentSearch(trimmedKeyword)
             } catch {
                 let message = (error as? AppError)?.errorDescription ?? error.localizedDescription
@@ -69,6 +84,24 @@ final class DrugInfoViewModel: ObservableObject {
             }
         }
         showDebugChip = true
+    }
+
+    func loadMore() async {
+        guard !isLoadingMore && hasMorePages else { return }
+        isLoadingMore = true
+        let nextPage = currentPage + 1
+        do {
+            let result = try await searchDrugUseCase.execute(keyword: currentKeyword, pageNo: nextPage)
+            if case .results(let existing) = viewState {
+                let combined = deduplicated(existing + result.drugs)
+                viewState = .results(combined)
+            }
+            currentPage = nextPage
+            totalCount = result.totalCount
+        } catch {
+            // 추가 로딩 실패 시 기존 결과 유지
+        }
+        isLoadingMore = false
     }
 
     private func deduplicated(_ drugs: [Drug]) -> [Drug] {
@@ -93,6 +126,9 @@ final class DrugInfoViewModel: ObservableObject {
         searchText = ""
         viewState = .initial
         showDebugChip = false
+        currentPage = 1
+        totalCount = 0
+        currentKeyword = ""
     }
 
     func removeRecentSearch(_ keyword: String) {

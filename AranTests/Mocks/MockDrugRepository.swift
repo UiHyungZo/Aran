@@ -2,13 +2,13 @@
 import Foundation
 
 final class MockDrugRepository: DrugRepositoryProtocol {
-    var searchResult: [Drug] = []
+    var searchResult: DrugSearchResult = DrugSearchResult(drugs: [], totalCount: 0, pageNo: 1)
     var detailResult: Drug?
     var searchKeywords: [String] = []
     var detailItemSeqs: [String] = []
     var shouldThrow: Error?
 
-    func search(keyword: String, pageNo _: Int) async throws -> [Drug] {
+    func search(keyword: String, pageNo _: Int) async throws -> DrugSearchResult {
         if let error = shouldThrow { throw error }
         searchKeywords.append(keyword)
         return searchResult

@@ -2,13 +2,13 @@
 import Foundation
 
 final class MockSearchDrugUseCase: SearchDrugUseCaseProtocol {
-    var stubbedDrugs: [Drug] = []
+    var stubbedResult: DrugSearchResult = DrugSearchResult(drugs: [], totalCount: 0, pageNo: 1)
     var stubbedDetail: Drug?
     var shouldThrow: Error?
 
-    func execute(keyword: String, pageNo: Int) async throws -> [Drug] {
+    func execute(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
         if let error = shouldThrow { throw error }
-        return stubbedDrugs
+        return stubbedResult
     }
 
     func detail(itemSeq: String) async throws -> Drug {
