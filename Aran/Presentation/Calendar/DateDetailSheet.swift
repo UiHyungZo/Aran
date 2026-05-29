@@ -90,8 +90,8 @@ struct DateDetailSheet: View {
                         Text(record.result.rawValue)
                             .font(AranFont.caption())
                             .foregroundStyle(
-                                record.result == .success ? AranColor.dotTransfer
-                                    : record.result == .failed ? AranColor.dotPeriod
+                                record.result == .pregnant ? AranColor.dotTransfer
+                                    : record.result == .notPregnant ? AranColor.dotPeriod
                                     : .secondary
                             )
                     }
@@ -432,7 +432,7 @@ private struct TransferRecordFormView: View {
     @State private var embryoGrade = ""
     @State private var embryoCount = 1
     @State private var transferType: TransferType = .fresh
-    @State private var result: TransferResult = .pending
+    @State private var result: TransferResult = .waiting
     @FocusState private var isFocused: Bool
 
     enum FormMode: String, CaseIterable, Identifiable {
@@ -464,9 +464,9 @@ private struct TransferRecordFormView: View {
                         Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
                     }
                     Picker("결과", selection: $result) {
-                        Text(TransferResult.pending.rawValue).tag(TransferResult.pending)
-                        Text(TransferResult.success.rawValue).tag(TransferResult.success)
-                        Text(TransferResult.failed.rawValue).tag(TransferResult.failed)
+                        Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
+                        Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
+                        Text(TransferResult.notPregnant.rawValue).tag(TransferResult.notPregnant)
                     }
                 }
             }

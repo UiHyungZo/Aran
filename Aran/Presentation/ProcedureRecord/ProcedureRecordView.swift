@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ProcedureRecordView: View {
     @StateObject private var viewModel: ProcedureRecordViewModel
+    @State private var cycleToDelete: ProcedureCycleSummary?
 
     init(viewModel: ProcedureRecordViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -45,6 +46,21 @@ struct ProcedureRecordView: View {
                 Button("확인") { viewModel.errorMessage = nil }
             } message: {
                 Text(viewModel.errorMessage ?? "")
+            }
+            .confirmationDialog(
+                "\(cycleToDelete?.cycleNumber ?? 0)차 채취 기록을 삭제할까요?",
+                isPresented: Binding(
+                    get: { cycleToDelete != nil },
+                    set: { if !$0 { cycleToDelete = nil } }
+                ),
+                presenting: cycleToDelete
+            ) { summary in
+                Button("삭제", role: .destructive) {
+                    Task { await viewModel.deleteCycleRecord(summary: summary) }
+                }
+                Button("취소", role: .cancel) { }
+            } message: { summary in
+                Text("이식 \(summary.transferredCount)건, PGT \(summary.pgtRecords.count)건을 포함한 모든 기록이 삭제됩니다.")
             }
         }
         .task { await viewModel.load() }
@@ -87,6 +103,15 @@ struct ProcedureRecordView: View {
                     } label: {
                         CycleSummaryCard(summary: summary)
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button("삭제", role: .destructive) {
+                            if summary.transferRecords.isEmpty && summary.pgtRecords.isEmpty {
+                                Task { await viewModel.deleteCycleRecord(summary: summary) }
+                            } else {
+                                cycleToDelete = summary
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -104,7 +129,7 @@ private struct CycleSummaryCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(summary.cycleNumber)차")
+                    Text("\(summary.cycleNumber)차 채취")
                         .font(.headline)
                     Text(summary.displayStartDate, style: .date)
                         .font(.caption)
@@ -159,17 +184,17 @@ struct TransferResultBadge: View {
 
     private var backgroundColor: Color {
         switch result {
-        case .pending: return AranColor.badgePendingBackground
-        case .success: return AranColor.badgeSuccessBackground
-        case .failed: return AranColor.badgeFailedBackground
+        case .waiting: return AranColor.badgePendingBackground
+        case .pregnant: return AranColor.badgeSuccessBackground
+        case .notPregnant: return AranColor.badgeFailedBackground
         }
     }
 
     private var textColor: Color {
         switch result {
-        case .pending: return AranColor.badgePendingText
-        case .success: return AranColor.badgeSuccessText
-        case .failed: return AranColor.badgeFailedText
+        case .waiting: return AranColor.badgePendingText
+        case .pregnant: return AranColor.badgeSuccessText
+        case .notPregnant: return AranColor.badgeFailedText
         }
     }
 }

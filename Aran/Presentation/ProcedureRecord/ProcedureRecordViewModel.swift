@@ -14,7 +14,7 @@ struct ProcedureCycleSummary: Identifiable {
     let retrievalCount: Int
     let fertilizedCount: Int
     let frozenCount: Int
-    let embryoGrades: [String]
+    let embryoRecords: [EmbryoRecord]
     let transferRecords: [TransferRecord]
     let pgtRecords: [PGTRecord]
 
@@ -30,7 +30,7 @@ struct ProcedureCycleSummary: Identifiable {
     }
 
     var latestResult: TransferResult {
-        transferRecords.sorted { $0.date > $1.date }.first?.result ?? .pending
+        transferRecords.sorted { $0.date > $1.date }.first?.result ?? .waiting
     }
 }
 
@@ -83,7 +83,7 @@ final class ProcedureRecordViewModel: ObservableObject {
                 retrievalCount: cycleRecord?.retrievalCount ?? 0,
                 fertilizedCount: cycleRecord?.fertilizedCount ?? 0,
                 frozenCount: cycleRecord?.frozenCount ?? 0,
-                embryoGrades: cycleRecord?.embryoGrades ?? [],
+                embryoRecords: cycleRecord?.embryoRecords ?? [],
                 transferRecords: transfers,
                 pgtRecords: cyclePGTRecords
             )
@@ -135,7 +135,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         retrievalCount: Int,
         fertilizedCount: Int,
         frozenCount: Int,
-        embryoGrades: [String]
+        embryoRecords: [EmbryoRecord]
     ) async {
         do {
             try await cycleRecordUseCase.save(
@@ -144,7 +144,7 @@ final class ProcedureRecordViewModel: ObservableObject {
                 retrievalCount: retrievalCount,
                 fertilizedCount: fertilizedCount,
                 frozenCount: frozenCount,
-                embryoGrades: embryoGrades
+                embryoRecords: embryoRecords
             )
             await load()
         } catch {
@@ -158,7 +158,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         retrievalCount: Int,
         fertilizedCount: Int,
         frozenCount: Int,
-        embryoGrades: [String]
+        embryoRecords: [EmbryoRecord]
     ) async {
         do {
             try await cycleRecordUseCase.update(
@@ -167,7 +167,7 @@ final class ProcedureRecordViewModel: ObservableObject {
                 retrievalCount: retrievalCount,
                 fertilizedCount: fertilizedCount,
                 frozenCount: frozenCount,
-                embryoGrades: embryoGrades
+                embryoRecords: embryoRecords
             )
             await load()
         } catch {
@@ -181,7 +181,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         embryoGrade: String,
         embryoCount: Int,
         transferType: TransferType,
-        result: TransferResult = .pending
+        result: TransferResult = .waiting
     ) async {
         let record = TransferRecord(
             id: UUID(),
@@ -256,6 +256,27 @@ final class ProcedureRecordViewModel: ObservableObject {
     func deletePGT(id: UUID) async {
         do {
             try await pgtRecordUseCase.delete(id: id)
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func deleteCycleRecord(summary: ProcedureCycleSummary) async {
+        do {
+            for transfer in summary.transferRecords {
+                try await transferRecordUseCase.delete(id: transfer.id)
+                try await cycleRecordUseCase.removeTransferEvent(transferID: transfer.id)
+            }
+
+            for pgt in summary.pgtRecords {
+                try await pgtRecordUseCase.delete(id: pgt.id)
+            }
+
+            if let id = summary.cycleRecordId {
+                try await cycleRecordUseCase.delete(id: id)
+            }
+
             await load()
         } catch {
             errorMessage = error.localizedDescription

@@ -9,7 +9,7 @@ enum TransferRecordMapper {
             embryoGrade: model.embryoGrade,
             embryoCount: model.embryoCount,
             transferType: TransferType(rawValue: model.transferTypeRawValue) ?? .fresh,
-            result: TransferResult(rawValue: model.resultRawValue) ?? .pending,
+            result: TransferResult(rawValue: model.resultRawValue) ?? .waiting,
             memo: model.memo
         )
     }

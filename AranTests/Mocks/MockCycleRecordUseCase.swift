@@ -16,11 +16,15 @@ final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
         return stubbedRecord
     }
 
-    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws {
+    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoRecords: [EmbryoRecord]) async throws {
         if let error = shouldThrow { throw error }
     }
 
-    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws {
+    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoRecords: [EmbryoRecord]) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
+    func delete(id: UUID) async throws {
         if let error = shouldThrow { throw error }
     }
 

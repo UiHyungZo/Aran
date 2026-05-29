@@ -1,5 +1,37 @@
 import Foundation
 
+private struct EmbryoRecordDTO: Codable {
+    let id: UUID
+    let cycleId: UUID
+    let stage: String
+    let simpleGrade: String
+    let rawGrade: String?
+    let isFrozen: Bool
+    let memo: String?
+
+    func toEntity() -> EmbryoRecord {
+        EmbryoRecord(
+            id: id,
+            cycleId: cycleId,
+            stage: EmbryoStage(rawValue: stage) ?? .blastocystDay5,
+            simpleGrade: EmbryoSimpleGrade(rawValue: simpleGrade) ?? .unknown,
+            rawGrade: rawGrade,
+            isFrozen: isFrozen,
+            memo: memo
+        )
+    }
+
+    init(from entity: EmbryoRecord) {
+        id = entity.id
+        cycleId = entity.cycleId
+        stage = entity.stage.rawValue
+        simpleGrade = entity.simpleGrade.rawValue
+        rawGrade = entity.rawGrade
+        isFrozen = entity.isFrozen
+        memo = entity.memo
+    }
+}
+
 enum CycleRecordMapper {
     static func toDomain(_ model: CycleRecordModel) -> CycleRecord {
         let events = decodeEvents(from: model.eventsData)
@@ -13,7 +45,7 @@ enum CycleRecordMapper {
             retrievalCount: model.retrievalCount,
             fertilizedCount: model.fertilizedCount,
             frozenCount: model.frozenCount,
-            embryoGrades: decodeGrades(model.embryoGradesRaw),
+            embryoRecords: decodeEmbryoRecords(model.embryoRecordsRaw),
             events: events,
             diary: diary
         )
@@ -28,21 +60,22 @@ enum CycleRecordMapper {
             retrievalCount: entity.retrievalCount,
             fertilizedCount: entity.fertilizedCount,
             frozenCount: entity.frozenCount,
-            embryoGradesRaw: encodeGrades(entity.embryoGrades),
+            embryoRecordsRaw: encodeEmbryoRecords(entity.embryoRecords),
             eventsData: eventsData,
             diaryEmoji: entity.diary?.emoji,
             diaryText: entity.diary?.text
         )
     }
 
-    static func decodeGrades(_ raw: String) -> [String] {
+    static func decodeEmbryoRecords(_ raw: String) -> [EmbryoRecord] {
         guard let data = raw.data(using: .utf8),
-              let grades = try? JSONDecoder().decode([String].self, from: data) else { return [] }
-        return grades
+              let dtos = try? JSONDecoder().decode([EmbryoRecordDTO].self, from: data) else { return [] }
+        return dtos.map { $0.toEntity() }
     }
 
-    static func encodeGrades(_ grades: [String]) -> String {
-        guard let data = try? JSONEncoder().encode(grades),
+    static func encodeEmbryoRecords(_ records: [EmbryoRecord]) -> String {
+        let dtos = records.map { EmbryoRecordDTO(from: $0) }
+        guard let data = try? JSONEncoder().encode(dtos),
               let raw = String(data: data, encoding: .utf8) else { return "[]" }
         return raw
     }

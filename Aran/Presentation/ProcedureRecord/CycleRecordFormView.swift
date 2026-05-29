@@ -15,11 +15,16 @@ struct CycleRecordFormView: View {
     @State private var retrievalCount: Int
     @State private var fertilizedCount: Int
     @State private var frozenCount: Int
-    @State private var embryoGrades: [String]
+    @State private var embryoRecords: [EmbryoRecord]
+
+    @State private var draftStage: EmbryoStage = .blastocystDay5
+    @State private var draftSimpleGrade: EmbryoSimpleGrade = .unknown
+    @State private var draftRawGrade: String = ""
+    @State private var draftIsFrozen: Bool = true
 
     @State private var includesTransfer = false
     @State private var transferDate = Date()
-    @State private var transferGrade: [String] = []
+    @State private var transferGrade: String = ""
     @State private var transferCount = 1
     @State private var transferType: TransferType = .frozen
 
@@ -31,7 +36,7 @@ struct CycleRecordFormView: View {
         _retrievalCount = State(initialValue: initialSummary?.retrievalCount ?? 0)
         _fertilizedCount = State(initialValue: initialSummary?.fertilizedCount ?? 0)
         _frozenCount = State(initialValue: initialSummary?.frozenCount ?? 0)
-        _embryoGrades = State(initialValue: initialSummary?.embryoGrades ?? [])
+        _embryoRecords = State(initialValue: initialSummary?.embryoRecords ?? [])
     }
 
     var body: some View {
@@ -49,8 +54,35 @@ struct CycleRecordFormView: View {
                 Section("채취 상세") {
                     Stepper("수정 \(fertilizedCount)개", value: $fertilizedCount, in: 0...retrievalCount)
                     Stepper("동결 \(frozenCount)개", value: $frozenCount, in: 0...fertilizedCount)
-                    LabeledContent("배아 등급") {
-                        EmbryoGradeChips(selected: $embryoGrades)
+                }
+
+                Section {
+                    LabeledContent("배아 단계") {
+                        EmbryoStageToggle(selection: $draftStage)
+                    }
+                    LabeledContent("간편 등급") {
+                        EmbryoSimpleGradeChips(selection: $draftSimpleGrade)
+                    }
+                    TextField("원본 기록 (예: 4AA, 8세포)", text: $draftRawGrade)
+                    Toggle("동결 배아", isOn: $draftIsFrozen)
+                    Button {
+                        appendDraftEmbryo()
+                    } label: {
+                        Label("배아 추가", systemImage: "plus.circle.fill")
+                    }
+                    .foregroundStyle(AranColor.dotTransfer)
+                } header: {
+                    Text("배아 기록")
+                }
+
+                if !embryoRecords.isEmpty {
+                    Section("추가된 배아") {
+                        ForEach(embryoRecords) { embryo in
+                            EmbryoRecordRow(embryo: embryo)
+                        }
+                        .onDelete { indexSet in
+                            embryoRecords.remove(atOffsets: indexSet)
+                        }
                     }
                 }
 
@@ -58,9 +90,7 @@ struct CycleRecordFormView: View {
                     Toggle("이식도 함께 기록", isOn: $includesTransfer)
                     if includesTransfer {
                         DatePicker("이식일", selection: $transferDate, in: ...Date(), displayedComponents: .date)
-                        LabeledContent("배아 등급") {
-                            EmbryoGradeChips(selected: $transferGrade)
-                        }
+                        TextField("배아 등급 (예: 4AA)", text: $transferGrade)
                         Stepper("이식 \(transferCount)개", value: $transferCount, in: 1...5)
                         LabeledContent("종류") {
                             HStack(spacing: 8) {
@@ -91,7 +121,7 @@ struct CycleRecordFormView: View {
             .onChange(of: fertilizedCount) { _, newValue in
                 frozenCount = min(frozenCount, newValue)
             }
-            .navigationTitle(initialSummary != nil ? "\(cycleNumber)차 편집" : "채취/이식 기록")
+            .navigationTitle(initialSummary != nil ? "\(cycleNumber)차 편집" : "채취/배아 기록")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -107,7 +137,7 @@ struct CycleRecordFormView: View {
                                     retrievalCount: retrievalCount,
                                     fertilizedCount: fertilizedCount,
                                     frozenCount: frozenCount,
-                                    embryoGrades: embryoGrades
+                                    embryoRecords: embryoRecords
                                 )
                             } else {
                                 await viewModel.saveCycleRecord(
@@ -116,14 +146,14 @@ struct CycleRecordFormView: View {
                                     retrievalCount: retrievalCount,
                                     fertilizedCount: fertilizedCount,
                                     frozenCount: frozenCount,
-                                    embryoGrades: embryoGrades
+                                    embryoRecords: embryoRecords
                                 )
                             }
-                            if includesTransfer, let grade = transferGrade.first {
+                            if includesTransfer {
                                 await viewModel.saveTransfer(
                                     cycleNumber: cycleNumber,
                                     date: transferDate,
-                                    embryoGrade: grade,
+                                    embryoGrade: transferGrade,
                                     embryoCount: transferCount,
                                     transferType: transferType
                                 )
@@ -134,6 +164,60 @@ struct CycleRecordFormView: View {
                     .disabled(retrievalCount == 0)
                 }
             }
+        }
+    }
+
+    private func appendDraftEmbryo() {
+        let cycleId = initialSummary?.cycleRecordId ?? UUID()
+        let embryo = EmbryoRecord(
+            id: UUID(),
+            cycleId: cycleId,
+            stage: draftStage,
+            simpleGrade: draftSimpleGrade,
+            rawGrade: draftRawGrade.isEmpty ? nil : draftRawGrade,
+            isFrozen: draftIsFrozen,
+            memo: nil
+        )
+        embryoRecords.append(embryo)
+        resetDraft()
+    }
+
+    private func resetDraft() {
+        draftStage = .blastocystDay5
+        draftSimpleGrade = .unknown
+        draftRawGrade = ""
+        draftIsFrozen = true
+    }
+}
+
+private struct EmbryoRecordRow: View {
+    let embryo: EmbryoRecord
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(embryo.stage.rawValue)
+                .font(.caption.weight(.medium))
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(AranColor.procedureChipBackground, in: Capsule())
+                .foregroundStyle(AranColor.procedureChipText)
+            if embryo.simpleGrade != .unknown {
+                Text(embryo.simpleGrade.rawValue)
+                    .font(.caption.weight(.medium))
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(AranColor.dotTransfer.opacity(0.12), in: Capsule())
+                    .foregroundStyle(AranColor.dotTransfer)
+            }
+            if let raw = embryo.rawGrade, !raw.isEmpty {
+                Text(raw)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(embryo.isFrozen ? "동결" : "신선")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }

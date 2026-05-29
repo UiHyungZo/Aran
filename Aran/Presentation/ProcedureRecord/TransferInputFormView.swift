@@ -11,7 +11,7 @@ struct TransferInputFormView: View {
 
     @State private var cycleNumber: Int
     @State private var date = Date()
-    @State private var selectedGrades: [String] = []
+    @State private var rawGrade: String = ""
     @State private var embryoCount = 1
     @State private var transferType: TransferType = .frozen
 
@@ -21,7 +21,7 @@ struct TransferInputFormView: View {
     }
 
     private var isValid: Bool {
-        !selectedGrades.isEmpty && embryoCount > 0
+        embryoCount > 0
     }
 
     var body: some View {
@@ -33,9 +33,7 @@ struct TransferInputFormView: View {
                 }
 
                 Section("배아 정보") {
-                    LabeledContent("등급") {
-                        EmbryoGradeChips(selected: $selectedGrades)
-                    }
+                    TextField("배아 등급 (예: 4AA)", text: $rawGrade)
                     Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1...5)
                     LabeledContent("종류") {
                         HStack(spacing: 8) {
@@ -68,7 +66,7 @@ struct TransferInputFormView: View {
                             await viewModel.saveTransfer(
                                 cycleNumber: cycleNumber,
                                 date: date,
-                                embryoGrade: selectedGrades.first ?? "",
+                                embryoGrade: rawGrade,
                                 embryoCount: embryoCount,
                                 transferType: transferType
                             )

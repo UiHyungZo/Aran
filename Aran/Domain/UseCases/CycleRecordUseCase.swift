@@ -3,8 +3,9 @@ import Foundation
 protocol CycleRecordUseCaseProtocol {
     func fetchAll() async throws -> [CycleRecord]
     func fetch(date: Date) async throws -> CycleRecord?
-    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws
-    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws
+    func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoRecords: [EmbryoRecord]) async throws
+    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoRecords: [EmbryoRecord]) async throws
+    func delete(id: UUID) async throws
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws
     func removeTransferEvent(transferID: UUID) async throws
     func saveDiary(emoji: String?, text: String, for date: Date) async throws
@@ -38,7 +39,7 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
         retrievalCount: Int,
         fertilizedCount: Int,
         frozenCount: Int,
-        embryoGrades: [String]
+        embryoRecords: [EmbryoRecord]
     ) async throws {
         guard cycleNumber > 0 else {
             throw AppError.invalidInput("차수는 1 이상이어야 합니다.")
@@ -60,7 +61,7 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
             retrievalCount: retrievalCount,
             fertilizedCount: fertilizedCount,
             frozenCount: frozenCount,
-            embryoGrades: embryoGrades,
+            embryoRecords: embryoRecords,
             events: retrievalCount > 0 ? [.embryoRetrieval(count: retrievalCount)] : [],
             diary: nil
         )
@@ -73,7 +74,7 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
         retrievalCount: Int,
         fertilizedCount: Int,
         frozenCount: Int,
-        embryoGrades: [String]
+        embryoRecords: [EmbryoRecord]
     ) async throws {
         let all = try await repository.fetchAll()
         guard var record = all.first(where: { $0.cycleNumber == cycleNumber }) else { return }
@@ -81,12 +82,16 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
         record.retrievalCount = retrievalCount
         record.fertilizedCount = fertilizedCount
         record.frozenCount = frozenCount
-        record.embryoGrades = embryoGrades
+        record.embryoRecords = embryoRecords
         record.events = record.events.map { event in
             if case .embryoRetrieval = event { return .embryoRetrieval(count: retrievalCount) }
             return event
         }
         try await repository.update(record)
+    }
+
+    func delete(id: UUID) async throws {
+        try await repository.delete(id: id)
     }
 
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int = 1) async throws {

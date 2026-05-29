@@ -1,5 +1,29 @@
 import Foundation
 
+enum EmbryoStage: String, Codable, CaseIterable {
+    case cleavageDay3 = "3일배아"
+    case blastocystDay5 = "5일배아"
+}
+
+enum EmbryoSimpleGrade: String, Codable, CaseIterable {
+    case high = "상"
+    case midHigh = "중상"
+    case medium = "중"
+    case midLow = "중하"
+    case low = "하"
+    case unknown = "미입력"
+}
+
+struct EmbryoRecord: Identifiable, Codable {
+    let id: UUID
+    let cycleId: UUID
+    var stage: EmbryoStage
+    var simpleGrade: EmbryoSimpleGrade
+    var rawGrade: String?
+    var isFrozen: Bool
+    var memo: String?
+}
+
 struct CycleRecord: Identifiable {
     let id: UUID
     var cycleNumber: Int = 1
@@ -7,7 +31,7 @@ struct CycleRecord: Identifiable {
     var retrievalCount: Int = 0
     var fertilizedCount: Int = 0
     var frozenCount: Int = 0
-    var embryoGrades: [String] = []
+    var embryoRecords: [EmbryoRecord] = []
     var events: [DayEvent]
     var diary: DiaryEntry?
 }

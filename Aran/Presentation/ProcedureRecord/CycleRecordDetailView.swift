@@ -39,7 +39,7 @@ struct CycleRecordDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("\(cycleNumber)차 상세")
+        .navigationTitle("\(cycleNumber)차 채취 상세")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isTransferFormPresented) {
             TransferInputFormView(viewModel: viewModel, initialCycleNumber: cycleNumber)
@@ -99,7 +99,7 @@ struct CycleRecordDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("\(summary.cycleNumber)차")
+                        Text("\(summary.cycleNumber)차 채취")
                             .font(.title3.weight(.semibold))
                         Text(summary.displayStartDate, style: .date)
                             .font(.subheadline)
@@ -117,15 +117,34 @@ struct CycleRecordDetailView: View {
                     CountPill(title: "검사", count: summary.pgtRecords.count)
                 }
 
-                if !summary.embryoGrades.isEmpty {
-                    HStack(spacing: 6) {
-                        ForEach(summary.embryoGrades, id: \.self) { grade in
-                            Text(grade)
-                                .font(.caption.weight(.medium))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(AranColor.procedureChipBackground, in: Capsule())
-                                .foregroundStyle(AranColor.procedureChipText)
+                if !summary.embryoRecords.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("배아 기록")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        ForEach(summary.embryoRecords) { embryo in
+                            HStack(spacing: 6) {
+                                Text(embryo.stage.rawValue)
+                                    .font(.caption.weight(.medium))
+                                    .padding(.horizontal, 7)
+                                    .padding(.vertical, 3)
+                                    .background(AranColor.procedureChipBackground, in: Capsule())
+                                    .foregroundStyle(AranColor.procedureChipText)
+                                if embryo.simpleGrade != .unknown {
+                                    Text("간편 등급: \(embryo.simpleGrade.rawValue)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                if let raw = embryo.rawGrade, !raw.isEmpty {
+                                    Text("원본: \(raw)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(embryo.isFrozen ? "동결" : "신선")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }

@@ -9,7 +9,7 @@ final class CycleRecordModel {
     var retrievalCount: Int = 0
     var fertilizedCount: Int = 0
     var frozenCount: Int = 0
-    var embryoGradesRaw: String = "[]" // JSON-encoded [String]
+    var embryoRecordsRaw: String = "[]" // JSON-encoded [String]
     var eventsData: Data = Data() // JSON-encoded [DayEventDTO]
     var diaryEmoji: String?
     var diaryText: String?
@@ -21,7 +21,7 @@ final class CycleRecordModel {
         retrievalCount: Int = 0,
         fertilizedCount: Int = 0,
         frozenCount: Int = 0,
-        embryoGradesRaw: String = "[]",
+        embryoRecordsRaw: String = "[]",
         eventsData: Data = Data(),
         diaryEmoji: String? = nil,
         diaryText: String? = nil
@@ -32,7 +32,7 @@ final class CycleRecordModel {
         self.retrievalCount = retrievalCount
         self.fertilizedCount = fertilizedCount
         self.frozenCount = frozenCount
-        self.embryoGradesRaw = embryoGradesRaw
+        self.embryoRecordsRaw = embryoRecordsRaw
         self.eventsData = eventsData
         self.diaryEmoji = diaryEmoji
         self.diaryText = diaryText

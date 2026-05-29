@@ -1,27 +1,43 @@
 import SwiftUI
 
-struct EmbryoGradeChips: View {
-    @Binding var selected: [String]
-    private let grades = ["A", "B", "C", "D"]
+struct EmbryoStageToggle: View {
+    @Binding var selection: EmbryoStage
 
     var body: some View {
         HStack(spacing: 8) {
-            ForEach(grades, id: \.self) { grade in
-                let isOn = selected.contains(grade)
-                Button(grade) {
-                    if isOn {
-                        selected.removeAll { $0 == grade }
-                    } else {
-                        selected.append(grade)
-                    }
-                }
-                .font(.subheadline.weight(.semibold))
-                .frame(width: 48, height: 36)
-                .background(
-                    isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
-                    in: RoundedRectangle(cornerRadius: 8)
-                )
-                .foregroundStyle(isOn ? .white : .primary)
+            ForEach(EmbryoStage.allCases, id: \.self) { stage in
+                let isOn = selection == stage
+                Button(stage.rawValue) { selection = stage }
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                        in: Capsule()
+                    )
+                    .foregroundStyle(isOn ? .white : .primary)
+            }
+        }
+    }
+}
+
+struct EmbryoSimpleGradeChips: View {
+    @Binding var selection: EmbryoSimpleGrade
+    private let options: [EmbryoSimpleGrade] = [.high, .midHigh, .medium, .midLow, .low]
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(options, id: \.self) { grade in
+                let isOn = selection == grade
+                Button(grade.rawValue) { selection = grade }
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                        in: Capsule()
+                    )
+                    .foregroundStyle(isOn ? .white : .primary)
             }
         }
     }
@@ -29,7 +45,7 @@ struct EmbryoGradeChips: View {
 
 struct TransferResultChips: View {
     @Binding var selection: TransferResult
-    private let options: [TransferResult] = [.pending, .success, .failed]
+    private let options: [TransferResult] = [.waiting, .pregnant, .notPregnant]
 
     var body: some View {
         HStack(spacing: 8) {
