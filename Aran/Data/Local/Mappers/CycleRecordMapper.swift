@@ -51,7 +51,9 @@ enum CycleRecordMapper {
         do {
             return try JSONDecoder().decode([DayEventDTO].self, from: data).map { $0.toDomain() }
         } catch {
+            #if DEBUG
             print("[CycleRecordMapper] 이벤트 역직렬화 실패: \(error)")
+            #endif
             return []
         }
     }
@@ -61,7 +63,9 @@ enum CycleRecordMapper {
         do {
             return try JSONEncoder().encode(dtos)
         } catch {
+            #if DEBUG
             print("[CycleRecordMapper] 이벤트 직렬화 실패: \(error)")
+            #endif
             return Data()
         }
     }

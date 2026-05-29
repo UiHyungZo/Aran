@@ -63,18 +63,58 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private static func makeModelContainer() throws -> ModelContainer {
         let schema = Schema(AppSchemaV3.models)
+        let fileManager = FileManager.default
         let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
+        let storeDirectory = storeURL.deletingLastPathComponent()
+        let storeFileName = storeURL.lastPathComponent
         let configuration = ModelConfiguration(schema: schema, url: storeURL)
 
         do {
-            return try ModelContainer(
+            let container = try ModelContainer(
                 for: schema,
                 migrationPlan: AppMigrationPlan.self,
                 configurations: [configuration]
             )
+            setStoreFileProtection(
+                storeURL: storeURL,
+                storeDirectory: storeDirectory,
+                storeFileName: storeFileName,
+                fileManager: fileManager
+            )
+            return container
         } catch {
+            #if DEBUG
+            print("[SceneDelegate] 마이그레이션 실패, 저장소 초기화: \(error)")
+            #endif
             resetLocalStore(at: storeURL)
-            return try ModelContainer(for: schema, configurations: [configuration])
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            setStoreFileProtection(
+                storeURL: storeURL,
+                storeDirectory: storeDirectory,
+                storeFileName: storeFileName,
+                fileManager: fileManager
+            )
+            return container
+        }
+    }
+
+    private static func setStoreFileProtection(
+        storeURL: URL,
+        storeDirectory: URL,
+        storeFileName: String,
+        fileManager: FileManager
+    ) {
+        let relatedURLs = [
+            storeURL,
+            storeDirectory.appending(path: "\(storeFileName)-shm"),
+            storeDirectory.appending(path: "\(storeFileName)-wal")
+        ]
+
+        for url in relatedURLs where fileManager.fileExists(atPath: url.path) {
+            try? fileManager.setAttributes(
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+                ofItemAtPath: url.path
+            )
         }
     }
 

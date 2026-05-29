@@ -98,6 +98,39 @@ final class HealthRecordUseCaseTests: XCTestCase {
         }
     }
 
+    func test_save_whenValueIsNaN_thenThrowsInvalidInput() async throws {
+        do {
+            try await sut.save(type: HealthRecordType.amh, value: .nan, unit: "ng/mL", recordDate: Date(), memo: nil)
+            XCTFail("NaN 값은 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            // expected
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
+
+    func test_save_whenValueIsInfinite_thenThrowsInvalidInput() async throws {
+        do {
+            try await sut.save(type: HealthRecordType.amh, value: .infinity, unit: "ng/mL", recordDate: Date(), memo: nil)
+            XCTFail("Infinity 값은 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            // expected
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
+
+    func test_save_whenValueExceedsLimit_thenThrowsInvalidInput() async throws {
+        do {
+            try await sut.save(type: HealthRecordType.amh, value: 999_999, unit: "ng/mL", recordDate: Date(), memo: nil)
+            XCTFail("상한 초과 값은 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            // expected
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
+
     func test_update_whenRecordIsValid_thenUpdatesRepository() async throws {
         // given
         let record = makeRecord(value: 7.0)

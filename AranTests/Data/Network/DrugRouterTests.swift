@@ -78,4 +78,19 @@ final class DrugRouterTests: XCTestCase {
         XCTAssertEqual(request.url?.host, "apis.data.go.kr")
         XCTAssertTrue(request.url?.path.contains("DrbEasyDrugInfoService") == true)
     }
+
+    func test_searchRouter_whenSpecialCharactersIncluded_thenServiceKeyAndKeywordAreEncoded() throws {
+        let router = DrugRouter.search(
+            keyword: "철분+비타민 C",
+            pageNo: 1,
+            serviceKey: "a+/=&b",
+            baseURL: testBaseURL
+        )
+
+        let request = try router.asURLRequest()
+        let query = request.url?.query ?? ""
+
+        XCTAssertTrue(query.contains("serviceKey=a%2B%2F%3D%26b"), "serviceKey should be percent-encoded")
+        XCTAssertTrue(query.contains("itemName=%EC%B2%A0%EB%B6%84%2B%EB%B9%84%ED%83%80%EB%AF%BC%20C"), "keyword should be percent-encoded")
+    }
 }

@@ -39,6 +39,29 @@ final class SearchDrugUseCaseTests: XCTestCase {
         }
     }
 
+    func testExecute_withTooLongKeyword_throwsInvalidInput() async {
+        let longKeyword = String(repeating: "a", count: 101)
+        do {
+            _ = try await sut.execute(keyword: longKeyword)
+            XCTFail("101자 검색어는 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            XCTAssertTrue(repository.searchKeywords.isEmpty)
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
+
+    func testExecute_withInvalidPageNo_throwsInvalidInput() async {
+        do {
+            _ = try await sut.execute(keyword: "프로게스테론", pageNo: 0)
+            XCTFail("0 페이지는 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            XCTAssertTrue(repository.searchKeywords.isEmpty)
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
+    }
+
     func testExecute_whenRepositoryFails_propagatesError() async {
         repository.shouldThrow = AppError.networkError(URLError(.notConnectedToInternet))
 
@@ -60,6 +83,17 @@ final class SearchDrugUseCaseTests: XCTestCase {
 
         XCTAssertEqual(result.itemSeq, expected.itemSeq)
         XCTAssertEqual(repository.detailItemSeqs, ["123"])
+    }
+
+    func testDetail_withEmptyItemSeq_throwsInvalidInput() async {
+        do {
+            _ = try await sut.detail(itemSeq: "  ")
+            XCTFail("빈 itemSeq는 invalidInput을 던져야 합니다.")
+        } catch AppError.invalidInput {
+            XCTAssertTrue(repository.detailItemSeqs.isEmpty)
+        } catch {
+            XCTFail("예상치 못한 에러 타입: \(error)")
+        }
     }
 }
 

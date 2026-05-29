@@ -27,5 +27,10 @@
 	<string>$(DRUG_API_DECODING)</string>
 	<key>DRUG_API_ENCODING</key>
 	<string>$(DRUG_API_ENCODING)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

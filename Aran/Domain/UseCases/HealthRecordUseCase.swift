@@ -31,8 +31,14 @@ final class HealthRecordUseCase: HealthRecordUseCaseProtocol {
         guard !normalizedType.isEmpty else {
             throw AppError.invalidInput("검사 항목을 입력해주세요.")
         }
+        guard !value.isNaN, !value.isInfinite else {
+            throw AppError.invalidInput("유효하지 않은 수치입니다.")
+        }
         guard value > 0 else {
             throw AppError.invalidInput("유효한 수치를 입력해주세요.")
+        }
+        guard value < 999_999 else {
+            throw AppError.invalidInput("수치가 허용 범위를 초과했습니다.")
         }
         guard !normalizedUnit.isEmpty else {
             throw AppError.invalidInput("단위를 입력해주세요.")
@@ -52,8 +58,14 @@ final class HealthRecordUseCase: HealthRecordUseCaseProtocol {
         guard !record.type.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw AppError.invalidInput("검사 항목을 입력해주세요.")
         }
+        guard !record.value.isNaN, !record.value.isInfinite else {
+            throw AppError.invalidInput("유효하지 않은 수치입니다.")
+        }
         guard record.value > 0 else {
             throw AppError.invalidInput("유효한 수치를 입력해주세요.")
+        }
+        guard record.value < 999_999 else {
+            throw AppError.invalidInput("수치가 허용 범위를 초과했습니다.")
         }
         guard !record.unit.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw AppError.invalidInput("단위를 입력해주세요.")

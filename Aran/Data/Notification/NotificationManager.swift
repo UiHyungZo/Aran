@@ -13,7 +13,7 @@ final class NotificationManager: NotificationRepositoryProtocol {
             let id = slot.id.uuidString
             let content = UNMutableNotificationContent()
             content.title = "복약 알림"
-            content.body = "\(medication.drugName) \(medication.dosage) 복용 시간입니다."
+            content.body = "복용 시간입니다. 앱에서 상세 내용을 확인하세요."
             content.sound = .default
 
             let components = Calendar.current.dateComponents([.hour, .minute], from: slot.time)
