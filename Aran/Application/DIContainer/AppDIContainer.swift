@@ -23,6 +23,7 @@ final class AppDIContainer {
     lazy var healthRecordScene = HealthRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var procedureRecordScene = ProcedureRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var drugInfoScene = DrugInfoSceneDIContainer(dependencies: .init(
+        modelContext: modelContext,
         drugServiceKey: appConfigurations.drugAPIDecoding,
         drugAPIEndpoint: appConfigurations.drugAPIEndpoint
     ))

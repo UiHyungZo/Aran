@@ -6,8 +6,15 @@ final class MedicationSearchViewController: UIViewController {
     private let actions: MedicationSearchActions
     private var hostingController: UIHostingController<DrugSearchView>?
 
-    init(searchDrugUseCase: SearchDrugUseCaseProtocol, actions: MedicationSearchActions) {
-        viewModel = DrugInfoViewModel(searchDrugUseCase: searchDrugUseCase)
+    init(
+        searchDrugUseCase: SearchDrugUseCaseProtocol,
+        favoriteDrugUseCase: FavoriteDrugUseCaseProtocol,
+        actions: MedicationSearchActions
+    ) {
+        viewModel = DrugInfoViewModel(
+            searchDrugUseCase: searchDrugUseCase,
+            favoriteDrugUseCase: favoriteDrugUseCase
+        )
         self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }

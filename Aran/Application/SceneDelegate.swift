@@ -62,7 +62,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private static func makeModelContainer() throws -> ModelContainer {
-        let schema = Schema(AppSchemaV2.models)
+        let schema = Schema(AppSchemaV3.models)
         let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
         let configuration = ModelConfiguration(schema: schema, url: storeURL)
 

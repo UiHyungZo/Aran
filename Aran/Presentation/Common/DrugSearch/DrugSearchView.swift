@@ -12,9 +12,10 @@ struct DrugSearchView: View {
     let onAddDrug: (Drug) -> Void
     let onRegisterDrug: (_ drugName: String, _ component: String, _ dosage: String) -> Void
     let onClose: (() -> Void)?
-
+    
     @FocusState private var isSearchFocused: Bool
-
+    @State private var isFavoriteListPresented = false
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -22,14 +23,14 @@ struct DrugSearchView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .padding(.bottom, 8)
-
+                
                 if viewModel.showDebugChip {
                     debounceChip
                         .padding(.horizontal, 16)
                         .padding(.bottom, 8)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
-
+                
                 Divider()
                 contentView
             }
@@ -56,6 +57,17 @@ struct DrugSearchView: View {
                         Button("닫기", action: onClose)
                     }
                 }
+                if mode == .browse {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isFavoriteListPresented = true
+                        } label: {
+                            Image(systemName: "star.fill")
+                                .foregroundStyle(Color.yellow)
+                        }
+                        .accessibilityLabel("즐겨찾기")
+                    }
+                }
             }
             .navigationDestination(isPresented: Binding(
                 get: { mode == .browse && viewModel.selectedDrug != nil },
@@ -70,7 +82,11 @@ struct DrugSearchView: View {
                     )
                 }
             }
+            .navigationDestination(isPresented: $isFavoriteListPresented) {
+                FavoriteDrugListView(viewModel: viewModel)
+            }
         }
+        .task { await viewModel.loadFavorites() }
         .animation(.easeInOut(duration: 0.2), value: viewModel.showDebugChip)
         .alert("상세 정보 오류", isPresented: Binding(
             get: { viewModel.detailError != nil },
@@ -81,17 +97,17 @@ struct DrugSearchView: View {
             Text(viewModel.detailError ?? "")
         }
     }
-
+    
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(Color.gray)
-
+            
             TextField("약 이름으로 검색하세요", text: $viewModel.searchText)
                 .focused($isSearchFocused)
                 .submitLabel(.search)
                 .onSubmit { isSearchFocused = false }
-
+            
             if !viewModel.searchText.isEmpty {
                 Button {
                     viewModel.clearSearch()
@@ -106,7 +122,7 @@ struct DrugSearchView: View {
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-
+    
     private var debounceChip: some View {
         HStack(spacing: 6) {
             Circle()
@@ -122,7 +138,7 @@ struct DrugSearchView: View {
         .clipShape(Capsule())
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+    
     @ViewBuilder
     private var contentView: some View {
         if shouldShowRecentSearches {
@@ -131,11 +147,11 @@ struct DrugSearchView: View {
             stateContentView
         }
     }
-
+    
     private var shouldShowRecentSearches: Bool {
         isSearchFocused && viewModel.searchText.isEmpty && !viewModel.recentSearches.isEmpty
     }
-
+    
     @ViewBuilder
     private var stateContentView: some View {
         switch viewModel.viewState {
@@ -146,7 +162,7 @@ struct DrugSearchView: View {
         case let .error(message): errorView(message: message)
         }
     }
-
+    
     private var initialView: some View {
         VStack(spacing: 6) {
             Spacer()
@@ -161,7 +177,7 @@ struct DrugSearchView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 32)
     }
-
+    
     private var recentSearchesView: some View {
         List {
             Section {
@@ -201,7 +217,7 @@ struct DrugSearchView: View {
         .listStyle(.plain)
         .scrollDismissesKeyboard(.never)
     }
-
+    
     private var loadingView: some View {
         VStack(spacing: 12) {
             Spacer()
@@ -213,7 +229,7 @@ struct DrugSearchView: View {
             Spacer()
         }
     }
-
+    
     private func resultsView(drugs: [Drug]) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -222,7 +238,7 @@ struct DrugSearchView: View {
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-
+                
                 ForEach(drugs, id: \.itemSeq) { drug in
                     DrugResultCell(
                         drug: drug,
@@ -233,7 +249,7 @@ struct DrugSearchView: View {
                     Divider()
                         .padding(.horizontal, 20)
                 }
-
+                
                 if viewModel.hasMorePages {
                     ProgressView()
                         .frame(maxWidth: .infinity)
@@ -242,7 +258,7 @@ struct DrugSearchView: View {
                             Task { await viewModel.loadMore() }
                         }
                 }
-
+                
                 Button {
                     onRegisterDrug("", "", "")
                 } label: {
@@ -265,7 +281,7 @@ struct DrugSearchView: View {
         }
         .scrollDismissesKeyboard(.immediately)
     }
-
+    
     private var emptyView: some View {
         VStack {
             Spacer()
@@ -286,7 +302,7 @@ struct DrugSearchView: View {
             Spacer()
         }
     }
-
+    
     private func errorView(message _: String) -> some View {
         VStack {
             Spacer()
@@ -294,7 +310,7 @@ struct DrugSearchView: View {
                 Image(systemName: "antenna.radiowaves.left.and.right.slash")
                     .font(.system(size: 48))
                     .foregroundStyle(Color.secondary)
-
+                
                 VStack(spacing: 6) {
                     Text("검색 결과를 불러올 수 없어요")
                         .font(.system(size: 16, weight: .semibold))
@@ -304,7 +320,7 @@ struct DrugSearchView: View {
                         .foregroundStyle(Color.secondary)
                 }
                 .multilineTextAlignment(.center)
-
+                
                 Button {
                     Task { await viewModel.search(keyword: viewModel.searchText) }
                 } label: {
@@ -316,7 +332,7 @@ struct DrugSearchView: View {
                         .background(AranColor.primary)
                         .clipShape(Capsule())
                 }
-
+                
                 VStack(spacing: 4) {
                     Text("검색이 안 되나요?")
                         .font(.system(size: 13))
@@ -334,7 +350,7 @@ struct DrugSearchView: View {
             Spacer()
         }
     }
-
+    
     private func handleDrugSelection(_ drug: Drug) {
         switch mode {
         case .browse:
@@ -349,7 +365,7 @@ private struct DrugResultCell: View {
     let drug: Drug
     let actionTitle: String
     let onSelect: () -> Void
-
+    
     var body: some View {
         Button(action: onSelect) {
             VStack(alignment: .leading, spacing: 10) {
@@ -358,7 +374,7 @@ private struct DrugResultCell: View {
                     .foregroundStyle(Color.primary)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
-
+                
                 let subtitle = [drug.component, drug.entpName]
                     .compactMap { $0 }
                     .joined(separator: " · ")
@@ -366,7 +382,7 @@ private struct DrugResultCell: View {
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .lineLimit(1)
-
+                
                 Text(actionTitle)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(AranColor.primary)

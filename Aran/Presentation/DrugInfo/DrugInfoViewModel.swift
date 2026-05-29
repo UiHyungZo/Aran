@@ -19,12 +19,13 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var showDebugChip: Bool = false
     @Published var detailError: String?
     @Published var favoriteItemSeqs: Set<String> = []
+    @Published var favoriteDrugs: [FavoriteDrug] = []
     @Published var isLoadingMore: Bool = false
 
     private let searchDrugUseCase: SearchDrugUseCaseProtocol
+    private let favoriteDrugUseCase: FavoriteDrugUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
     private let recentSearchesKey = "recentDrugSearches"
-    private let favoritesKey = "favoriteDrugItemSeqs"
 
     private var currentPage: Int = 1
     private(set) var totalCount: Int = 0
@@ -32,11 +33,15 @@ final class DrugInfoViewModel: ObservableObject {
 
     var hasMorePages: Bool { currentPage * 20 < totalCount }
 
-    init(searchDrugUseCase: SearchDrugUseCaseProtocol) {
+    init(
+        searchDrugUseCase: SearchDrugUseCaseProtocol,
+        favoriteDrugUseCase: FavoriteDrugUseCaseProtocol
+    ) {
         self.searchDrugUseCase = searchDrugUseCase
+        self.favoriteDrugUseCase = favoriteDrugUseCase
         loadRecentSearches()
-        loadFavorites()
         bindSearch()
+        Task { await loadFavorites() }
     }
 
     private func bindSearch() {
@@ -173,16 +178,38 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func toggleFavorite(_ drug: Drug) {
-        if favoriteItemSeqs.contains(drug.itemSeq) {
-            favoriteItemSeqs.remove(drug.itemSeq)
-        } else {
-            favoriteItemSeqs.insert(drug.itemSeq)
+        Task {
+            do {
+                try await favoriteDrugUseCase.toggle(drug: drug)
+                await loadFavorites()
+            } catch {
+                detailError = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            }
         }
-        UserDefaults.standard.set(Array(favoriteItemSeqs), forKey: favoritesKey)
     }
 
-    private func loadFavorites() {
-        let saved = UserDefaults.standard.stringArray(forKey: favoritesKey) ?? []
-        favoriteItemSeqs = Set(saved)
+    func removeFavorite(_ favoriteDrug: FavoriteDrug) {
+        Task {
+            do {
+                try await favoriteDrugUseCase.delete(itemSeq: favoriteDrug.itemSeq)
+                await loadFavorites()
+            } catch {
+                detailError = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            }
+        }
+    }
+
+    func selectFavorite(_ favoriteDrug: FavoriteDrug) {
+        selectedDrug = favoriteDrug.drug
+    }
+
+    func loadFavorites() async {
+        do {
+            let favorites = try await favoriteDrugUseCase.fetchAll()
+            favoriteDrugs = favorites
+            favoriteItemSeqs = Set(favorites.map(\.itemSeq))
+        } catch {
+            detailError = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
     }
 }

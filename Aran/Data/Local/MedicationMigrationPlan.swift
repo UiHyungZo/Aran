@@ -92,9 +92,25 @@ enum AppSchemaV2: VersionedSchema {
     ]
 }
 
+// SchemaV3: 즐겨찾기 약 저장 모델 추가
+enum AppSchemaV3: VersionedSchema {
+    static let versionIdentifier = Schema.Version(3, 0, 0)
+
+    static var models: [any PersistentModel.Type] = [
+        CycleRecordModel.self,
+        MedicationModel.self,
+        MedicationTimeSlotModel.self,
+        MedicationLogModel.self,
+        HealthRecordModel.self,
+        TransferRecordModel.self,
+        PGTRecordModel.self,
+        FavoriteDrugModel.self,
+    ]
+}
+
 enum AppMigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self]
-    static var stages: [MigrationStage] = [migrateV1ToV2]
+    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self, AppSchemaV3.self]
+    static var stages: [MigrationStage] = [migrateV1ToV2, migrateV2ToV3]
 
     // scheduleTimes 배열 → MedicationTimeSlotModel 관계로 변환
     static let migrateV1ToV2 = MigrationStage.custom(
@@ -114,5 +130,10 @@ enum AppMigrationPlan: SchemaMigrationPlan {
             }
             try context.save()
         }
+    )
+
+    static let migrateV2ToV3 = MigrationStage.lightweight(
+        fromVersion: AppSchemaV2.self,
+        toVersion: AppSchemaV3.self
     )
 }

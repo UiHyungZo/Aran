@@ -34,6 +34,12 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
     private lazy var searchDrugUseCase: SearchDrugUseCaseProtocol =
         SearchDrugUseCase(repository: drugRepository)
 
+    private lazy var favoriteDrugRepository: FavoriteDrugRepositoryProtocol =
+        FavoriteDrugRepository(context: dependencies.modelContext)
+
+    private lazy var favoriteDrugUseCase: FavoriteDrugUseCaseProtocol =
+        FavoriteDrugUseCase(repository: favoriteDrugRepository)
+
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
     }
@@ -50,6 +56,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
     func makeMedicationSearchViewController(actions: MedicationSearchActions) -> MedicationSearchViewController {
         MedicationSearchViewController(
             searchDrugUseCase: searchDrugUseCase,
+            favoriteDrugUseCase: favoriteDrugUseCase,
             actions: actions
         )
     }
