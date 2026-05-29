@@ -11,6 +11,7 @@ struct CycleRecordDetailView: View {
 
     @State private var isTransferFormPresented = false
     @State private var isPGTFormPresented = false
+    @State private var isEditFormPresented = false
     @State private var selectedTransfer: TransferRecord?
     @State private var transferToDelete: TransferRecord?
     @State private var pgtToDelete: PGTRecord?
@@ -51,6 +52,11 @@ struct CycleRecordDetailView: View {
         .sheet(item: $selectedTransfer) { transfer in
             TransferResultView(viewModel: viewModel, transferRecord: transfer)
         }
+        .sheet(isPresented: $isEditFormPresented) {
+            if let summary {
+                CycleRecordFormView(viewModel: viewModel, initialSummary: summary)
+            }
+        }
         .confirmationDialog(
             "이식 기록을 삭제할까요?",
             isPresented: Binding(
@@ -76,6 +82,14 @@ struct CycleRecordDetailView: View {
                 Task { await viewModel.deletePGT(id: record.id) }
             }
             Button("취소", role: .cancel) { }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("편집") {
+                    isEditFormPresented = true
+                }
+                .foregroundStyle(AranColor.dotTransfer)
+            }
         }
         .task { await viewModel.load() }
     }

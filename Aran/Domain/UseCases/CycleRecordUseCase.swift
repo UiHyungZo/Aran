@@ -4,6 +4,7 @@ protocol CycleRecordUseCaseProtocol {
     func fetchAll() async throws -> [CycleRecord]
     func fetch(date: Date) async throws -> CycleRecord?
     func save(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws
+    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws
     func removeTransferEvent(transferID: UUID) async throws
     func saveDiary(emoji: String?, text: String, for date: Date) async throws
@@ -64,6 +65,28 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
             diary: nil
         )
         try await repository.save(record)
+    }
+
+    func update(
+        cycleNumber: Int,
+        startDate: Date,
+        retrievalCount: Int,
+        fertilizedCount: Int,
+        frozenCount: Int,
+        embryoGrades: [String]
+    ) async throws {
+        let all = try await repository.fetchAll()
+        guard var record = all.first(where: { $0.cycleNumber == cycleNumber }) else { return }
+        record.date = startDate
+        record.retrievalCount = retrievalCount
+        record.fertilizedCount = fertilizedCount
+        record.frozenCount = frozenCount
+        record.embryoGrades = embryoGrades
+        record.events = record.events.map { event in
+            if case .embryoRetrieval = event { return .embryoRetrieval(count: retrievalCount) }
+            return event
+        }
+        try await repository.update(record)
     }
 
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int = 1) async throws {

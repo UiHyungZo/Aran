@@ -152,6 +152,29 @@ final class ProcedureRecordViewModel: ObservableObject {
         }
     }
 
+    func updateCycleRecord(
+        cycleNumber: Int,
+        startDate: Date,
+        retrievalCount: Int,
+        fertilizedCount: Int,
+        frozenCount: Int,
+        embryoGrades: [String]
+    ) async {
+        do {
+            try await cycleRecordUseCase.update(
+                cycleNumber: cycleNumber,
+                startDate: startDate,
+                retrievalCount: retrievalCount,
+                fertilizedCount: fertilizedCount,
+                frozenCount: frozenCount,
+                embryoGrades: embryoGrades
+            )
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func saveTransfer(
         cycleNumber: Int,
         date: Date,

@@ -20,6 +20,10 @@ final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
         if let error = shouldThrow { throw error }
     }
 
+    func update(cycleNumber: Int, startDate: Date, retrievalCount: Int, fertilizedCount: Int, frozenCount: Int, embryoGrades: [String]) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws {
         if let error = shouldThrow { throw error }
     }

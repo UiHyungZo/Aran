@@ -24,6 +24,9 @@ struct TransferResultView: View {
         NavigationStack {
             Form {
                 Section("이식 정보") {
+                    LabeledContent("차수") {
+                        Text("\(transferRecord.cycleNumber)차")
+                    }
                     LabeledContent("이식일") {
                         Text(transferRecord.date, style: .date)
                     }
@@ -36,12 +39,8 @@ struct TransferResultView: View {
                 }
 
                 Section("결과") {
-                    Picker("결과", selection: $result) {
-                        Text(TransferResult.pending.rawValue).tag(TransferResult.pending)
-                        Text(TransferResult.success.rawValue).tag(TransferResult.success)
-                        Text(TransferResult.failed.rawValue).tag(TransferResult.failed)
-                    }
-                    .pickerStyle(.segmented)
+                    TransferResultChips(selection: $result)
+                        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                 }
 
                 Section("메모") {

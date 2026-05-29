@@ -27,11 +27,8 @@ struct ProcedurePGTFormView: View {
         NavigationStack {
             Form {
                 Section("검사 정보") {
-                    Picker("종류", selection: $selectedType) {
-                        ForEach(PGTType.allCases, id: \.self) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
+                    PGTTypeChips(selection: $selectedType)
+                        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                     DatePicker("검사일", selection: $testDate, displayedComponents: .date)
                 }
 
