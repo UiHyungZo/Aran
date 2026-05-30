@@ -3,6 +3,7 @@ import Foundation
 enum EmbryoStage: String, Codable, CaseIterable {
     case cleavageDay3 = "3일배아"
     case blastocystDay5 = "5일배아"
+    case blastocystDay6 = "6일배아"
 }
 
 enum EmbryoSimpleGrade: String, Codable, CaseIterable {

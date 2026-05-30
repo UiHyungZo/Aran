@@ -17,7 +17,22 @@ final class MockPGTRecordUseCase: PGTRecordUseCaseProtocol {
         return stubbedByCycle
     }
 
-    func save(cycleRecordId: UUID, testDate: Date, type: PGTType, normalCount: Int, abnormalCount: Int, mosaicCount: Int, memo: String?) async throws {
+    func save(
+        cycleRecordId: UUID,
+        testDate: Date,
+        type: PGTType,
+        normalCount: Int,
+        abnormalCount: Int,
+        mosaicCount: Int,
+        inconclusiveCount: Int,
+        resultStatus: PGTResultStatus?,
+        femaleChromosomeResult: ChromosomeResult?,
+        maleChromosomeResult: ChromosomeResult?,
+        implantationTestType: ImplantationTestType?,
+        implantationResult: ImplantationResult?,
+        recommendedTransferWindow: String?,
+        memo: String?
+    ) async throws {
         if let error = shouldThrow { throw error }
     }
 

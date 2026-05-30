@@ -1,9 +1,9 @@
 # SwiftData Schema Spec
 
-기준 날짜: 2026-05-29  
+기준 날짜: 2026-05-30  
 기준 코드: `Aran/Data/Local/*.swift`, `Aran/Data/Local/MedicationMigrationPlan.swift`
 
-## Runtime Schema 포함 모델 (`AppSchemaV3.models`)
+## Runtime Schema 포함 모델 (`AppSchemaV4.models`)
 
 - `CycleRecordModel`
 - `MedicationModel`
@@ -49,6 +49,13 @@
 |  | `normalCount` | `Int` | N | N | - | 없음 | 정상 |
 |  | `abnormalCount` | `Int` | N | N | - | 없음 | 비정상 |
 |  | `mosaicCount` | `Int` | N | N | - | 없음 | 모자이크 |
+|  | `inconclusiveCount` | `Int` | N | N | - | `0` | 판정불가 |
+|  | `resultStatusRawValue` | `String` | Y | N | - | `nil` | 공통 결과 상태 |
+|  | `femaleChromosomeResultRawValue` | `String` | Y | N | - | `nil` | 부부염색체 여성 결과 |
+|  | `maleChromosomeResultRawValue` | `String` | Y | N | - | `nil` | 부부염색체 남성 결과 |
+|  | `implantationTestTypeRawValue` | `String` | Y | N | - | `nil` | 반착검사 종류 |
+|  | `implantationResultRawValue` | `String` | Y | N | - | `nil` | 반착검사 결과 |
+|  | `recommendedTransferWindow` | `String` | Y | N | - | `nil` | 권장 이식 창 |
 |  | `memo` | `String` | Y | N | - | `nil` | 메모 |
 | `MedicationModel` | `id` | `UUID` | N | Y | - | `UUID()` | PK 성격 |
 |  | `drugName` | `String` | N | N | - | 없음 | 약 이름 |
@@ -109,4 +116,4 @@
 - `v1.0.0`: `MedicationTimeSlotModel` 없음, `MedicationLogModel.timeSlotID` 없음
 - `v2.0.0`: `MedicationTimeSlotModel` 추가, `MedicationLogModel.timeSlotID` 반영
 - `v3.0.0`: `FavoriteDrugModel` 추가
-
+- `v4.0.0`: `PGTRecordModel` 검사별 결과 상세 필드 추가

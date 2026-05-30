@@ -129,6 +129,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         }
     }
 
+    @discardableResult
     func saveCycleRecord(
         cycleNumber: Int,
         startDate: Date,
@@ -136,7 +137,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         fertilizedCount: Int,
         frozenCount: Int,
         embryoRecords: [EmbryoRecord]
-    ) async {
+    ) async -> Bool {
         do {
             try await cycleRecordUseCase.save(
                 cycleNumber: cycleNumber,
@@ -147,11 +148,14 @@ final class ProcedureRecordViewModel: ObservableObject {
                 embryoRecords: embryoRecords
             )
             await load()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
+    @discardableResult
     func updateCycleRecord(
         cycleNumber: Int,
         startDate: Date,
@@ -159,7 +163,7 @@ final class ProcedureRecordViewModel: ObservableObject {
         fertilizedCount: Int,
         frozenCount: Int,
         embryoRecords: [EmbryoRecord]
-    ) async {
+    ) async -> Bool {
         do {
             try await cycleRecordUseCase.update(
                 cycleNumber: cycleNumber,
@@ -170,19 +174,23 @@ final class ProcedureRecordViewModel: ObservableObject {
                 embryoRecords: embryoRecords
             )
             await load()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
+    @discardableResult
     func saveTransfer(
         cycleNumber: Int,
         date: Date,
         embryoGrade: String,
         embryoCount: Int,
         transferType: TransferType,
-        result: TransferResult = .waiting
-    ) async {
+        result: TransferResult = .waiting,
+        memo: String? = nil
+    ) async -> Bool {
         let record = TransferRecord(
             id: UUID(),
             cycleNumber: cycleNumber,
@@ -191,7 +199,7 @@ final class ProcedureRecordViewModel: ObservableObject {
             embryoCount: embryoCount,
             transferType: transferType,
             result: result,
-            memo: nil
+            memo: memo
         )
         do {
             try await transferRecordUseCase.save(record)
@@ -201,8 +209,10 @@ final class ProcedureRecordViewModel: ObservableObject {
                 cycleNumber: cycleNumber
             )
             await load()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
@@ -218,6 +228,43 @@ final class ProcedureRecordViewModel: ObservableObject {
         }
     }
 
+    @discardableResult
+    func updateTransfer(
+        id: UUID,
+        cycleNumber: Int,
+        date: Date,
+        embryoGrade: String,
+        embryoCount: Int,
+        transferType: TransferType,
+        result: TransferResult,
+        memo: String?
+    ) async -> Bool {
+        do {
+            guard var record = try await transferRecordUseCase.fetch(id: id) else {
+                errorMessage = "수정할 이식 기록을 찾을 수 없습니다."
+                return false
+            }
+
+            record.cycleNumber = cycleNumber
+            record.date = date
+            record.embryoGrade = embryoGrade
+            record.embryoCount = embryoCount
+            record.transferType = transferType
+            record.result = result
+            record.memo = memo
+
+            try await transferRecordUseCase.update(record)
+            try await cycleRecordUseCase.removeTransferEvent(transferID: id)
+            try await cycleRecordUseCase.addEvent(.embryoTransfer(transferID: id), to: date, cycleNumber: cycleNumber)
+            await load()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
     func savePGTRecord(
         cycleRecordId: UUID,
         testDate: Date,
@@ -225,8 +272,15 @@ final class ProcedureRecordViewModel: ObservableObject {
         normalCount: Int,
         abnormalCount: Int,
         mosaicCount: Int,
+        inconclusiveCount: Int = 0,
+        resultStatus: PGTResultStatus? = nil,
+        femaleChromosomeResult: ChromosomeResult? = nil,
+        maleChromosomeResult: ChromosomeResult? = nil,
+        implantationTestType: ImplantationTestType? = nil,
+        implantationResult: ImplantationResult? = nil,
+        recommendedTransferWindow: String? = nil,
         memo: String?
-    ) async {
+    ) async -> Bool {
         do {
             try await pgtRecordUseCase.save(
                 cycleRecordId: cycleRecordId,
@@ -235,11 +289,20 @@ final class ProcedureRecordViewModel: ObservableObject {
                 normalCount: normalCount,
                 abnormalCount: abnormalCount,
                 mosaicCount: mosaicCount,
+                inconclusiveCount: inconclusiveCount,
+                resultStatus: resultStatus,
+                femaleChromosomeResult: femaleChromosomeResult,
+                maleChromosomeResult: maleChromosomeResult,
+                implantationTestType: implantationTestType,
+                implantationResult: implantationResult,
+                recommendedTransferWindow: recommendedTransferWindow,
                 memo: memo
             )
             await load()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 

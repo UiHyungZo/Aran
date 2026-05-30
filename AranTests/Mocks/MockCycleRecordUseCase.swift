@@ -5,6 +5,8 @@ final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
     var stubbedAll: [CycleRecord] = []
     var stubbedRecord: CycleRecord?
     var shouldThrow: Error?
+    var addedEvents: [(event: DayEvent, date: Date, cycleNumber: Int)] = []
+    var removedTransferIDs: [UUID] = []
 
     func fetchAll() async throws -> [CycleRecord] {
         if let error = shouldThrow { throw error }
@@ -30,10 +32,12 @@ final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
 
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws {
         if let error = shouldThrow { throw error }
+        addedEvents.append((event: event, date: date, cycleNumber: cycleNumber))
     }
 
     func removeTransferEvent(transferID: UUID) async throws {
         if let error = shouldThrow { throw error }
+        removedTransferIDs.append(transferID)
     }
 
     func saveDiary(emoji: String?, text: String, for date: Date) async throws {

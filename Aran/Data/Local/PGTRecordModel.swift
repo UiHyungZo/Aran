@@ -10,6 +10,13 @@ final class PGTRecordModel {
     var normalCount: Int
     var abnormalCount: Int
     var mosaicCount: Int
+    var inconclusiveCount: Int = 0
+    var resultStatusRawValue: String?
+    var femaleChromosomeResultRawValue: String?
+    var maleChromosomeResultRawValue: String?
+    var implantationTestTypeRawValue: String?
+    var implantationResultRawValue: String?
+    var recommendedTransferWindow: String?
     var memo: String?
 
     init(
@@ -20,6 +27,13 @@ final class PGTRecordModel {
         normalCount: Int,
         abnormalCount: Int,
         mosaicCount: Int,
+        inconclusiveCount: Int = 0,
+        resultStatusRawValue: String? = nil,
+        femaleChromosomeResultRawValue: String? = nil,
+        maleChromosomeResultRawValue: String? = nil,
+        implantationTestTypeRawValue: String? = nil,
+        implantationResultRawValue: String? = nil,
+        recommendedTransferWindow: String? = nil,
         memo: String? = nil
     ) {
         self.id = id
@@ -29,6 +43,13 @@ final class PGTRecordModel {
         self.normalCount = normalCount
         self.abnormalCount = abnormalCount
         self.mosaicCount = mosaicCount
+        self.inconclusiveCount = inconclusiveCount
+        self.resultStatusRawValue = resultStatusRawValue
+        self.femaleChromosomeResultRawValue = femaleChromosomeResultRawValue
+        self.maleChromosomeResultRawValue = maleChromosomeResultRawValue
+        self.implantationTestTypeRawValue = implantationTestTypeRawValue
+        self.implantationResultRawValue = implantationResultRawValue
+        self.recommendedTransferWindow = recommendedTransferWindow
         self.memo = memo
     }
 }

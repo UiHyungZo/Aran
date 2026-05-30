@@ -136,6 +136,13 @@ struct PGTRecord: Identifiable {
     var normalCount: Int
     var abnormalCount: Int
     var mosaicCount: Int
+    var inconclusiveCount: Int
+    var resultStatus: PGTResultStatus?
+    var femaleChromosomeResult: ChromosomeResult?
+    var maleChromosomeResult: ChromosomeResult?
+    var implantationTestType: ImplantationTestType?
+    var implantationResult: ImplantationResult?
+    var recommendedTransferWindow: String?
     var memo: String?
 }
 
@@ -146,6 +153,8 @@ enum PGTType: String {
     case implantation     = "반착검사"
 }
 ```
+
+PGT-A/M은 배아 결과 개수와 판정 상태를 기록한다. 부부염색체는 여성/남성 결과를, 반착검사는 ERA/EMMA/ALICE 등 착상검사 종류와 결과 및 권장 이식 창을 기록한다.
 
 ---
 

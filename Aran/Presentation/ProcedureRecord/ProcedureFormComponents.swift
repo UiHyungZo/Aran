@@ -1,5 +1,63 @@
 import SwiftUI
 
+struct CounterRow: View {
+    let label: String
+    @Binding var value: Int
+    var unit: String = ""
+    var minValue: Int = 0
+    var maxValue: Int = Int.max
+
+    init(_ label: String, _ value: Binding<Int>, unit: String = "", minValue: Int = 0, maxValue: Int = Int.max) {
+        self.label = label
+        self._value = value
+        self.unit = unit
+        self.minValue = minValue
+        self.maxValue = maxValue
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(label)
+                .font(.body)
+            Spacer()
+            HStack(spacing: 8) {
+                Button {
+                    if value > minValue {
+                        value -= 1
+                    }
+                } label: {
+                    Image(systemName: "minus")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.primary)
+                        .frame(width: 32, height: 32)
+                        .background(Color(.secondarySystemGroupedBackground), in: Circle())
+                }
+                .disabled(value <= minValue)
+
+                Text("\(value)\(unit)")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(minWidth: 50, alignment: .center)
+
+                Button {
+                    if value < maxValue {
+                        value += 1
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(AranColor.dotTransfer, in: Circle())
+                }
+                .disabled(value >= maxValue)
+            }
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 8))
+    }
+}
+
 struct EmbryoStageToggle: View {
     @Binding var selection: EmbryoStage
 
@@ -70,18 +128,34 @@ struct PGTTypeChips: View {
     private let options = PGTType.allCases
 
     var body: some View {
-        FlowLayout(spacing: 8) {
-            ForEach(options, id: \.self) { option in
-                let isOn = selection == option
-                Button(option.rawValue) { selection = option }
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(
-                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
-                        in: Capsule()
-                    )
-                    .foregroundStyle(isOn ? .white : .primary)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                ForEach(options.prefix(2), id: \.self) { option in
+                    let isOn = selection == option
+                    Button(option.rawValue) { selection = option }
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(
+                            isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                            in: Capsule()
+                        )
+                        .foregroundStyle(isOn ? .white : .primary)
+                }
+            }
+            HStack(spacing: 8) {
+                ForEach(options.dropFirst(2), id: \.self) { option in
+                    let isOn = selection == option
+                    Button(option.rawValue) { selection = option }
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(
+                            isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                            in: Capsule()
+                        )
+                        .foregroundStyle(isOn ? .white : .primary)
+                }
             }
         }
     }

@@ -10,6 +10,13 @@ enum PGTRecordMapper {
             normalCount: model.normalCount,
             abnormalCount: model.abnormalCount,
             mosaicCount: model.mosaicCount,
+            inconclusiveCount: model.inconclusiveCount,
+            resultStatus: model.resultStatusRawValue.flatMap(PGTResultStatus.init(rawValue:)),
+            femaleChromosomeResult: model.femaleChromosomeResultRawValue.flatMap(ChromosomeResult.init(rawValue:)),
+            maleChromosomeResult: model.maleChromosomeResultRawValue.flatMap(ChromosomeResult.init(rawValue:)),
+            implantationTestType: model.implantationTestTypeRawValue.flatMap(ImplantationTestType.init(rawValue:)),
+            implantationResult: model.implantationResultRawValue.flatMap(ImplantationResult.init(rawValue:)),
+            recommendedTransferWindow: model.recommendedTransferWindow,
             memo: model.memo
         )
     }
@@ -23,6 +30,13 @@ enum PGTRecordMapper {
             normalCount: entity.normalCount,
             abnormalCount: entity.abnormalCount,
             mosaicCount: entity.mosaicCount,
+            inconclusiveCount: entity.inconclusiveCount,
+            resultStatusRawValue: entity.resultStatus?.rawValue,
+            femaleChromosomeResultRawValue: entity.femaleChromosomeResult?.rawValue,
+            maleChromosomeResultRawValue: entity.maleChromosomeResult?.rawValue,
+            implantationTestTypeRawValue: entity.implantationTestType?.rawValue,
+            implantationResultRawValue: entity.implantationResult?.rawValue,
+            recommendedTransferWindow: entity.recommendedTransferWindow,
             memo: entity.memo
         )
     }

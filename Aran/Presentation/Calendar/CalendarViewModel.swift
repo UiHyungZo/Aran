@@ -63,9 +63,20 @@ final class CalendarViewModel: ObservableObject {
     func loadMonthRecords() async {
         do {
             let records = try await cycleRecordUseCase.fetchAll()
-            cycleRecords = Dictionary(
-                uniqueKeysWithValues: records.map { (Calendar.current.startOfDay(for: $0.date), $0) }
-            )
+            cycleRecords = records.reduce(into: [Date: CycleRecord]()) { result, record in
+                let key = Calendar.current.startOfDay(for: record.date)
+                guard var existing = result[key] else {
+                    result[key] = record
+                    return
+                }
+                existing.retrievalCount = max(existing.retrievalCount, record.retrievalCount)
+                existing.fertilizedCount = max(existing.fertilizedCount, record.fertilizedCount)
+                existing.frozenCount = max(existing.frozenCount, record.frozenCount)
+                existing.embryoRecords.append(contentsOf: record.embryoRecords)
+                existing.events.append(contentsOf: record.events)
+                existing.diary = existing.diary ?? record.diary
+                result[key] = existing
+            }
 
             let health = try await healthRecordUseCase.fetchAll()
             var grouped: [Date: [HealthRecord]] = [:]
@@ -253,44 +264,104 @@ final class CalendarViewModel: ObservableObject {
         }
     }
 
-    func saveRetrieval(count: Int) async {
+    @discardableResult
+    func saveRetrieval(count: Int) async -> Bool {
         do {
             try await cycleRecordUseCase.addEvent(.embryoRetrieval(count: count), to: selectedDate)
             await loadMonthRecords()
             await loadRecord(for: selectedDate)
+            return true
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            return false
         }
     }
 
+    @discardableResult
     func saveTransfer(
         cycleNumber: Int,
+        date: Date? = nil,
         embryoGrade: String,
         embryoCount: Int,
         transferType: TransferType,
-        result: TransferResult
-    ) async {
+        result: TransferResult,
+        memo: String? = nil
+    ) async -> Bool {
         do {
+            let transferDate = date ?? selectedDate
             let record = TransferRecord(
                 id: UUID(),
                 cycleNumber: cycleNumber,
-                date: selectedDate,
+                date: transferDate,
                 embryoGrade: embryoGrade,
                 embryoCount: embryoCount,
                 transferType: transferType,
                 result: result,
-                memo: nil
+                memo: memo
             )
             try await transferRecordUseCase.save(record)
             try await cycleRecordUseCase.addEvent(
                 .embryoTransfer(transferID: record.id),
-                to: selectedDate,
+                to: transferDate,
                 cycleNumber: cycleNumber
             )
             await loadMonthRecords()
             await loadRecord(for: selectedDate)
+            return true
         } catch {
             errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
+    func updateTransfer(
+        id: UUID,
+        cycleNumber: Int,
+        date: Date,
+        embryoGrade: String,
+        embryoCount: Int,
+        transferType: TransferType,
+        result: TransferResult,
+        memo: String?
+    ) async -> Bool {
+        do {
+            guard var record = try await transferRecordUseCase.fetch(id: id) else {
+                errorMessage = "수정할 이식 기록을 찾을 수 없습니다."
+                return false
+            }
+
+            record.cycleNumber = cycleNumber
+            record.date = date
+            record.embryoGrade = embryoGrade
+            record.embryoCount = embryoCount
+            record.transferType = transferType
+            record.result = result
+            record.memo = memo
+
+            try await transferRecordUseCase.update(record)
+            try await cycleRecordUseCase.removeTransferEvent(transferID: id)
+            try await cycleRecordUseCase.addEvent(.embryoTransfer(transferID: id), to: date, cycleNumber: cycleNumber)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+            return true
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
+    func deleteTransfer(id: UUID) async -> Bool {
+        do {
+            try await transferRecordUseCase.delete(id: id)
+            try await cycleRecordUseCase.removeTransferEvent(transferID: id)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+            return true
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+            return false
         }
     }
 

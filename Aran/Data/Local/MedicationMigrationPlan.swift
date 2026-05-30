@@ -11,7 +11,7 @@ enum AppSchemaV1: VersionedSchema {
         AppSchemaV1.MedicationLogModel.self,
         HealthRecordModel.self,
         TransferRecordModel.self,
-        PGTRecordModel.self,
+        AppSchemaV1.PGTRecordModel.self,
     ]
 
     @Model final class MedicationModel {
@@ -75,6 +75,37 @@ enum AppSchemaV1: VersionedSchema {
             self.timeIndex = timeIndex
         }
     }
+
+    @Model final class PGTRecordModel {
+        @Attribute(.unique) var id: UUID
+        var cycleRecordId: UUID
+        var testDate: Date
+        var typeRawValue: String
+        var normalCount: Int
+        var abnormalCount: Int
+        var mosaicCount: Int
+        var memo: String?
+
+        init(
+            id: UUID = UUID(),
+            cycleRecordId: UUID = UUID(),
+            testDate: Date = Date(),
+            typeRawValue: String = "",
+            normalCount: Int = 0,
+            abnormalCount: Int = 0,
+            mosaicCount: Int = 0,
+            memo: String? = nil
+        ) {
+            self.id = id
+            self.cycleRecordId = cycleRecordId
+            self.testDate = testDate
+            self.typeRawValue = typeRawValue
+            self.normalCount = normalCount
+            self.abnormalCount = abnormalCount
+            self.mosaicCount = mosaicCount
+            self.memo = memo
+        }
+    }
 }
 
 // SchemaV2: MedicationTimeSlotModel 추가, timeSlotID 추가
@@ -88,13 +119,91 @@ enum AppSchemaV2: VersionedSchema {
         MedicationLogModel.self,
         HealthRecordModel.self,
         TransferRecordModel.self,
-        PGTRecordModel.self,
+        AppSchemaV2.PGTRecordModel.self,
     ]
+
+    @Model final class PGTRecordModel {
+        @Attribute(.unique) var id: UUID
+        var cycleRecordId: UUID
+        var testDate: Date
+        var typeRawValue: String
+        var normalCount: Int
+        var abnormalCount: Int
+        var mosaicCount: Int
+        var memo: String?
+
+        init(
+            id: UUID = UUID(),
+            cycleRecordId: UUID = UUID(),
+            testDate: Date = Date(),
+            typeRawValue: String = "",
+            normalCount: Int = 0,
+            abnormalCount: Int = 0,
+            mosaicCount: Int = 0,
+            memo: String? = nil
+        ) {
+            self.id = id
+            self.cycleRecordId = cycleRecordId
+            self.testDate = testDate
+            self.typeRawValue = typeRawValue
+            self.normalCount = normalCount
+            self.abnormalCount = abnormalCount
+            self.mosaicCount = mosaicCount
+            self.memo = memo
+        }
+    }
 }
 
 // SchemaV3: 즐겨찾기 약 저장 모델 추가
 enum AppSchemaV3: VersionedSchema {
     static let versionIdentifier = Schema.Version(3, 0, 0)
+
+    static var models: [any PersistentModel.Type] = [
+        CycleRecordModel.self,
+        MedicationModel.self,
+        MedicationTimeSlotModel.self,
+        MedicationLogModel.self,
+        HealthRecordModel.self,
+        TransferRecordModel.self,
+        AppSchemaV3.PGTRecordModel.self,
+        FavoriteDrugModel.self,
+    ]
+
+    @Model final class PGTRecordModel {
+        @Attribute(.unique) var id: UUID
+        var cycleRecordId: UUID
+        var testDate: Date
+        var typeRawValue: String
+        var normalCount: Int
+        var abnormalCount: Int
+        var mosaicCount: Int
+        var memo: String?
+
+        init(
+            id: UUID = UUID(),
+            cycleRecordId: UUID = UUID(),
+            testDate: Date = Date(),
+            typeRawValue: String = "",
+            normalCount: Int = 0,
+            abnormalCount: Int = 0,
+            mosaicCount: Int = 0,
+            memo: String? = nil
+        ) {
+            self.id = id
+            self.cycleRecordId = cycleRecordId
+            self.testDate = testDate
+            self.typeRawValue = typeRawValue
+            self.normalCount = normalCount
+            self.abnormalCount = abnormalCount
+            self.mosaicCount = mosaicCount
+            self.memo = memo
+        }
+    }
+}
+
+// SchemaV4: PGT/염색체/반착검사 결과 상세 필드 추가
+enum AppSchemaV4: VersionedSchema {
+    static let versionIdentifier = Schema.Version(4, 0, 0)
 
     static var models: [any PersistentModel.Type] = [
         CycleRecordModel.self,
@@ -109,8 +218,8 @@ enum AppSchemaV3: VersionedSchema {
 }
 
 enum AppMigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self, AppSchemaV3.self]
-    static var stages: [MigrationStage] = [migrateV1ToV2, migrateV2ToV3]
+    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self, AppSchemaV3.self, AppSchemaV4.self]
+    static var stages: [MigrationStage] = [migrateV1ToV2, migrateV2ToV3, migrateV3ToV4]
 
     // scheduleTimes 배열 → MedicationTimeSlotModel 관계로 변환
     static let migrateV1ToV2 = MigrationStage.custom(
@@ -135,5 +244,10 @@ enum AppMigrationPlan: SchemaMigrationPlan {
     static let migrateV2ToV3 = MigrationStage.lightweight(
         fromVersion: AppSchemaV2.self,
         toVersion: AppSchemaV3.self
+    )
+
+    static let migrateV3ToV4 = MigrationStage.lightweight(
+        fromVersion: AppSchemaV3.self,
+        toVersion: AppSchemaV4.self
     )
 }

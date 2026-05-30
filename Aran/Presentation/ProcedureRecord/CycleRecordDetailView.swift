@@ -12,7 +12,7 @@ struct CycleRecordDetailView: View {
     @State private var isTransferFormPresented = false
     @State private var isPGTFormPresented = false
     @State private var isEditFormPresented = false
-    @State private var selectedTransfer: TransferRecord?
+    @State private var transferToEdit: TransferRecord?
     @State private var transferToDelete: TransferRecord?
     @State private var pgtToDelete: PGTRecord?
 
@@ -42,15 +42,19 @@ struct CycleRecordDetailView: View {
         .navigationTitle("\(cycleNumber)차 채취 상세")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isTransferFormPresented) {
-            TransferInputFormView(viewModel: viewModel, initialCycleNumber: cycleNumber)
+            TransferInputFormView(viewModel: viewModel, initialCycleNumber: 1)
+        }
+        .sheet(item: $transferToEdit) { transfer in
+            TransferInputFormView(viewModel: viewModel, editRecord: transfer)
         }
         .sheet(isPresented: $isPGTFormPresented) {
             if let cycleRecordId = summary?.cycleRecordId {
-                ProcedurePGTFormView(viewModel: viewModel, cycleRecordId: cycleRecordId)
+                ProcedurePGTFormView(
+                    viewModel: viewModel,
+                    cycleRecordId: cycleRecordId,
+                    maxCount: summary?.fertilizedCount ?? Int.max
+                )
             }
-        }
-        .sheet(item: $selectedTransfer) { transfer in
-            TransferResultView(viewModel: viewModel, transferRecord: transfer)
         }
         .sheet(isPresented: $isEditFormPresented) {
             if let summary {
@@ -161,9 +165,15 @@ struct CycleRecordDetailView: View {
             } else {
                 ForEach(summary.transferRecords) { record in
                     Button {
-                        selectedTransfer = record
+                        transferToEdit = record
                     } label: {
                         TransferRow(record: record)
+                    }
+                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                        Button("수정") {
+                            transferToEdit = record
+                        }
+                        .tint(.blue)
                     }
                     .swipeActions {
                         Button("삭제", role: .destructive) {
@@ -264,7 +274,14 @@ private struct PGTRow: View {
                     PGTCountChip(title: "정상", count: record.normalCount)
                     PGTCountChip(title: "이상", count: record.abnormalCount)
                     PGTCountChip(title: "모자이크", count: record.mosaicCount)
+                    PGTCountChip(title: "판정불가", count: record.inconclusiveCount)
                 }
+            }
+
+            if let resultSummary = record.resultSummary {
+                Text(resultSummary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             if let memo = record.memo, !memo.isEmpty {
@@ -274,6 +291,31 @@ private struct PGTRow: View {
             }
         }
         .padding(.vertical, 3)
+    }
+}
+
+private extension PGTRecord {
+    var resultSummary: String? {
+        switch type {
+        case .pgtA, .pgtM:
+            return resultStatus.map { "결과 상태: \($0.rawValue)" }
+        case .chromosomeCouple:
+            let female = femaleChromosomeResult?.rawValue ?? "미입력"
+            let male = maleChromosomeResult?.rawValue ?? "미입력"
+            return "여성 \(female) / 남성 \(male)"
+        case .implantation:
+            var parts: [String] = []
+            if let implantationTestType {
+                parts.append(implantationTestType.rawValue)
+            }
+            if let implantationResult {
+                parts.append(implantationResult.rawValue)
+            }
+            if let recommendedTransferWindow, !recommendedTransferWindow.isEmpty {
+                parts.append("권장 \(recommendedTransferWindow)")
+            }
+            return parts.isEmpty ? resultStatus.map { "결과 상태: \($0.rawValue)" } : parts.joined(separator: " · ")
+        }
     }
 }
 

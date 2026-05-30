@@ -5,6 +5,8 @@ struct DateDetailSheet: View {
     @State private var isDiarySheetPresented = false
     @State private var isHospitalFormPresented = false
     @State private var isTransferFormPresented = false
+    @State private var transferToEdit: TransferRecord?
+    @State private var transferToDelete: TransferRecord?
     @State private var selectedHealthRecord: HealthRecord?
     @Environment(\.dismiss) private var dismiss
 
@@ -37,6 +39,9 @@ struct DateDetailSheet: View {
         .sheet(isPresented: $isTransferFormPresented) {
             TransferRecordFormView(viewModel: viewModel)
         }
+        .sheet(item: $transferToEdit) { record in
+            TransferRecordFormView(viewModel: viewModel, editRecord: record)
+        }
         .sheet(isPresented: $isDiarySheetPresented) {
             DiaryEditSheet(viewModel: viewModel)
         }
@@ -45,6 +50,19 @@ struct DateDetailSheet: View {
         }
         .sheet(item: $selectedHealthRecord) { record in
             HealthRecordDetailView(record: record)
+        }
+        .confirmationDialog(
+            "이식 기록을 삭제할까요?",
+            isPresented: Binding(
+                get: { transferToDelete != nil },
+                set: { if !$0 { transferToDelete = nil } }
+            ),
+            presenting: transferToDelete
+        ) { record in
+            Button("삭제", role: .destructive) {
+                Task { _ = await viewModel.deleteTransfer(id: record.id) }
+            }
+            Button("취소", role: .cancel) { }
         }
     }
 
@@ -96,6 +114,17 @@ struct DateDetailSheet: View {
                             )
                     }
                     .padding(.vertical, 4)
+                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                        Button("수정") {
+                            transferToEdit = record
+                        }
+                        .tint(.blue)
+                    }
+                    .swipeActions {
+                        Button("삭제", role: .destructive) {
+                            transferToDelete = record
+                        }
+                    }
                 }
             } else {
                 Text("채취/이식 기록이 없습니다.")
@@ -426,52 +455,110 @@ private struct TransferRecordFormView: View {
     @ObservedObject var viewModel: CalendarViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var mode: FormMode = .transfer
+    private let editRecord: TransferRecord?
+
+    @State private var mode: FormMode
     @State private var retrievalCount = 1
-    @State private var cycleNumber = 1
-    @State private var embryoGrade = ""
-    @State private var embryoCount = 1
-    @State private var transferType: TransferType = .fresh
-    @State private var result: TransferResult = .waiting
+    @State private var cycleNumber: Int
+    @State private var transferDate: Date
+    @State private var transferRows: [TransferDraftRow]
     @FocusState private var isFocused: Bool
+
+    init(viewModel: CalendarViewModel, editRecord: TransferRecord? = nil) {
+        self.viewModel = viewModel
+        self.editRecord = editRecord
+        _mode = State(initialValue: editRecord == nil ? .transfer : .edit)
+        _cycleNumber = State(initialValue: editRecord?.cycleNumber ?? 1)
+        _transferDate = State(initialValue: editRecord?.date ?? viewModel.selectedDate)
+        _transferRows = State(initialValue: [TransferDraftRow(record: editRecord)])
+    }
 
     enum FormMode: String, CaseIterable, Identifiable {
         case retrieval = "채취"
         case transfer = "이식"
+        case edit = "수정"
 
         var id: String { rawValue }
+    }
+
+    private var isEditMode: Bool {
+        mode == .edit
+    }
+
+    private var isTransferMode: Bool {
+        isEditMode || mode == .transfer
+    }
+
+    private var canSaveTransferRows: Bool {
+        !transferRows.isEmpty && transferRows.allSatisfy { $0.embryoCount > 0 }
+    }
+
+    private var isSaveDisabled: Bool {
+        if isTransferMode {
+            return !canSaveTransferRows
+        }
+        return retrievalCount <= 0
     }
 
     var body: some View {
         NavigationView {
             Form {
-                Picker("기록 종류", selection: $mode) {
-                    ForEach(FormMode.allCases) { mode in
-                        Text(mode.rawValue).tag(mode)
+                if !isEditMode {
+                    Picker("기록 종류", selection: $mode) {
+                        ForEach([FormMode.retrieval, .transfer]) { mode in
+                            Text(mode.rawValue).tag(mode)
+                        }
                     }
+                    .pickerStyle(.segmented)
                 }
-                .pickerStyle(.segmented)
 
                 if mode == .retrieval {
                     Stepper("채취 \(retrievalCount)개", value: $retrievalCount, in: 1 ... 50)
                 } else {
-                    Stepper("\(cycleNumber)차 시술", value: $cycleNumber, in: 1 ... 20)
-                    TextField("배아 등급 예: 3AA", text: $embryoGrade)
-                        .focused($isFocused)
-                    Stepper("이식 \(embryoCount)개", value: $embryoCount, in: 1 ... 10)
-                    Picker("이식 유형", selection: $transferType) {
-                        Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
-                        Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
+                    Section("기본 정보") {
+                        Stepper("\(cycleNumber)차 시술", value: $cycleNumber, in: 1 ... 20)
+                        DatePicker("이식일", selection: $transferDate, in: ...Date(), displayedComponents: .date)
                     }
-                    Picker("결과", selection: $result) {
-                        Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
-                        Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
-                        Text(TransferResult.notPregnant.rawValue).tag(TransferResult.notPregnant)
+
+                    ForEach(transferRows.indices, id: \.self) { index in
+                        Section("배아 \(index + 1)") {
+                            TextField("배아 등급 예: 3AA", text: $transferRows[index].embryoGrade)
+                                .focused($isFocused)
+                            Stepper("이식 \(transferRows[index].embryoCount)개", value: $transferRows[index].embryoCount, in: 1 ... 10)
+                            Picker("이식 유형", selection: $transferRows[index].transferType) {
+                                Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
+                                Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
+                            }
+                            Picker("결과", selection: $transferRows[index].result) {
+                                Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
+                                Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
+                                Text(TransferResult.notPregnant.rawValue).tag(TransferResult.notPregnant)
+                            }
+                            TextField("메모 (선택)", text: $transferRows[index].memo, axis: .vertical)
+                                .lineLimit(1...3)
+
+                            if !isEditMode && transferRows.count > 1 {
+                                Button("이 배아 삭제", role: .destructive) {
+                                    transferRows.remove(at: index)
+                                }
+                            }
+                        }
+                    }
+
+                    if !isEditMode {
+                        Section {
+                            Button {
+                                transferRows.append(TransferDraftRow())
+                            } label: {
+                                Label("배아 행 추가", systemImage: "plus.circle")
+                            }
+                            .foregroundStyle(AranColor.dotTransfer)
+                        }
                     }
                 }
             }
             .scrollDismissesKeyboard(.immediately)
-            .navigationTitle("채취 / 이식 기록")
+            .navigationTitle(isEditMode ? "이식 기록 수정" : "채취 / 이식 기록")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -480,27 +567,88 @@ private struct TransferRecordFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            if mode == .retrieval {
-                                await viewModel.saveRetrieval(count: retrievalCount)
-                            } else {
-                                let grade = embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
-                                await viewModel.saveTransfer(
-                                    cycleNumber: cycleNumber,
-                                    embryoGrade: grade.isEmpty ? "미입력" : grade,
-                                    embryoCount: embryoCount,
-                                    transferType: transferType,
-                                    result: result
-                                )
-                            }
+                            guard await save() else { return }
                             dismiss()
                         }
                     }
+                    .disabled(isSaveDisabled)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("완료") { isFocused = false }
                 }
             }
+        }
+    }
+
+    private func save() async -> Bool {
+        if mode == .retrieval {
+            return await viewModel.saveRetrieval(count: retrievalCount)
+        }
+
+        if isEditMode {
+            guard
+                let record = editRecord,
+                let row = transferRows.first
+            else {
+                return false
+            }
+            let trimmedGrade = row.embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedMemo = row.memo.trimmingCharacters(in: .whitespacesAndNewlines)
+            return await viewModel.updateTransfer(
+                id: record.id,
+                cycleNumber: cycleNumber,
+                date: transferDate,
+                embryoGrade: trimmedGrade.isEmpty ? "미입력" : trimmedGrade,
+                embryoCount: row.embryoCount,
+                transferType: row.transferType,
+                result: row.result,
+                memo: trimmedMemo.isEmpty ? nil : trimmedMemo
+            )
+        }
+
+        for row in transferRows {
+            let trimmedGrade = row.embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedMemo = row.memo.trimmingCharacters(in: .whitespacesAndNewlines)
+            let didSave = await viewModel.saveTransfer(
+                cycleNumber: cycleNumber,
+                date: transferDate,
+                embryoGrade: trimmedGrade.isEmpty ? "미입력" : trimmedGrade,
+                embryoCount: row.embryoCount,
+                transferType: row.transferType,
+                result: row.result,
+                memo: trimmedMemo.isEmpty ? nil : trimmedMemo
+            )
+            guard didSave else { return false }
+        }
+        return true
+    }
+}
+
+private extension TransferRecordFormView {
+    struct TransferDraftRow {
+        var embryoGrade: String
+        var embryoCount: Int
+        var transferType: TransferType
+        var result: TransferResult
+        var memo: String
+
+        init() {
+            embryoGrade = ""
+            embryoCount = 1
+            transferType = .fresh
+            result = .waiting
+            memo = ""
+        }
+
+        init(record: TransferRecord?) {
+            self.init()
+            guard let record else { return }
+            embryoGrade = record.embryoGrade
+            embryoCount = record.embryoCount
+            transferType = record.transferType
+            result = record.result
+            memo = record.memo ?? ""
         }
     }
 }
