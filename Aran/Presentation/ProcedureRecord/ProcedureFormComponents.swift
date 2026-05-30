@@ -161,6 +161,80 @@ struct PGTTypeChips: View {
     }
 }
 
+struct PGTRow: View {
+    let record: PGTRecord
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(record.type.rawValue)
+                    .font(.body.weight(.medium))
+                Spacer()
+                Text(record.testDate, style: .date)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if record.type.showsEmbryoCounts {
+                HStack(spacing: 8) {
+                    PGTCountChip(title: "정상", count: record.normalCount)
+                    PGTCountChip(title: "이상", count: record.abnormalCount)
+                    PGTCountChip(title: "모자이크", count: record.mosaicCount)
+                    PGTCountChip(title: "판정불가", count: record.inconclusiveCount)
+                }
+            }
+
+            if let resultSummary = record.resultSummary {
+                Text(resultSummary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let memo = record.memo, !memo.isEmpty {
+                Text(memo)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 3)
+    }
+}
+
+struct PGTCountChip: View {
+    let title: String
+    let count: Int
+
+    var body: some View {
+        Text("\(title) \(count)")
+            .font(.caption.weight(.medium))
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(AranColor.procedureChipBackground, in: Capsule())
+            .foregroundStyle(AranColor.procedureChipText)
+    }
+}
+
+extension PGTRecord {
+    var resultSummary: String? {
+        switch type {
+        case .pgtA, .pgtM:
+            return nil
+        case .chromosomeCouple:
+            let female = femaleChromosomeResult?.rawValue ?? "미입력"
+            let male = maleChromosomeResult?.rawValue ?? "미입력"
+            return "여성 \(female) / 남성 \(male)"
+        case .implantation:
+            var parts: [String] = []
+            if let implantationTestType { parts.append(implantationTestType.rawValue) }
+            if let implantationResult { parts.append(implantationResult.rawValue) }
+            if let recommendedTransferWindow, !recommendedTransferWindow.isEmpty {
+                parts.append("권장 \(recommendedTransferWindow)")
+            }
+            return parts.isEmpty ? resultStatus.map { "결과 상태: \($0.rawValue)" } : parts.joined(separator: " · ")
+        }
+    }
+}
+
 struct FlowLayout: Layout {
     var spacing: CGFloat = 8
 

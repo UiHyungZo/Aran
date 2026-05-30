@@ -43,11 +43,6 @@ struct ProcedurePGTFormView: View {
 
                 if selectedType.showsEmbryoCounts {
                     Section("결과") {
-                        Picker("결과 상태", selection: $resultStatus) {
-                            ForEach(PGTResultStatus.allCases, id: \.self) { status in
-                                Text(status.rawValue).tag(status)
-                            }
-                        }
                         Stepper(
                             "정상 \(normalCount)개",
                             value: $normalCount,
@@ -138,7 +133,7 @@ struct ProcedurePGTFormView: View {
                                 abnormalCount: abnormalCount,
                                 mosaicCount: mosaicCount,
                                 inconclusiveCount: inconclusiveCount,
-                                resultStatus: resultStatus,
+                                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
                                 femaleChromosomeResult: femaleChromosomeResult,
                                 maleChromosomeResult: maleChromosomeResult,
                                 implantationTestType: implantationTestType,

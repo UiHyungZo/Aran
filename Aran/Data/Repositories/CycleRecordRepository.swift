@@ -39,6 +39,7 @@ final class CycleRecordRepository: CycleRecordRepositoryProtocol {
         guard let model = try context.fetch(descriptor).first else { return }
         let updated = CycleRecordMapper.toModel(record)
         model.cycleNumber = updated.cycleNumber
+        model.date = updated.date
         model.retrievalCount = updated.retrievalCount
         model.fertilizedCount = updated.fertilizedCount
         model.frozenCount = updated.frozenCount

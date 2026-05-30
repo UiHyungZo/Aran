@@ -77,7 +77,9 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
         embryoRecords: [EmbryoRecord]
     ) async throws {
         let all = try await repository.fetchAll()
-        guard var record = all.first(where: { $0.cycleNumber == cycleNumber }) else { return }
+        guard var record = all.first(where: { $0.cycleNumber == cycleNumber }) else {
+            throw AppError.invalidInput("\(cycleNumber)차 채취 기록을 찾을 수 없습니다.")
+        }
         record.date = startDate
         record.retrievalCount = retrievalCount
         record.fertilizedCount = fertilizedCount

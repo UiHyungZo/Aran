@@ -9,10 +9,7 @@ struct CycleRecordDetailView: View {
     @ObservedObject var viewModel: ProcedureRecordViewModel
     let cycleNumber: Int
 
-    @State private var isTransferFormPresented = false
-    @State private var isPGTFormPresented = false
     @State private var isEditFormPresented = false
-    @State private var transferToEdit: TransferRecord?
     @State private var transferToDelete: TransferRecord?
     @State private var pgtToDelete: PGTRecord?
 
@@ -41,21 +38,6 @@ struct CycleRecordDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("\(cycleNumber)차 채취 상세")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $isTransferFormPresented) {
-            TransferInputFormView(viewModel: viewModel, initialCycleNumber: 1)
-        }
-        .sheet(item: $transferToEdit) { transfer in
-            TransferInputFormView(viewModel: viewModel, editRecord: transfer)
-        }
-        .sheet(isPresented: $isPGTFormPresented) {
-            if let cycleRecordId = summary?.cycleRecordId {
-                ProcedurePGTFormView(
-                    viewModel: viewModel,
-                    cycleRecordId: cycleRecordId,
-                    maxCount: summary?.fertilizedCount ?? Int.max
-                )
-            }
-        }
         .sheet(isPresented: $isEditFormPresented) {
             if let summary {
                 CycleRecordFormView(viewModel: viewModel, initialSummary: summary)
@@ -164,31 +146,14 @@ struct CycleRecordDetailView: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(summary.transferRecords) { record in
-                    Button {
-                        transferToEdit = record
-                    } label: {
-                        TransferRow(record: record)
-                    }
-                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                        Button("수정") {
-                            transferToEdit = record
+                    TransferRow(record: record)
+                        .swipeActions {
+                            Button("삭제", role: .destructive) {
+                                transferToDelete = record
+                            }
                         }
-                        .tint(.blue)
-                    }
-                    .swipeActions {
-                        Button("삭제", role: .destructive) {
-                            transferToDelete = record
-                        }
-                    }
                 }
             }
-
-            Button {
-                isTransferFormPresented = true
-            } label: {
-                Label("이식 추가", systemImage: "plus.circle.fill")
-            }
-            .foregroundStyle(AranColor.dotTransfer)
         } header: {
             Text("이식 기록")
         }
@@ -210,17 +175,6 @@ struct CycleRecordDetailView: View {
                 }
             }
 
-            if summary.cycleRecordId == nil {
-                Text("PGT 기록은 차수 추가 후 입력할 수 있어요")
-                    .foregroundStyle(.secondary)
-            } else {
-                Button {
-                    isPGTFormPresented = true
-                } label: {
-                    Label("검사 추가", systemImage: "plus.circle.fill")
-                }
-                .foregroundStyle(AranColor.dotTransfer)
-            }
         } header: {
             Text("PGT / 염색체 / 반착검사")
         }
@@ -255,80 +209,3 @@ private struct TransferRow: View {
     }
 }
 
-private struct PGTRow: View {
-    let record: PGTRecord
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(record.type.rawValue)
-                    .font(.body.weight(.medium))
-                Spacer()
-                Text(record.testDate, style: .date)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            if record.type.showsEmbryoCounts {
-                HStack(spacing: 8) {
-                    PGTCountChip(title: "정상", count: record.normalCount)
-                    PGTCountChip(title: "이상", count: record.abnormalCount)
-                    PGTCountChip(title: "모자이크", count: record.mosaicCount)
-                    PGTCountChip(title: "판정불가", count: record.inconclusiveCount)
-                }
-            }
-
-            if let resultSummary = record.resultSummary {
-                Text(resultSummary)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            if let memo = record.memo, !memo.isEmpty {
-                Text(memo)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 3)
-    }
-}
-
-private extension PGTRecord {
-    var resultSummary: String? {
-        switch type {
-        case .pgtA, .pgtM:
-            return resultStatus.map { "결과 상태: \($0.rawValue)" }
-        case .chromosomeCouple:
-            let female = femaleChromosomeResult?.rawValue ?? "미입력"
-            let male = maleChromosomeResult?.rawValue ?? "미입력"
-            return "여성 \(female) / 남성 \(male)"
-        case .implantation:
-            var parts: [String] = []
-            if let implantationTestType {
-                parts.append(implantationTestType.rawValue)
-            }
-            if let implantationResult {
-                parts.append(implantationResult.rawValue)
-            }
-            if let recommendedTransferWindow, !recommendedTransferWindow.isEmpty {
-                parts.append("권장 \(recommendedTransferWindow)")
-            }
-            return parts.isEmpty ? resultStatus.map { "결과 상태: \($0.rawValue)" } : parts.joined(separator: " · ")
-        }
-    }
-}
-
-private struct PGTCountChip: View {
-    let title: String
-    let count: Int
-
-    var body: some View {
-        Text("\(title) \(count)")
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, 7)
-            .padding(.vertical, 3)
-            .background(AranColor.procedureChipBackground, in: Capsule())
-            .foregroundStyle(AranColor.procedureChipText)
-    }
-}

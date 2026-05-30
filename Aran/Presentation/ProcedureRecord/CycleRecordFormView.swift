@@ -16,6 +16,7 @@ struct CycleRecordFormView: View {
     @State private var fertilizedCount: Int
     @State private var frozenCount: Int
     @State private var embryoRecords: [EmbryoRecord]
+    @State private var existingPGTRecords: [PGTRecord]
 
     @State private var isAddingEmbryo = false
     @State private var editingEmbryoIndex: Int?
@@ -51,6 +52,7 @@ struct CycleRecordFormView: View {
         _fertilizedCount = State(initialValue: initialSummary?.fertilizedCount ?? 0)
         _frozenCount = State(initialValue: initialSummary?.frozenCount ?? 0)
         _embryoRecords = State(initialValue: initialSummary?.embryoRecords ?? [])
+        _existingPGTRecords = State(initialValue: initialSummary?.pgtRecords ?? [])
     }
 
     private var hasInvalidPGTEmbryoResult: Bool {
@@ -74,9 +76,7 @@ struct CycleRecordFormView: View {
             VStack(spacing: 16) {
                 sectionRetrievalInfo
                 sectionEmbryoRecords
-                if initialSummary == nil {
-                    sectionPGT
-                }
+                sectionPGT
                 sectionTransfer
                 saveButto
             }
@@ -219,8 +219,21 @@ struct CycleRecordFormView: View {
 
     private var sectionPGT: some View {
         VStack(spacing: 0) {
+            if !existingPGTRecords.isEmpty {
+                SectionHeader("기존 PGT 기록")
+                VStack(spacing: 0) {
+                    ForEach(Array(existingPGTRecords.enumerated()), id: \.element.id) { index, record in
+                        if index > 0 { Divider().padding(.horizontal, 16) }
+                        PGTRow(record: record)
+                            .padding(.horizontal, 16)
+                    }
+                }
+                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .padding(.bottom, 16)
+            }
+
             HStack(spacing: 12) {
-                SectionHeader("PGT / 염색체 기록")
+                SectionHeader(existingPGTRecords.isEmpty ? "PGT / 염색체 기록" : "새 PGT 추가")
                 Spacer()
                 Toggle("", isOn: $includesPGT)
                     .labelsHidden()
@@ -236,9 +249,6 @@ struct CycleRecordFormView: View {
                         .padding(.vertical, 12)
 
                     if pgtType.showsEmbryoCounts {
-                        Divider().padding(.horizontal, 16)
-                        pickerRow("결과 상태", selection: $pgtResultStatus)
-                        Divider().padding(.horizontal, 16)
                         CounterRow("정상", $pgtNormalCount, unit: "개",
                                    maxValue: max(0, fertilizedCount - pgtAbnormalCount - pgtMosaicCount - pgtInconclusiveCount))
                         Divider().padding(.horizontal, 16)
@@ -455,7 +465,7 @@ struct CycleRecordFormView: View {
                     guard didSaveTransfer else { return }
                 }
 
-                if includesPGT && initialSummary == nil {
+                if includesPGT {
                     guard let cycleId = viewModel.cycleRecords.first(where: { $0.cycleNumber == cycleNumber })?.id else {
                         viewModel.errorMessage = "PGT를 저장할 차수 기록을 찾을 수 없습니다."
                         return
@@ -468,7 +478,7 @@ struct CycleRecordFormView: View {
                         abnormalCount: pgtAbnormalCount,
                         mosaicCount: pgtMosaicCount,
                         inconclusiveCount: pgtInconclusiveCount,
-                        resultStatus: pgtResultStatus,
+                        resultStatus: pgtType.showsEmbryoCounts ? nil : pgtResultStatus,
                         femaleChromosomeResult: femaleChromosomeResult,
                         maleChromosomeResult: maleChromosomeResult,
                         implantationTestType: implantationTestType,
