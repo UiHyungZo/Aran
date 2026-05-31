@@ -25,33 +25,28 @@ final class DrugRepository: DrugRepositoryProtocol {
         )
     }
 
+    /// primary = 전문의약품 상세(approvalAPIClient), fallback = e약은요(apiClient)
     func search(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
+        guard let approvalAPIClient else {
+            return try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
+        }
         do {
-            let result = try await apiClient.searchDrugs(keyword: keyword, pageNo: pageNo)
-            guard result.drugs.isEmpty && pageNo == 1,
-                  let approvalAPIClient else {
-                return result
+            let primary = try await approvalAPIClient.searchDrugs(itemName: keyword, pageNo: pageNo)
+            // 결과가 있거나 첫 페이지가 아니면 그대로 사용. 첫 페이지에서 비었을 때만 e약은요로 폴백.
+            if !primary.drugs.isEmpty || pageNo != 1 {
+                return primary
             }
-            do {
-                let approvalDrugs = try await approvalAPIClient.fetchApprovalInfo(itemName: keyword)
-                    .map(\.drug)
-                    .filter { !$0.itemSeq.isEmpty && !$0.itemName.isEmpty }
-                    .deduplicatedByItemSeq()
-                return approvalDrugs.isEmpty
-                    ? result
-                    : DrugSearchResult(drugs: approvalDrugs, totalCount: approvalDrugs.count, pageNo: pageNo)
-            } catch {
-                return result
-            }
-        } catch let error as AppError {
-            throw error
+            let fallback = try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
+            return fallback.drugs.isEmpty ? primary : fallback
         } catch {
-            throw AppError.networkError(error)
+            // 전문의약품 API 실패 시 e약은요로 폴백
+            return try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
         }
     }
 
     func enrich(_ drug: Drug) async throws -> Drug {
-        guard let approvalAPIClient else { return drug }
+        // primary 결과는 이미 approvalInfo 보유 → no-op. e약은요 fallback 결과만 보강한다.
+        guard drug.approvalInfo == nil, let approvalAPIClient else { return drug }
         do {
             let approvalInfos = try await approvalAPIClient.fetchApprovalInfo(itemName: drug.itemName)
             guard let approvalInfo = approvalInfos.first(where: { $0.itemSeq == drug.itemSeq }) else {
@@ -62,14 +57,14 @@ final class DrugRepository: DrugRepositoryProtocol {
             return drug
         }
     }
-}
 
-private extension Array where Element == Drug {
-    func deduplicatedByItemSeq() -> [Drug] {
-        reduce(into: [Drug]()) { acc, drug in
-            if !acc.contains(where: { $0.itemSeq == drug.itemSeq }) {
-                acc.append(drug)
-            }
+    private func searchEasyDrug(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
+        do {
+            return try await apiClient.searchDrugs(keyword: keyword, pageNo: pageNo)
+        } catch let error as AppError {
+            throw error
+        } catch {
+            throw AppError.networkError(error)
         }
     }
 }

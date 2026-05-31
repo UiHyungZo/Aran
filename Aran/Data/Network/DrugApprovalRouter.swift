@@ -1,7 +1,7 @@
 import Foundation
 
 enum DrugApprovalRouter {
-    case search(itemName: String, serviceKey: String, baseURL: String)
+    case search(itemName: String, pageNo: Int, serviceKey: String, baseURL: String)
 
     private var path: String {
         switch self {
@@ -11,13 +11,13 @@ enum DrugApprovalRouter {
 
     private var baseURLString: String {
         switch self {
-        case let .search(_, _, url): return url
+        case let .search(_, _, _, url): return url
         }
     }
 
     private var serviceKey: String {
         switch self {
-        case let .search(_, key, _): return key
+        case let .search(_, _, key, _): return key
         }
     }
 
@@ -35,12 +35,12 @@ enum DrugApprovalRouter {
         var items = [
             URLQueryItem(name: "serviceKey", value: serviceKey),
             URLQueryItem(name: "type", value: "json"),
-            URLQueryItem(name: "pageNo", value: "1"),
             URLQueryItem(name: "numOfRows", value: "20"),
         ]
 
         switch self {
-        case let .search(itemName, _, _):
+        case let .search(itemName, pageNo, _, _):
+            items.append(URLQueryItem(name: "pageNo", value: "\(pageNo)"))
             items.append(URLQueryItem(name: "item_name", value: itemName))
         }
 

@@ -16,13 +16,16 @@ nonisolated struct DrugApprovalItemDTO: Decodable {
     let itemName: String?
     let entpName: String?
     let itemPermitDate: String?
-    let barCode: String?
-    let ediCode: String?
-    let atcCode: String?
+    let etcOtcCode: String?
+    let materialName: String?
+    let storageMethod: String?
+    let eeDocData: String?
+    let udDocData: String?
+    let nbDocData: String?
     let mainItemIngredient: String?
-    let productType: String?
-    let specialtyPublic: String?
-    let bigProductImageURL: String?
+    let atcCode: String?
+    let ediCode: String?
+    let barCode: String?
     let rareDrugYN: String?
 
     enum CodingKeys: String, CodingKey {
@@ -30,44 +33,20 @@ nonisolated struct DrugApprovalItemDTO: Decodable {
         case itemName = "ITEM_NAME"
         case entpName = "ENTP_NAME"
         case itemPermitDate = "ITEM_PERMIT_DATE"
-        case barCode = "BAR_CODE"
-        case ediCode = "EDI_CODE"
+        case etcOtcCode = "ETC_OTC_CODE"
+        case materialName = "MATERIAL_NAME"
+        case storageMethod = "STORAGE_METHOD"
+        case eeDocData = "EE_DOC_DATA"
+        case udDocData = "UD_DOC_DATA"
+        case nbDocData = "NB_DOC_DATA"
+        case mainItemIngredient = "MAIN_ITEM_INGR"
         case atcCode = "ATC_CODE"
-        case mainItemIngredient = "ITEM_INGR_NAME"
-        case productType = "PRDUCT_TYPE"
-        case specialtyPublic = "SPCLTY_PBLC"
-        case bigProductImageURL = "BIG_PRDT_IMG_URL"
+        case ediCode = "EDI_CODE"
+        case barCode = "BAR_CODE"
         case rareDrugYN = "RARE_DRUG_YN"
     }
 
-    nonisolated init(
-        itemSeq: String,
-        itemName: String?,
-        entpName: String?,
-        itemPermitDate: String?,
-        barCode: String?,
-        ediCode: String?,
-        atcCode: String?,
-        mainItemIngredient: String?,
-        productType: String? = nil,
-        specialtyPublic: String? = nil,
-        bigProductImageURL: String? = nil,
-        rareDrugYN: String?
-    ) {
-        self.itemSeq = itemSeq
-        self.itemName = itemName
-        self.entpName = entpName
-        self.itemPermitDate = itemPermitDate
-        self.barCode = barCode
-        self.ediCode = ediCode
-        self.atcCode = atcCode
-        self.mainItemIngredient = mainItemIngredient
-        self.productType = productType
-        self.specialtyPublic = specialtyPublic
-        self.bigProductImageURL = bigProductImageURL
-        self.rareDrugYN = rareDrugYN
-    }
-
+    /// enrich용 메타데이터 (e약은요 fallback 결과 보강에 사용)
     nonisolated func toDomain() -> DrugApprovalInfo {
         DrugApprovalInfo(
             itemSeq: itemSeq,
@@ -77,11 +56,58 @@ nonisolated struct DrugApprovalItemDTO: Decodable {
             barCode: barCode,
             ediCode: ediCode,
             atcCode: atcCode,
-            mainItemIngredient: mainItemIngredient,
-            productType: productType,
-            specialtyPublic: specialtyPublic,
-            bigProductImageURL: bigProductImageURL,
+            mainItemIngredient: cleanedIngredient,
+            productType: nil,
+            specialtyPublic: etcOtcCode,
+            bigProductImageURL: nil,
             rareDrugYN: rareDrugYN
         )
+    }
+
+    /// primary 검색 결과용 — XML doc 데이터를 파싱해 효능·용법·주의사항까지 채운 완전한 Drug
+    nonisolated func toDrug() -> Drug {
+        Drug(
+            itemSeq: itemSeq,
+            itemName: itemName ?? "",
+            entpName: entpName ?? "",
+            component: cleanedIngredient ?? materialNameComponent,
+            efcyQesitm: eeDocData.flatMap(DocDataXMLParser.extractText),
+            useMethodQesitm: udDocData.flatMap(DocDataXMLParser.extractText),
+            atpnWarnQesitm: nbDocData.flatMap { DocDataXMLParser.extractArticles(from: $0, titleContaining: "경고") },
+            atpnQesitm: nbDocData.flatMap { DocDataXMLParser.extractArticles(from: $0, titleExcluding: "경고") },
+            intrcQesitm: nil,
+            seQesitm: nil,
+            depositMethodQesitm: storageMethod?.nilIfBlank,
+            itemImage: nil,
+            approvalInfo: toDomain()
+        )
+    }
+
+    // MARK: - Helpers
+
+    /// "[M040702]포도당" → "포도당"
+    private var cleanedIngredient: String? {
+        guard let raw = mainItemIngredient?.nilIfBlank else { return nil }
+        let stripped = raw.replacingOccurrences(of: "\\[[^\\]]*\\]", with: "", options: .regularExpression)
+        return stripped.nilIfBlank
+    }
+
+    /// "총량 : ... |성분명 : 포도당|분량 : ..." 형태에서 성분명만 추출
+    private var materialNameComponent: String? {
+        guard let raw = materialName?.nilIfBlank else { return nil }
+        for part in raw.components(separatedBy: "|") {
+            let kv = part.components(separatedBy: ":")
+            if kv.count >= 2, kv[0].contains("성분명") {
+                return kv[1].trimmingCharacters(in: .whitespaces).nilIfBlank
+            }
+        }
+        return nil
+    }
+}
+
+private extension String {
+    var nilIfBlank: String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 }

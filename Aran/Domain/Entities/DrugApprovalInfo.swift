@@ -13,22 +13,4 @@ struct DrugApprovalInfo: Equatable {
     let specialtyPublic: String?
     let bigProductImageURL: String?
     let rareDrugYN: String?
-
-    var drug: Drug {
-        Drug(
-            itemSeq: itemSeq,
-            itemName: itemName ?? "",
-            entpName: entpName ?? "",
-            component: mainItemIngredient,
-            efcyQesitm: nil,
-            useMethodQesitm: nil,
-            atpnWarnQesitm: nil,
-            atpnQesitm: nil,
-            intrcQesitm: nil,
-            seQesitm: nil,
-            depositMethodQesitm: nil,
-            itemImage: bigProductImageURL,
-            approvalInfo: self
-        )
-    }
 }

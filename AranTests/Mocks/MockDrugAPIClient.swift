@@ -12,15 +12,3 @@ final class MockDrugAPIClient: DrugAPIClientProtocol {
         return try searchResult.get()
     }
 }
-
-final class MockDrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
-    var approvalInfos: [DrugApprovalInfo] = []
-    var shouldThrow: Error?
-    private(set) var receivedItemName: String?
-
-    func fetchApprovalInfo(itemName: String) async throws -> [DrugApprovalInfo] {
-        if let error = shouldThrow { throw error }
-        receivedItemName = itemName
-        return approvalInfos
-    }
-}

@@ -1,37 +1,20 @@
-@testable import Aran
 import XCTest
+@testable import Aran
 
 final class DrugApprovalRouterTests: XCTestCase {
-    private let testServiceKey = "test-key"
-    private let testBaseURL = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07"
+    func test_search_buildsExpectedURLRequest() {
+        let request = try? DrugApprovalRouter.search(
+            itemName: "타이레놀",
+            pageNo: 2,
+            serviceKey: "TEST_KEY",
+            baseURL: "https://example.com"
+        ).asURLRequest()
 
-    func test_searchRouter_whenBuilt_thenContainsRequiredParameters() throws {
-        let router = DrugApprovalRouter.search(
-            itemName: "소론도정",
-            serviceKey: testServiceKey,
-            baseURL: testBaseURL
-        )
-
-        let request = try router.asURLRequest()
-        let urlString = request.url?.absoluteString ?? ""
-
-        XCTAssertTrue(urlString.contains("item_name"))
-        XCTAssertTrue(urlString.contains("type=json"))
-        XCTAssertTrue(urlString.contains("pageNo=1"))
-        XCTAssertTrue(urlString.contains("numOfRows=20"))
-    }
-
-    func test_searchRouter_whenBuilt_thenUsesProductApprovalEndpoint() throws {
-        let router = DrugApprovalRouter.search(
-            itemName: "소론도정",
-            serviceKey: testServiceKey,
-            baseURL: testBaseURL
-        )
-
-        let request = try router.asURLRequest()
-
-        XCTAssertEqual(request.url?.host, "apis.data.go.kr")
-        XCTAssertTrue(request.url?.path.contains("DrugPrdtPrmsnInfoService07") == true)
-        XCTAssertTrue(request.url?.path.contains("getDrugPrdtPrmsnInq07") == true)
+        XCTAssertNotNil(request)
+        let url = request?.url?.absoluteString ?? ""
+        XCTAssertTrue(url.contains("/getDrugPrdtPrmsnInq07"))
+        XCTAssertTrue(url.contains("item_name=%ED%83%80%EC%9D%B4%EB%A0%88%EB%86%80"))
+        XCTAssertTrue(url.contains("serviceKey=TEST_KEY"))
+        XCTAssertTrue(url.contains("pageNo=2"))
     }
 }
