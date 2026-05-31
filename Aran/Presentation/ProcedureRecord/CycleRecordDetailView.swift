@@ -150,8 +150,13 @@ struct CycleRecordDetailView: View {
     private func transferSection(summary: ProcedureCycleSummary) -> some View {
         Section {
             if summary.transferRecords.isEmpty {
-                Text("이식 기록이 없어요")
-                    .foregroundStyle(.secondary)
+                VStack(spacing: 4) {
+                    Text("이식 기록이 없어요")
+                        .foregroundStyle(.secondary)
+                    Text("우측 상단 + 버튼으로 추가할 수 있어요")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             } else {
                 ForEach(summary.transferRecords) { record in
                     TransferRow(record: record)

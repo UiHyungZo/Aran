@@ -146,6 +146,12 @@ private struct CycleSummaryCard: View {
                 CountPill(title: "이식", count: summary.transferredCount)
                 CountPill(title: "검사", count: summary.pgtRecords.count)
             }
+
+            if summary.transferRecords.isEmpty {
+                Text("상세에서 이식 기록을 추가할 수 있어요")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
         }
         .padding(.vertical, 6)
     }
