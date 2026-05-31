@@ -12,6 +12,7 @@ struct TransferRecord: Identifiable {
 }
 
 enum TransferResult: String, Hashable {
+    case standby = "대기중"
     case waiting = "진행중"
     case pregnant = "임신"
     case notPregnant = "비임신"

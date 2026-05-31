@@ -135,10 +135,12 @@ struct TransferInputFormView: View {
                                 .font(.caption)
                                 .foregroundStyle(.red)
                         }
-                        Picker("결과", selection: $rows[index].result) {
-                            Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
-                            Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
-                            Text(TransferResult.notPregnant.rawValue).tag(TransferResult.notPregnant)
+                        if isEditMode {
+                            Picker("결과", selection: $rows[index].result) {
+                                Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
+                                Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
+                                Text(TransferResult.notPregnant.rawValue).tag(TransferResult.notPregnant)
+                            }
                         }
                         TextField("메모 (선택)", text: $rows[index].memo, axis: .vertical)
                             .lineLimit(1...3)

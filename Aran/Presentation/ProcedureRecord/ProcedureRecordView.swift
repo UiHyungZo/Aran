@@ -190,6 +190,7 @@ struct TransferResultBadge: View {
 
     private var backgroundColor: Color {
         switch result {
+        case .standby: return AranColor.badgePendingBackground
         case .waiting: return AranColor.badgePendingBackground
         case .pregnant: return AranColor.badgeSuccessBackground
         case .notPregnant: return AranColor.badgeFailedBackground
@@ -198,6 +199,7 @@ struct TransferResultBadge: View {
 
     private var textColor: Color {
         switch result {
+        case .standby: return AranColor.badgePendingText
         case .waiting: return AranColor.badgePendingText
         case .pregnant: return AranColor.badgeSuccessText
         case .notPregnant: return AranColor.badgeFailedText

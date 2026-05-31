@@ -36,7 +36,7 @@ struct ProcedureCycleSummary: Identifiable {
     }
 
     var latestResult: TransferResult {
-        transferRecords.sorted { $0.date > $1.date }.first?.result ?? .waiting
+        transferRecords.sorted { $0.date > $1.date }.first?.result ?? .standby
     }
 }
 
