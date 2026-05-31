@@ -11,6 +11,8 @@ struct CycleRecordDetailView: View {
 
     @State private var isEditFormPresented = false
     @State private var transferToDelete: TransferRecord?
+    @State private var transferToEdit: TransferRecord?
+    @State private var isAddTransferPresented = false
     @State private var pgtToDelete: PGTRecord?
 
     private var summary: ProcedureCycleSummary? {
@@ -42,6 +44,12 @@ struct CycleRecordDetailView: View {
             if let summary {
                 CycleRecordFormView(viewModel: viewModel, initialSummary: summary)
             }
+        }
+        .sheet(item: $transferToEdit) { record in
+            TransferInputFormView(viewModel: viewModel, editRecord: record)
+        }
+        .sheet(isPresented: $isAddTransferPresented) {
+            TransferInputFormView(viewModel: viewModel, initialCycleNumber: cycleNumber)
         }
         .confirmationDialog(
             "이식 기록을 삭제할까요?",
@@ -147,6 +155,8 @@ struct CycleRecordDetailView: View {
             } else {
                 ForEach(summary.transferRecords) { record in
                     TransferRow(record: record)
+                        .contentShape(Rectangle())
+                        .onTapGesture { transferToEdit = record }
                         .swipeActions {
                             Button("삭제", role: .destructive) {
                                 transferToDelete = record
@@ -155,7 +165,18 @@ struct CycleRecordDetailView: View {
                 }
             }
         } header: {
-            Text("이식 기록")
+            HStack {
+                Text("이식 기록")
+                Spacer()
+                Button {
+                    isAddTransferPresented = true
+                } label: {
+                    Label("이식 추가", systemImage: "plus.circle")
+                }
+                .font(.caption)
+                .foregroundStyle(AranColor.dotTransfer)
+                .textCase(nil)
+            }
         }
     }
 

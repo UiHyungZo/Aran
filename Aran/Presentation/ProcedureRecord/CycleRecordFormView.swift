@@ -37,12 +37,6 @@ struct CycleRecordFormView: View {
     @State private var recommendedTransferWindow = ""
     @State private var pgtMemo = ""
 
-    @State private var includesTransfer = false
-    @State private var transferDate = Date()
-    @State private var transferGrade: String = ""
-    @State private var transferCount = 1
-    @State private var transferType: TransferType = .frozen
-
     init(viewModel: ProcedureRecordViewModel, initialSummary: ProcedureCycleSummary? = nil) {
         self.viewModel = viewModel
         self.initialSummary = initialSummary
@@ -77,7 +71,6 @@ struct CycleRecordFormView: View {
                 sectionRetrievalInfo
                 sectionEmbryoRecords
                 sectionPGT
-                sectionTransfer
                 saveButto
             }
             .padding(16)
@@ -349,81 +342,6 @@ struct CycleRecordFormView: View {
         .padding(.horizontal, 16)
     }
 
-    private var sectionTransfer: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                SectionHeader("이식")
-                Spacer()
-                Toggle("", isOn: $includesTransfer)
-                    .labelsHidden()
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-
-            if includesTransfer {
-                Divider().padding(.horizontal, 16)
-                VStack(spacing: 12) {
-                    HStack(spacing: 12) {
-                        Text("이식일")
-                            .font(.body)
-                        Spacer()
-                        DatePicker("", selection: $transferDate, in: ...Date(), displayedComponents: .date)
-                            .labelsHidden()
-                            .environment(\.locale, Locale(identifier: "ko_KR"))
-                    }
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 16)
-
-                    Divider().padding(.horizontal, 16)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("배아 등급")
-                            .font(.body)
-                        TextField("간편등급", text: $transferGrade)
-                            .font(.body)
-                            .padding(8)
-                            .background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-
-                    Divider().padding(.horizontal, 16)
-
-                    CounterRow("이식 개수", $transferCount, unit: "개", minValue: 1, maxValue: fertilizedCount)
-
-                    Divider().padding(.horizontal, 16)
-
-                    VStack(spacing: 12) {
-                        Text("종류")
-                            .font(.body)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        HStack(spacing: 8) {
-                            ForEach([TransferType.frozen, .fresh], id: \.self) { type in
-                                let isOn = transferType == type
-                                Button(type.rawValue) { transferType = type }
-                                    .font(.subheadline.weight(.semibold))
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 8)
-                                    .background(
-                                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
-                                        in: Capsule()
-                                    )
-                                    .foregroundStyle(isOn ? .white : .primary)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                }
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
-            } else {
-                Color(.secondarySystemGroupedBackground)
-                    .frame(height: 0)
-                    .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
-            }
-        }
-    }
-
     private var saveButto: some View {
         Button {
             Task {
@@ -453,17 +371,6 @@ struct CycleRecordFormView: View {
                     )
                 }
                 guard didSaveCycle else { return }
-
-                if includesTransfer {
-                    let didSaveTransfer = await viewModel.saveTransfer(
-                        cycleNumber: cycleNumber,
-                        date: transferDate,
-                        embryoGrade: transferGrade,
-                        embryoCount: transferCount,
-                        transferType: transferType
-                    )
-                    guard didSaveTransfer else { return }
-                }
 
                 if includesPGT {
                     guard let cycleId = viewModel.cycleRecords.first(where: { $0.cycleNumber == cycleNumber })?.id else {
@@ -566,7 +473,9 @@ private struct EmbryoFormSheet: View {
             _stage = State(initialValue: .blastocystDay5)
             _simpleGrade = State(initialValue: .unknown)
             _rawGrade = State(initialValue: "")
-            _isFrozen = State(initialValue: false)
+            let freshQuota = fertilizedCount - frozenCount.wrappedValue
+            let nonFrozenAlready = embryoRecords.wrappedValue.filter { !$0.isFrozen }.count
+            _isFrozen = State(initialValue: freshQuota - nonFrozenAlready <= 0)
             _addQuantity = State(initialValue: 1)
         }
     }
@@ -582,8 +491,16 @@ private struct EmbryoFormSheet: View {
         guard isEditing, currentEditingEmbryoIsFrozen else { return frozenCountAll }
         return max(0, frozenCountAll - 1)
     }
+    private var nonFrozenEmbryoCountExcludingEditing: Int {
+        let all = embryoRecords.filter { !$0.isFrozen }.count
+        guard isEditing, !currentEditingEmbryoIsFrozen else { return all }
+        return max(0, all - 1)
+    }
     private var remainingFrozenSlots: Int { max(0, frozenCount - frozenEmbryoCountExcludingEditing) }
     private var isFrozenTypeDisabled: Bool { frozenCount == 0 }
+    private var isFreshTypeDisabled: Bool {
+        fertilizedCount - frozenCount - nonFrozenEmbryoCountExcludingEditing <= 0
+    }
     private var selectedTypeRemainingSlots: Int {
         if isFrozen {
             return min(remainingEmbryoSlots, remainingFrozenSlots)
@@ -686,7 +603,7 @@ private struct EmbryoFormSheet: View {
                                 HStack(spacing: 8) {
                                     ForEach([false, true], id: \.self) { isFrozenOption in
                                         let isOn = isFrozen == isFrozenOption
-                                        let isDisabled = isFrozenOption && isFrozenTypeDisabled
+                                        let isDisabled = isFrozenOption ? isFrozenTypeDisabled : isFreshTypeDisabled
                                         Button(isFrozenOption ? "동결 배아" : "신선 배아") { isFrozen = isFrozenOption }
                                             .font(.subheadline.weight(.semibold))
                                             .padding(.horizontal, 14)
@@ -782,6 +699,8 @@ private struct EmbryoFormSheet: View {
             .onChange(of: frozenCount) { _, newValue in
                 if newValue == 0, isFrozen {
                     isFrozen = false
+                } else if fertilizedCount - newValue == 0, !isFrozen {
+                    isFrozen = true
                 }
                 addQuantity = min(addQuantity, maxAddQuantity)
             }

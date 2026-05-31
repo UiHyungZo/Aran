@@ -31,8 +31,63 @@ struct TransferInputFormView: View {
         _rows = State(initialValue: [TransferDraftRow(record: editRecord)])
     }
 
+    private var summary: ProcedureCycleSummary? {
+        viewModel.cycleSummaries.first { $0.cycleNumber == cycleNumber }
+    }
+
+    // 채취 기록이 있고 수정 개수가 있을 때만 풀 검증 적용
+    private var isPoolLimited: Bool {
+        (summary?.cycleRecordId != nil) && (summary?.fertilizedCount ?? 0) > 0
+    }
+
+    private var frozenPool: Int { summary?.frozenCount ?? 0 }
+    private var freshPool: Int { max(0, (summary?.fertilizedCount ?? 0) - (summary?.frozenCount ?? 0)) }
+
+    private var editingRecordId: UUID? {
+        if case let .edit(record) = mode { return record.id }
+        return nil
+    }
+
+    // 수정 모드에서는 편집 중인 레코드를 기존 소비에서 제외
+    private func existingUsed(_ type: TransferType) -> Int {
+        (summary?.transferRecords ?? [])
+            .filter { $0.transferType == type && $0.id != editingRecordId }
+            .reduce(0) { $0 + $1.embryoCount }
+    }
+
+    private func draftUsed(_ type: TransferType) -> Int {
+        rows.filter { $0.transferType == type }.reduce(0) { $0 + $1.embryoCount }
+    }
+
+    private func pool(for type: TransferType) -> Int {
+        type == .frozen ? frozenPool : freshPool
+    }
+
+    // 행 입력 시 증가 가능한 최대 개수 (같은 종류의 다른 행 소비분도 차감)
+    private func maxCount(forRow index: Int) -> Int {
+        let type = rows[index].transferType
+        let otherDrafts = rows.enumerated()
+            .filter { $0.offset != index && $0.element.transferType == type }
+            .reduce(0) { $0 + $1.element.embryoCount }
+        return pool(for: type) - existingUsed(type) - otherDrafts
+    }
+
+    // 잔여 가능 개수 (음수면 0)
+    private func remaining(for type: TransferType) -> Int {
+        max(0, pool(for: type) - existingUsed(type) - draftUsed(type))
+    }
+
+    private func isExceeded(_ type: TransferType) -> Bool {
+        existingUsed(type) + draftUsed(type) > pool(for: type)
+    }
+
+    private var withinPoolLimits: Bool {
+        !isExceeded(.frozen) && !isExceeded(.fresh)
+    }
+
     private var isValid: Bool {
-        !rows.isEmpty && rows.allSatisfy { $0.embryoCount > 0 }
+        guard !rows.isEmpty, rows.allSatisfy({ $0.embryoCount > 0 }) else { return false }
+        return isPoolLimited ? withinPoolLimits : true
     }
 
     private var isEditMode: Bool {
@@ -49,21 +104,37 @@ struct TransferInputFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("기본 정보") {
+                Section {
                     Stepper("\(cycleNumber)차", value: $cycleNumber, in: 1...20)
                         .disabled(!isEditMode)
                     DatePicker("이식일", selection: $date, in: ...Date(), displayedComponents: .date)
+                } header: {
+                    Text("기본 정보")
+                } footer: {
+                    if isPoolLimited {
+                        Text("이식 가능 · 신선 \(remaining(for: .fresh))개 · 동결 \(remaining(for: .frozen))개")
+                    }
                 }
 
                 ForEach(rows.indices, id: \.self) { index in
                     Section("배아 \(index + 1)") {
                         TextField("배아 등급 (예: 4AA)", text: $rows[index].embryoGrade)
-                        Stepper("이식 \(rows[index].embryoCount)개", value: $rows[index].embryoCount, in: 1...5)
+                        Stepper(
+                            "이식 \(rows[index].embryoCount)개",
+                            value: $rows[index].embryoCount,
+                            in: 1...(isPoolLimited ? max(1, maxCount(forRow: index)) : 5)
+                        )
                         Picker("종류", selection: $rows[index].transferType) {
                             Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
                             Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
                         }
                         .pickerStyle(.segmented)
+
+                        if isPoolLimited, isExceeded(rows[index].transferType) {
+                            Text("\(rows[index].transferType.rawValue) 이식 가능 개수를 초과했어요")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
                         Picker("결과", selection: $rows[index].result) {
                             Text(TransferResult.waiting.rawValue).tag(TransferResult.waiting)
                             Text(TransferResult.pregnant.rawValue).tag(TransferResult.pregnant)
