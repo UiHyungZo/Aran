@@ -22,6 +22,12 @@ struct ProcedureCycleSummary: Identifiable {
         transferRecords.reduce(0) { $0 + $1.embryoCount }
     }
 
+    func usedEmbryoCount(type: PGTType, excluding recordId: UUID? = nil) -> Int {
+        pgtRecords
+            .filter { $0.type == type && $0.id != recordId }
+            .reduce(0) { $0 + $1.normalCount + $1.abnormalCount + $1.mosaicCount + $1.inconclusiveCount }
+    }
+
     var displayStartDate: Date {
         startDate
             ?? transferRecords.map(\.date).min()
@@ -298,6 +304,50 @@ final class ProcedureRecordViewModel: ObservableObject {
                 recommendedTransferWindow: recommendedTransferWindow,
                 memo: memo
             )
+            await load()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
+    func updatePGTRecord(
+        id: UUID,
+        testDate: Date,
+        type: PGTType,
+        normalCount: Int,
+        abnormalCount: Int,
+        mosaicCount: Int,
+        inconclusiveCount: Int,
+        resultStatus: PGTResultStatus?,
+        femaleChromosomeResult: ChromosomeResult?,
+        maleChromosomeResult: ChromosomeResult?,
+        implantationTestType: ImplantationTestType?,
+        implantationResult: ImplantationResult?,
+        recommendedTransferWindow: String?,
+        memo: String?
+    ) async -> Bool {
+        do {
+            guard var record = try await pgtRecordUseCase.fetch(id: id) else {
+                errorMessage = "수정할 검사 기록을 찾을 수 없습니다."
+                return false
+            }
+            record.testDate = testDate
+            record.type = type
+            record.normalCount = normalCount
+            record.abnormalCount = abnormalCount
+            record.mosaicCount = mosaicCount
+            record.inconclusiveCount = inconclusiveCount
+            record.resultStatus = resultStatus
+            record.femaleChromosomeResult = femaleChromosomeResult
+            record.maleChromosomeResult = maleChromosomeResult
+            record.implantationTestType = implantationTestType
+            record.implantationResult = implantationResult
+            record.recommendedTransferWindow = recommendedTransferWindow
+            record.memo = memo
+            try await pgtRecordUseCase.update(record)
             await load()
             return true
         } catch {

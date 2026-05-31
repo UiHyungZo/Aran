@@ -133,6 +133,7 @@ struct PGTTypeChips: View {
                 ForEach(options.prefix(2), id: \.self) { option in
                     let isOn = selection == option
                     Button(option.rawValue) { selection = option }
+                        .buttonStyle(.plain)
                         .font(.subheadline.weight(.semibold))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
@@ -147,6 +148,7 @@ struct PGTTypeChips: View {
                 ForEach(options.dropFirst(2), id: \.self) { option in
                     let isOn = selection == option
                     Button(option.rawValue) { selection = option }
+                        .buttonStyle(.plain)
                         .font(.subheadline.weight(.semibold))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)

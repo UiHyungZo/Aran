@@ -12,7 +12,7 @@ struct TransferRecord: Identifiable {
 }
 
 enum TransferResult: String, Hashable {
-    case waiting = "판정 대기"
+    case waiting = "진행중"
     case pregnant = "임신"
     case notPregnant = "비임신"
 }

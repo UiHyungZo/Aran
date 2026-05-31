@@ -14,6 +14,7 @@ struct CycleRecordDetailView: View {
     @State private var transferToEdit: TransferRecord?
     @State private var isAddTransferPresented = false
     @State private var pgtToDelete: PGTRecord?
+    @State private var pgtToEdit: PGTRecord?
 
     private var summary: ProcedureCycleSummary? {
         viewModel.cycleSummaries.first { $0.cycleNumber == cycleNumber }
@@ -50,6 +51,12 @@ struct CycleRecordDetailView: View {
         }
         .sheet(isPresented: $isAddTransferPresented) {
             TransferInputFormView(viewModel: viewModel, initialCycleNumber: cycleNumber)
+        }
+        .sheet(item: $pgtToEdit) { record in
+            ProcedurePGTFormView(viewModel: viewModel, editRecord: record,
+                                 maxCount: summary.map {
+                                     max(0, $0.fertilizedCount - $0.usedEmbryoCount(type: record.type, excluding: record.id))
+                                 } ?? Int.max)
         }
         .confirmationDialog(
             "이식 기록을 삭제할까요?",
@@ -193,6 +200,8 @@ struct CycleRecordDetailView: View {
             } else {
                 ForEach(summary.pgtRecords) { record in
                     PGTRow(record: record)
+                        .contentShape(Rectangle())
+                        .onTapGesture { pgtToEdit = record }
                         .swipeActions {
                             Button("삭제", role: .destructive) {
                                 pgtToDelete = record
@@ -241,4 +250,3 @@ private struct TransferRow: View {
         .padding(.vertical, 3)
     }
 }
-

@@ -3,6 +3,7 @@ import Foundation
 protocol PGTRecordUseCaseProtocol {
     func fetchAll() async throws -> [PGTRecord]
     func fetch(cycleRecordId: UUID) async throws -> [PGTRecord]
+    func fetch(id: UUID) async throws -> PGTRecord?
     func save(
         cycleRecordId: UUID,
         testDate: Date,
@@ -19,6 +20,7 @@ protocol PGTRecordUseCaseProtocol {
         recommendedTransferWindow: String?,
         memo: String?
     ) async throws
+    func update(_ record: PGTRecord) async throws
     func delete(id: UUID) async throws
 }
 
@@ -35,6 +37,10 @@ final class PGTRecordUseCase: PGTRecordUseCaseProtocol {
 
     func fetch(cycleRecordId: UUID) async throws -> [PGTRecord] {
         try await repository.fetch(cycleRecordId: cycleRecordId)
+    }
+
+    func fetch(id: UUID) async throws -> PGTRecord? {
+        try await repository.fetch(id: id)
     }
 
     func save(
@@ -84,6 +90,10 @@ final class PGTRecordUseCase: PGTRecordUseCaseProtocol {
             memo: memo?.trimmingCharacters(in: .whitespacesAndNewlines)
         )
         try await repository.save(record)
+    }
+
+    func update(_ record: PGTRecord) async throws {
+        try await repository.update(record)
     }
 
     func delete(id: UUID) async throws {

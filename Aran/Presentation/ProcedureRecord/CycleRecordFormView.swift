@@ -55,6 +55,12 @@ struct CycleRecordFormView: View {
             && pgtNormalCount + pgtAbnormalCount + pgtMosaicCount + pgtInconclusiveCount == 0
     }
 
+    private var usedEmbryoCountForSelectedType: Int {
+        existingPGTRecords
+            .filter { $0.type == pgtType }
+            .reduce(0) { $0 + $1.normalCount + $1.abnormalCount + $1.mosaicCount + $1.inconclusiveCount }
+    }
+
     private var isSaveDisabled: Bool {
         retrievalCount == 0 || hasInvalidPGTEmbryoResult
     }
@@ -243,16 +249,16 @@ struct CycleRecordFormView: View {
 
                     if pgtType.showsEmbryoCounts {
                         CounterRow("정상", $pgtNormalCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - pgtAbnormalCount - pgtMosaicCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtAbnormalCount - pgtMosaicCount - pgtInconclusiveCount))
                         Divider().padding(.horizontal, 16)
                         CounterRow("이상", $pgtAbnormalCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - pgtNormalCount - pgtMosaicCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtMosaicCount - pgtInconclusiveCount))
                         Divider().padding(.horizontal, 16)
                         CounterRow("모자이크", $pgtMosaicCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - pgtNormalCount - pgtAbnormalCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtInconclusiveCount))
                         Divider().padding(.horizontal, 16)
                         CounterRow("판정불가", $pgtInconclusiveCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - pgtNormalCount - pgtAbnormalCount - pgtMosaicCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtMosaicCount))
 
                         if hasInvalidPGTEmbryoResult {
                             Text("최소 1개 이상의 배아 결과를 입력해주세요.")

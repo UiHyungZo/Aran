@@ -7,28 +7,74 @@ import SwiftUI
 
 struct ProcedurePGTFormView: View {
     @ObservedObject var viewModel: ProcedureRecordViewModel
-    let cycleRecordId: UUID
     var maxCount: Int = Int.max
+
+    private let mode: FormMode
 
     @Environment(\.dismiss) private var dismiss
 
-    @State private var selectedType: PGTType = .pgtA
-    @State private var testDate = Date()
-    @State private var normalCount = 0
-    @State private var abnormalCount = 0
-    @State private var mosaicCount = 0
-    @State private var inconclusiveCount = 0
-    @State private var resultStatus: PGTResultStatus = .normal
-    @State private var femaleChromosomeResult: ChromosomeResult = .normal
-    @State private var maleChromosomeResult: ChromosomeResult = .normal
-    @State private var implantationTestType: ImplantationTestType = .era
-    @State private var implantationResult: ImplantationResult = .receptive
-    @State private var recommendedTransferWindow = ""
-    @State private var memo = ""
+    @State private var selectedType: PGTType
+    @State private var testDate: Date
+    @State private var normalCount: Int
+    @State private var abnormalCount: Int
+    @State private var mosaicCount: Int
+    @State private var inconclusiveCount: Int
+    @State private var resultStatus: PGTResultStatus
+    @State private var femaleChromosomeResult: ChromosomeResult
+    @State private var maleChromosomeResult: ChromosomeResult
+    @State private var implantationTestType: ImplantationTestType
+    @State private var implantationResult: ImplantationResult
+    @State private var recommendedTransferWindow: String
+    @State private var memo: String
     @FocusState private var isFocused: Bool
+
+    init(viewModel: ProcedureRecordViewModel, cycleRecordId: UUID, maxCount: Int = Int.max) {
+        self.viewModel = viewModel
+        self.maxCount = maxCount
+        mode = .add(cycleRecordId: cycleRecordId)
+        _selectedType = State(initialValue: .pgtA)
+        _testDate = State(initialValue: Date())
+        _normalCount = State(initialValue: 0)
+        _abnormalCount = State(initialValue: 0)
+        _mosaicCount = State(initialValue: 0)
+        _inconclusiveCount = State(initialValue: 0)
+        _resultStatus = State(initialValue: .normal)
+        _femaleChromosomeResult = State(initialValue: .normal)
+        _maleChromosomeResult = State(initialValue: .normal)
+        _implantationTestType = State(initialValue: .era)
+        _implantationResult = State(initialValue: .receptive)
+        _recommendedTransferWindow = State(initialValue: "")
+        _memo = State(initialValue: "")
+    }
+
+    init(viewModel: ProcedureRecordViewModel, editRecord: PGTRecord, maxCount: Int = Int.max) {
+        self.viewModel = viewModel
+        self.maxCount = maxCount
+        mode = .edit(editRecord)
+        _selectedType = State(initialValue: editRecord.type)
+        _testDate = State(initialValue: editRecord.testDate)
+        _normalCount = State(initialValue: editRecord.normalCount)
+        _abnormalCount = State(initialValue: editRecord.abnormalCount)
+        _mosaicCount = State(initialValue: editRecord.mosaicCount)
+        _inconclusiveCount = State(initialValue: editRecord.inconclusiveCount)
+        _resultStatus = State(initialValue: editRecord.resultStatus ?? .normal)
+        _femaleChromosomeResult = State(initialValue: editRecord.femaleChromosomeResult ?? .normal)
+        _maleChromosomeResult = State(initialValue: editRecord.maleChromosomeResult ?? .normal)
+        _implantationTestType = State(initialValue: editRecord.implantationTestType ?? .era)
+        _implantationResult = State(initialValue: editRecord.implantationResult ?? .receptive)
+        _recommendedTransferWindow = State(initialValue: editRecord.recommendedTransferWindow ?? "")
+        _memo = State(initialValue: editRecord.memo ?? "")
+    }
 
     private var isValid: Bool {
         !selectedType.showsEmbryoCounts || normalCount + abnormalCount + mosaicCount + inconclusiveCount > 0
+    }
+
+    private var title: String {
+        switch mode {
+        case .add: return "검사 기록 추가"
+        case .edit: return "검사 기록 수정"
+        }
     }
 
     var body: some View {
@@ -116,7 +162,7 @@ struct ProcedurePGTFormView: View {
                 }
             }
             .scrollDismissesKeyboard(.immediately)
-            .navigationTitle("검사 기록 추가")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -125,25 +171,8 @@ struct ProcedurePGTFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            let didSave = await viewModel.savePGTRecord(
-                                cycleRecordId: cycleRecordId,
-                                testDate: testDate,
-                                type: selectedType,
-                                normalCount: normalCount,
-                                abnormalCount: abnormalCount,
-                                mosaicCount: mosaicCount,
-                                inconclusiveCount: inconclusiveCount,
-                                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
-                                femaleChromosomeResult: femaleChromosomeResult,
-                                maleChromosomeResult: maleChromosomeResult,
-                                implantationTestType: implantationTestType,
-                                implantationResult: implantationResult,
-                                recommendedTransferWindow: recommendedTransferWindow,
-                                memo: memo
-                            )
-                            if didSave {
-                                dismiss()
-                            }
+                            guard await saveRecord() else { return }
+                            dismiss()
                         }
                     }
                     .disabled(!isValid)
@@ -154,5 +183,51 @@ struct ProcedurePGTFormView: View {
                 }
             }
         }
+    }
+
+    private func saveRecord() async -> Bool {
+        switch mode {
+        case let .add(cycleRecordId):
+            return await viewModel.savePGTRecord(
+                cycleRecordId: cycleRecordId,
+                testDate: testDate,
+                type: selectedType,
+                normalCount: normalCount,
+                abnormalCount: abnormalCount,
+                mosaicCount: mosaicCount,
+                inconclusiveCount: inconclusiveCount,
+                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
+                femaleChromosomeResult: femaleChromosomeResult,
+                maleChromosomeResult: maleChromosomeResult,
+                implantationTestType: implantationTestType,
+                implantationResult: implantationResult,
+                recommendedTransferWindow: recommendedTransferWindow,
+                memo: memo
+            )
+        case let .edit(record):
+            return await viewModel.updatePGTRecord(
+                id: record.id,
+                testDate: testDate,
+                type: selectedType,
+                normalCount: normalCount,
+                abnormalCount: abnormalCount,
+                mosaicCount: mosaicCount,
+                inconclusiveCount: inconclusiveCount,
+                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
+                femaleChromosomeResult: femaleChromosomeResult,
+                maleChromosomeResult: maleChromosomeResult,
+                implantationTestType: implantationTestType,
+                implantationResult: implantationResult,
+                recommendedTransferWindow: recommendedTransferWindow,
+                memo: memo
+            )
+        }
+    }
+}
+
+private extension ProcedurePGTFormView {
+    enum FormMode {
+        case add(cycleRecordId: UUID)
+        case edit(PGTRecord)
     }
 }
