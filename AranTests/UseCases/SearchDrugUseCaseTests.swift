@@ -51,16 +51,6 @@ final class SearchDrugUseCaseTests: XCTestCase {
             XCTFail("예상치 못한 에러 타입: \(error)")
         }
     }
-
-    func testDetail_returnsDrugDetail() async throws {
-        let expected = makeDrug(itemSeq: "123", name: "상세약")
-        repository.detailResult = expected
-
-        let result = try await sut.detail(itemSeq: "123")
-
-        XCTAssertEqual(result.itemSeq, expected.itemSeq)
-        XCTAssertEqual(repository.detailItemSeqs, ["123"])
-    }
 }
 
 private extension SearchDrugUseCaseTests {

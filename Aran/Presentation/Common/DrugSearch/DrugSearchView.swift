@@ -272,13 +272,6 @@ struct DrugSearchView: View {
                 .padding(.top, 8)
             }
         }
-        .overlay {
-            if viewModel.isDetailLoading {
-                Color.black.opacity(0.12).ignoresSafeArea()
-                ProgressView()
-                    .scaleEffect(1.4)
-            }
-        }
         .scrollDismissesKeyboard(.immediately)
     }
     
@@ -354,7 +347,7 @@ struct DrugSearchView: View {
     private func handleDrugSelection(_ drug: Drug) {
         switch mode {
         case .browse:
-            Task { await viewModel.selectDrug(drug) }
+            viewModel.selectDrug(drug)
         case .register:
             onRegisterDrug(drug.itemName, drug.component ?? "", "")
         }

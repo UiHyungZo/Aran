@@ -15,7 +15,6 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var viewState: ViewState = .initial
     @Published var recentSearches: [String] = []
     @Published var selectedDrug: Drug?
-    @Published var isDetailLoading: Bool = false
     @Published var showDebugChip: Bool = false
     @Published var detailError: String?
     @Published var favoriteItemSeqs: Set<String> = []
@@ -115,16 +114,8 @@ final class DrugInfoViewModel: ObservableObject {
         }
     }
 
-    func selectDrug(_ drug: Drug) async {
-        isDetailLoading = true
-        do {
-            let detail = try await searchDrugUseCase.detail(itemSeq: drug.itemSeq)
-            selectedDrug = detail
-        } catch {
-            let message = (error as? AppError)?.errorDescription ?? error.localizedDescription
-            detailError = message
-        }
-        isDetailLoading = false
+    func selectDrug(_ drug: Drug) {
+        selectedDrug = drug
     }
 
     func clearSearch() {

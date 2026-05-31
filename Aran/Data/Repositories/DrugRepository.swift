@@ -20,14 +20,4 @@ final class DrugRepository: DrugRepositoryProtocol {
             throw AppError.networkError(error)
         }
     }
-
-    func detail(itemSeq: String) async throws -> Drug {
-        do {
-            return try await apiClient.fetchDrugDetail(itemSeq: itemSeq)
-        } catch let error as AppError {
-            throw error
-        } catch {
-            throw AppError.networkError(error)
-        }
-    }
 }
