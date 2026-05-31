@@ -225,6 +225,13 @@ private struct TransferRow: View {
                     .font(.body.weight(.medium))
                     .foregroundStyle(.primary)
             }
+
+            if let memo = record.memo, !memo.isEmpty {
+                Text(memo)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
         }
         .padding(.vertical, 3)
     }

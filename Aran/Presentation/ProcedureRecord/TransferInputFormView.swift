@@ -106,7 +106,7 @@ struct TransferInputFormView: View {
             Form {
                 Section {
                     Stepper("\(cycleNumber)차", value: $cycleNumber, in: 1...20)
-                        .disabled(!isEditMode)
+                        .disabled(true)
                     DatePicker("이식일", selection: $date, in: ...Date(), displayedComponents: .date)
                 } header: {
                     Text("기본 정보")
@@ -125,8 +125,8 @@ struct TransferInputFormView: View {
                             in: 1...(isPoolLimited ? max(1, maxCount(forRow: index)) : 5)
                         )
                         Picker("종류", selection: $rows[index].transferType) {
-                            Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
                             Text(TransferType.fresh.rawValue).tag(TransferType.fresh)
+                            Text(TransferType.frozen.rawValue).tag(TransferType.frozen)
                         }
                         .pickerStyle(.segmented)
 
