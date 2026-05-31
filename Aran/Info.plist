@@ -27,5 +27,11 @@
 	<string>$(DRUG_API_DECODING)</string>
 	<key>DRUG_API_ENCODING</key>
 	<string>$(DRUG_API_ENCODING)</string>
+	<key>DRUG_API_PRDT_ENDPOINT</key>
+	<string>$(DRUG_API_PRDT_ENDPOINT)</string>
+	<key>DRUG_API_PRDT_DECODING</key>
+	<string>$(DRUG_API_PRDT_DECODING)</string>
+	<key>DRUG_API_PRDT_ENCODING</key>
+	<string>$(DRUG_API_PRDT_ENCODING)</string>
 </dict>
 </plist>

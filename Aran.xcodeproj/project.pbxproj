@@ -309,6 +309,9 @@
 				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
 				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
 				DRUG_API_ENDPOINT = "https://apis.data.go.kr/1471000/DrbEasyDrugInfoService";
+				DRUG_API_PRDT_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
+				DRUG_API_PRDT_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
+				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -345,6 +348,9 @@
 				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
 				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
 				DRUG_API_ENDPOINT = "https://apis.data.go.kr/1471000/DrbEasyDrugInfoService";
+				DRUG_API_PRDT_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
+				DRUG_API_PRDT_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
+				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

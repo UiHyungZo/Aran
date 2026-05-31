@@ -349,7 +349,12 @@ struct DrugSearchView: View {
         case .browse:
             viewModel.selectDrug(drug)
         case .register:
-            onRegisterDrug(drug.itemName, drug.component ?? "", "")
+            Task {
+                let enrichedDrug = await viewModel.enrichedDrug(drug)
+                await MainActor.run {
+                    onRegisterDrug(enrichedDrug.itemName, enrichedDrug.component ?? "", "")
+                }
+            }
         }
     }
 }

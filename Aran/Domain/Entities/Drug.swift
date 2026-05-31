@@ -13,6 +13,7 @@ struct Drug {
     let seQesitm: String?
     let depositMethodQesitm: String?
     let itemImage: String?
+    let approvalInfo: DrugApprovalInfo?
 
     init(
         itemSeq: String,
@@ -26,7 +27,8 @@ struct Drug {
         intrcQesitm: String?,
         seQesitm: String?,
         depositMethodQesitm: String?,
-        itemImage: String?
+        itemImage: String?,
+        approvalInfo: DrugApprovalInfo? = nil
     ) {
         self.itemSeq = itemSeq
         self.itemName = itemName
@@ -40,5 +42,31 @@ struct Drug {
         self.seQesitm = seQesitm
         self.depositMethodQesitm = depositMethodQesitm
         self.itemImage = itemImage
+        self.approvalInfo = approvalInfo
+    }
+
+    func enriched(with approvalInfo: DrugApprovalInfo) -> Drug {
+        Drug(
+            itemSeq: itemSeq,
+            itemName: itemName,
+            entpName: entpName,
+            component: approvalInfo.mainItemIngredient?.nilIfBlank ?? component,
+            efcyQesitm: efcyQesitm,
+            useMethodQesitm: useMethodQesitm,
+            atpnWarnQesitm: atpnWarnQesitm,
+            atpnQesitm: atpnQesitm,
+            intrcQesitm: intrcQesitm,
+            seQesitm: seQesitm,
+            depositMethodQesitm: depositMethodQesitm,
+            itemImage: itemImage,
+            approvalInfo: approvalInfo
+        )
+    }
+}
+
+private extension String {
+    var nilIfBlank: String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 }

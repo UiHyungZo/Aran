@@ -17,6 +17,9 @@ struct DrugDetailView: View {
                 if let interaction = drug.intrcQesitm { detailSection(title: "상호작용", content: interaction) }
                 if let sideEffect = drug.seQesitm { detailSection(title: "부작용", content: sideEffect) }
                 if let deposit = drug.depositMethodQesitm { detailSection(title: "보관법", content: deposit) }
+                if let approvalInfo = drug.approvalInfo {
+                    approvalSection(approvalInfo)
+                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -57,6 +60,15 @@ struct DrugDetailView: View {
                     .padding(.vertical, 4)
                     .background(AranColor.primary.opacity(0.1))
                     .clipShape(Capsule())
+            } else if let component = drug.component, !component.isEmpty {
+                Text(component)
+                    .font(.system(size: 12))
+                    .foregroundStyle(AranColor.primary)
+                    .lineLimit(1)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(AranColor.primary.opacity(0.1))
+                    .clipShape(Capsule())
             }
         }
     }
@@ -87,6 +99,37 @@ struct DrugDetailView: View {
             Text(content)
                 .font(.system(size: 15))
                 .lineSpacing(4)
+        }
+    }
+
+    private func approvalSection(_ approvalInfo: DrugApprovalInfo) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("허가 정보")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.secondary)
+
+            VStack(alignment: .leading, spacing: 6) {
+                approvalRow(title: "성분", value: approvalInfo.mainItemIngredient)
+                approvalRow(title: "구분", value: approvalInfo.specialtyPublic)
+                approvalRow(title: "분류", value: approvalInfo.productType)
+                approvalRow(title: "허가일자", value: approvalInfo.itemPermitDate)
+                approvalRow(title: "EDI 코드", value: approvalInfo.ediCode)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func approvalRow(title: String, value: String?) -> some View {
+        if let value, !value.isEmpty {
+            HStack(alignment: .top, spacing: 8) {
+                Text(title)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.secondary)
+                    .frame(width: 58, alignment: .leading)
+                Text(value)
+                    .font(.system(size: 14))
+                    .foregroundStyle(Color.primary)
+            }
         }
     }
 

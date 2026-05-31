@@ -51,6 +51,30 @@ final class SearchDrugUseCaseTests: XCTestCase {
             XCTFail("예상치 못한 에러 타입: \(error)")
         }
     }
+
+    func testEnrich_returnsRepositoryEnrichedDrug() async throws {
+        let drug = makeDrug(itemSeq: "A", name: "원본")
+        let enrichedDrug = makeDrug(itemSeq: "A", name: "원본")
+            .enriched(with: DrugApprovalInfo(
+                itemSeq: "A",
+                itemName: nil,
+                entpName: nil,
+                itemPermitDate: nil,
+                barCode: nil,
+                ediCode: nil,
+                atcCode: nil,
+                mainItemIngredient: "보강성분",
+                productType: nil,
+                specialtyPublic: nil,
+                bigProductImageURL: nil,
+                rareDrugYN: nil
+            ))
+        repository.enrichedDrug = enrichedDrug
+
+        let result = try await sut.enrich(drug)
+
+        XCTAssertEqual(result.component, "보강성분")
+    }
 }
 
 private extension SearchDrugUseCaseTests {

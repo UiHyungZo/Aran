@@ -115,7 +115,17 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func selectDrug(_ drug: Drug) {
-        selectedDrug = drug
+        Task {
+            selectedDrug = await enrichedDrug(drug)
+        }
+    }
+
+    func enrichedDrug(_ drug: Drug) async -> Drug {
+        do {
+            return try await searchDrugUseCase.enrich(drug)
+        } catch {
+            return drug
+        }
     }
 
     func clearSearch() {

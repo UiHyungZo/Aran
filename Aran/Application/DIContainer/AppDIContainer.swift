@@ -18,14 +18,18 @@ final class AppDIContainer {
     lazy var medicationScene = MedicationSceneDIContainer(dependencies: .init(
         modelContext: modelContext,
         drugServiceKey: appConfigurations.drugAPIDecoding,
-        drugAPIEndpoint: appConfigurations.drugAPIEndpoint
+        drugAPIEndpoint: appConfigurations.drugAPIEndpoint,
+        drugApprovalServiceKey: appConfigurations.drugAPIPrdtDecoding,
+        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint
     ))
     lazy var healthRecordScene = HealthRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var procedureRecordScene = ProcedureRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var drugInfoScene = DrugInfoSceneDIContainer(dependencies: .init(
         modelContext: modelContext,
         drugServiceKey: appConfigurations.drugAPIDecoding,
-        drugAPIEndpoint: appConfigurations.drugAPIEndpoint
+        drugAPIEndpoint: appConfigurations.drugAPIEndpoint,
+        drugApprovalServiceKey: appConfigurations.drugAPIPrdtDecoding,
+        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint
     ))
 
     init(modelContainer: ModelContainer) {

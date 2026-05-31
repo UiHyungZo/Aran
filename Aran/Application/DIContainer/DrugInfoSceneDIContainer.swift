@@ -7,12 +7,19 @@ final class DrugInfoSceneDIContainer {
         let modelContext: ModelContext
         let drugServiceKey: String
         let drugAPIEndpoint: String
+        let drugApprovalServiceKey: String
+        let drugApprovalAPIEndpoint: String
     }
 
     private let dependencies: Dependencies
 
     private lazy var drugRepository: DrugRepositoryProtocol =
-        DrugRepository(serviceKey: dependencies.drugServiceKey, baseURL: dependencies.drugAPIEndpoint)
+        DrugRepository(
+            serviceKey: dependencies.drugServiceKey,
+            baseURL: dependencies.drugAPIEndpoint,
+            approvalServiceKey: dependencies.drugApprovalServiceKey,
+            approvalBaseURL: dependencies.drugApprovalAPIEndpoint
+        )
 
     private lazy var searchDrugUseCase: SearchDrugUseCaseProtocol =
         SearchDrugUseCase(repository: drugRepository)
