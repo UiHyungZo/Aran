@@ -2,7 +2,6 @@ import Foundation
 
 protocol SearchDrugUseCaseProtocol {
     func execute(keyword: String, pageNo: Int) async throws -> DrugSearchResult
-    func detail(itemSeq: String) async throws -> Drug
 }
 
 final class SearchDrugUseCase: SearchDrugUseCaseProtocol {
@@ -17,9 +16,5 @@ final class SearchDrugUseCase: SearchDrugUseCaseProtocol {
             throw AppError.invalidInput("검색어를 입력해주세요.")
         }
         return try await repository.search(keyword: keyword, pageNo: pageNo)
-    }
-
-    func detail(itemSeq: String) async throws -> Drug {
-        return try await repository.detail(itemSeq: itemSeq)
     }
 }

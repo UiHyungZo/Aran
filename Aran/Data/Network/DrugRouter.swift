@@ -2,26 +2,20 @@ import Foundation
 
 enum DrugRouter {
     case search(keyword: String, pageNo: Int, serviceKey: String, baseURL: String)
-    case detail(itemSeq: String, serviceKey: String, baseURL: String)
 
     private var path: String {
-        switch self {
-        case .search: return "/getDrbEasyDrugList"
-        case .detail: return "/getDrbEasyDrugList"
-        }
+        "/getDrbEasyDrugList"
     }
 
     private var baseURLString: String {
         switch self {
         case let .search(_, _, _, url): return url
-        case let .detail(_, _, url): return url
         }
     }
 
     private var serviceKey: String {
         switch self {
         case let .search(_, _, key, _): return key
-        case let .detail(_, key, _): return key
         }
     }
 
@@ -35,20 +29,16 @@ enum DrugRouter {
         guard var components = URLComponents(string: baseURLString + path) else {
             throw URLError(.badURL)
         }
-        var items = [
+        guard case let .search(keyword, pageNo, _, _) = self else {
+            throw URLError(.badURL)
+        }
+        let items = [
             URLQueryItem(name: "serviceKey", value: serviceKey),
             URLQueryItem(name: "type", value: "json"),
+            URLQueryItem(name: "itemName", value: keyword),
+            URLQueryItem(name: "pageNo", value: "\(pageNo)"),
+            URLQueryItem(name: "numOfRows", value: "20"),
         ]
-        switch self {
-        case let .search(keyword, pageNo, _, _):
-            items += [
-                URLQueryItem(name: "itemName", value: keyword),
-                URLQueryItem(name: "pageNo", value: "\(pageNo)"),
-                URLQueryItem(name: "numOfRows", value: "20"),
-            ]
-        case let .detail(itemSeq, _, _):
-            items.append(URLQueryItem(name: "itemSeq", value: itemSeq))
-        }
         components.percentEncodedQueryItems = items.map {
             URLQueryItem(
                 name: $0.name,

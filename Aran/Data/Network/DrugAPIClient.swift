@@ -21,14 +21,4 @@ final class DrugAPIClient: DrugAPIClientProtocol {
         return DrugSearchResult(drugs: drugs, totalCount: response.body.totalCount, pageNo: response.body.pageNo)
     }
 
-    func fetchDrugDetail(itemSeq: String) async throws -> Drug {
-        let response = try await session
-            .request(try DrugRouter.detail(itemSeq: itemSeq, serviceKey: serviceKey, baseURL: baseURL).asURLRequest())
-            .serializingDecodable(DrugListResponseDTO.self)
-            .value
-        guard let item = response.body.items?.first else {
-            throw AppError.emptyResult
-        }
-        return item.toDomain()
-    }
 }
