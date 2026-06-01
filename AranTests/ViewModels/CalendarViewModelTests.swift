@@ -157,6 +157,57 @@ final class CalendarViewModelTests: XCTestCase {
         XCTAssertEqual(transferRecordUseCase.deletedIDs, [id])
         XCTAssertEqual(cycleRecordUseCase.removedTransferIDs, [id])
     }
+
+    func testUpdateHealthRecord_whenCalled_updatesRecord() async {
+        // given
+        let record = HealthRecord(
+            id: UUID(),
+            type: HealthRecordType.fsh,
+            value: 8.5,
+            unit: "mIU/mL",
+            recordDate: Date(),
+            memo: "수정"
+        )
+
+        // when
+        await sut.updateHealthRecord(record)
+
+        // then
+        XCTAssertEqual(healthRecordUseCase.updatedRecords.count, 1)
+        XCTAssertEqual(healthRecordUseCase.updatedRecords.first?.id, record.id)
+        XCTAssertNil(sut.errorMessage)
+    }
+
+    func testDeleteHealthRecord_whenCalled_deletesRecord() async {
+        // given
+        let id = UUID()
+
+        // when
+        await sut.deleteHealthRecord(id: id)
+
+        // then
+        XCTAssertEqual(healthRecordUseCase.deletedIDs, [id])
+        XCTAssertNil(sut.errorMessage)
+    }
+
+    func testUpdateHealthRecord_whenUseCaseThrows_setsErrorMessage() async {
+        // given
+        healthRecordUseCase.shouldThrow = AppError.invalidInput("유효한 수치를 입력해주세요.")
+        let record = HealthRecord(
+            id: UUID(),
+            type: HealthRecordType.fsh,
+            value: 0,
+            unit: "mIU/mL",
+            recordDate: Date(),
+            memo: nil
+        )
+
+        // when
+        await sut.updateHealthRecord(record)
+
+        // then
+        XCTAssertEqual(sut.errorMessage, "유효한 수치를 입력해주세요.")
+    }
 }
 
 private extension CalendarViewModelTests {

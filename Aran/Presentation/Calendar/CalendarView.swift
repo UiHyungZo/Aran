@@ -13,6 +13,8 @@ struct CalendarView: View {
     @State private var editingVisit: HospitalVisit?
     @State private var isMenstrualSheetPresented: Bool = false
     @State private var isHealthRecordSheetPresented: Bool = false
+    @State private var isHealthRecordListPresented: Bool = false
+    @State private var editingHealthRecord: HealthRecord?
     @FocusState private var isDiaryFocused: Bool
 
     init(viewModel: CalendarViewModel) {
@@ -100,6 +102,17 @@ struct CalendarView: View {
         }
         .sheet(isPresented: $isHealthRecordSheetPresented) {
             CalendarHealthRecordInputSheet(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isHealthRecordListPresented) {
+            CalendarHealthRecordListSheet(viewModel: viewModel) { record in
+                isHealthRecordListPresented = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    editingHealthRecord = record
+                }
+            }
+        }
+        .sheet(item: $editingHealthRecord) { record in
+            CalendarHealthRecordInputSheet(viewModel: viewModel, existingRecord: record)
         }
         .alert("오류", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -277,8 +290,17 @@ struct CalendarView: View {
                     }
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "검사 수치", subtitle: healthSubtitle, actionLabel: "추가") {
-                        isHealthRecordSheetPresented = true
+                    let records = viewModel.healthRecords(for: viewModel.selectedDate)
+                    summaryRow(
+                        title: "검사 수치",
+                        subtitle: healthSubtitle,
+                        actionLabel: records.isEmpty ? "추가" : "수정 >"
+                    ) {
+                        if records.isEmpty {
+                            isHealthRecordSheetPresented = true
+                        } else {
+                            isHealthRecordListPresented = true
+                        }
                     }
                     Divider().padding(.leading, 16)
 
@@ -738,6 +760,7 @@ private extension Color {
 private struct CalendarHealthRecordInputSheet: View {
     @ObservedObject var viewModel: CalendarViewModel
     @Environment(\.dismiss) private var dismiss
+    let existingRecord: HealthRecord?
 
     @State private var selectedType = HealthRecordType.fsh
     @State private var valueText = ""
@@ -748,22 +771,31 @@ private struct CalendarHealthRecordInputSheet: View {
 
     private let items = HealthRecordType.defaults
 
-    init(viewModel: CalendarViewModel) {
+    init(viewModel: CalendarViewModel, existingRecord: HealthRecord? = nil) {
         self.viewModel = viewModel
-        _date = State(initialValue: viewModel.selectedDate)
+        self.existingRecord = existingRecord
+        _selectedType = State(initialValue: existingRecord?.type ?? HealthRecordType.fsh)
+        _valueText = State(initialValue: existingRecord.map { Self.formatValue($0.value) } ?? "")
+        _unitText = State(initialValue: existingRecord?.unit ?? HealthRecordType.defaultUnits[HealthRecordType.fsh] ?? "")
+        _date = State(initialValue: existingRecord?.recordDate ?? viewModel.selectedDate)
+        _note = State(initialValue: existingRecord?.memo ?? "")
     }
 
     var body: some View {
         NavigationView {
             Form {
                 Section("검사 항목") {
-                    Picker("항목", selection: $selectedType) {
-                        ForEach(items, id: \.self) { item in
-                            Text(item).tag(item)
+                    if existingRecord == nil {
+                        Picker("항목", selection: $selectedType) {
+                            ForEach(items, id: \.self) { item in
+                                Text(item).tag(item)
+                            }
                         }
-                    }
-                    .onChange(of: selectedType) { _, newValue in
-                        unitText = HealthRecordType.defaultUnits[newValue] ?? unitText
+                        .onChange(of: selectedType) { _, newValue in
+                            unitText = HealthRecordType.defaultUnits[newValue] ?? unitText
+                        }
+                    } else {
+                        LabeledContent("항목", value: selectedType)
                     }
                 }
 
@@ -787,9 +819,23 @@ private struct CalendarHealthRecordInputSheet: View {
                     TextField("메모", text: $note)
                         .focused($isFocused)
                 }
+
+                if let record = existingRecord {
+                    Section {
+                        Button(role: .destructive) {
+                            Task {
+                                await viewModel.deleteHealthRecord(id: record.id)
+                                dismiss()
+                            }
+                        } label: {
+                            Text("기록 삭제")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
+                }
             }
             .scrollDismissesKeyboard(.immediately)
-            .navigationTitle("검사 수치 추가")
+            .navigationTitle(existingRecord == nil ? "검사 수치 추가" : "검사 수치 수정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -800,13 +846,25 @@ private struct CalendarHealthRecordInputSheet: View {
                         Task {
                             let value = Double(valueText.replacingOccurrences(of: ",", with: ".")) ?? 0
                             let memo = note.trimmingCharacters(in: .whitespacesAndNewlines)
-                            await viewModel.saveHealthRecord(
-                                type: selectedType,
-                                value: value,
-                                unit: unitText,
-                                date: date,
-                                memo: memo.isEmpty ? nil : memo
-                            )
+                            if let record = existingRecord {
+                                let updated = HealthRecord(
+                                    id: record.id,
+                                    type: record.type,
+                                    value: value,
+                                    unit: unitText,
+                                    recordDate: date,
+                                    memo: memo.isEmpty ? nil : memo
+                                )
+                                await viewModel.updateHealthRecord(updated)
+                            } else {
+                                await viewModel.saveHealthRecord(
+                                    type: selectedType,
+                                    value: value,
+                                    unit: unitText,
+                                    date: date,
+                                    memo: memo.isEmpty ? nil : memo
+                                )
+                            }
                             dismiss()
                         }
                     }
@@ -818,6 +876,61 @@ private struct CalendarHealthRecordInputSheet: View {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("완료") { isFocused = false }
+                }
+            }
+        }
+    }
+
+    private static func formatValue(_ value: Double) -> String {
+        if value == value.rounded() {
+            return String(format: "%.0f", value)
+        }
+        return String(format: "%.2f", value)
+    }
+}
+
+private struct CalendarHealthRecordListSheet: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    @Environment(\.dismiss) private var dismiss
+    let onEdit: (HealthRecord) -> Void
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "M월 d일"
+        return f
+    }()
+
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(viewModel.healthRecords(for: viewModel.selectedDate)) { record in
+                    Button {
+                        onEdit(record)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(record.type)
+                                    .font(AranFont.body())
+                                    .foregroundStyle(.primary)
+                                Text(Self.dateFormatter.string(from: record.recordDate))
+                                    .font(AranFont.caption())
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Text("\(String(format: "%.2f", record.value)) \(record.unit)")
+                                .font(AranFont.body())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .navigationTitle("검사 수치 수정")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("닫기") { dismiss() }
                 }
             }
         }

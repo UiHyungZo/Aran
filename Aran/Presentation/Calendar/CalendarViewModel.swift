@@ -264,6 +264,26 @@ final class CalendarViewModel: ObservableObject {
         }
     }
 
+    func updateHealthRecord(_ record: HealthRecord) async {
+        do {
+            try await healthRecordUseCase.update(record)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
+    func deleteHealthRecord(id: UUID) async {
+        do {
+            try await healthRecordUseCase.delete(id: id)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
     @discardableResult
     func saveRetrieval(count: Int) async -> Bool {
         do {
