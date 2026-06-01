@@ -87,12 +87,8 @@ struct CalendarView: View {
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isWeekMode)
-        .overlay(alignment: .bottom) {
-            if isDiaryEditing {
-                diaryEditPanel
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isDiaryEditing)
-            }
+        .fullScreenCover(isPresented: $isDiaryEditing) {
+            diaryFullScreen
         }
         .sheet(isPresented: $isHospitalFormPresented, onDismiss: { editingVisit = nil }) {
             CalendarHospitalVisitFormSheet(viewModel: viewModel, existingVisit: editingVisit)
@@ -284,9 +280,7 @@ struct CalendarView: View {
 
                     summaryRow(title: "감정 일기", subtitle: diarySubtitle, actionLabel: diaryActionLabel) {
                         loadExistingDiary()
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                            isDiaryEditing = true
-                        }
+                        isDiaryEditing = true
                     }
                     Divider().padding(.leading, 16)
 
@@ -463,113 +457,102 @@ struct CalendarView: View {
 
     // MARK: - 감정 일기 편집 패널
 
-    private var diaryEditPanel: some View {
-        VStack(spacing: 0) {
-            Capsule()
-                .fill(Color.secondary.opacity(0.4))
-                .frame(width: 36, height: 5)
-                .padding(.top, 12)
-                .padding(.bottom, 16)
-
-            Text("감정 일기")
-                .font(AranFont.body(17))
-                .fontWeight(.semibold)
-                .padding(.bottom, 20)
-
-            Text("오늘 기분은?")
-                .font(AranFont.caption())
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-
-            HStack(spacing: 12) {
-                ForEach(emojiOptions, id: \.self) { emoji in
-                    Text(emoji)
-                        .font(.system(size: 32))
-                        .padding(8)
-                        .background(
-                            Circle().fill(
-                                diaryEmoji == emoji
-                                    ? AranColor.primary.opacity(0.15)
-                                    : Color.clear
-                            )
-                        )
-                        .onTapGesture {
-                            diaryEmoji = diaryEmoji == emoji ? "" : emoji
-                        }
-                }
-            }
-            .padding(.vertical, 12)
-
-            Text("오늘 하루 기록")
-                .font(AranFont.caption())
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                .padding(.top, 4)
-
-            ZStack(alignment: .bottomTrailing) {
-                TextEditor(text: $diaryText)
-                    .focused($isDiaryFocused)
-                    .frame(height: 120)
-                    .padding(8)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .onChange(of: diaryText) { _, new in
-                        if new.count > 500 { diaryText = String(new.prefix(500)) }
-                    }
-
-                Text("\(diaryText.count) / 500")
+    private var diaryFullScreen: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Text("오늘 기분은?")
                     .font(AranFont.caption())
                     .foregroundStyle(.secondary)
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 8)
-            }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
 
-            Button {
-                Task {
-                    await viewModel.saveDiary(
-                        emoji: diaryEmoji.isEmpty ? nil : diaryEmoji,
-                        text: diaryText
-                    )
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                        isDiaryEditing = false
+                HStack(spacing: 12) {
+                    ForEach(emojiOptions, id: \.self) { emoji in
+                        Text(emoji)
+                            .font(.system(size: 32))
+                            .padding(8)
+                            .background(
+                                Circle().fill(
+                                    diaryEmoji == emoji
+                                        ? AranColor.primary.opacity(0.15)
+                                        : Color.clear
+                                )
+                            )
+                            .onTapGesture {
+                                diaryEmoji = diaryEmoji == emoji ? "" : emoji
+                            }
                     }
                 }
-            } label: {
-                Text("저장")
-                    .font(AranFont.body(16))
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(
-                        diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                            ? Color.gray.opacity(0.3)
-                            : Color.black
-                    )
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.vertical, 12)
+
+                Text("오늘 하루 기록")
+                    .font(AranFont.caption())
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
+
+                ZStack(alignment: .bottomTrailing) {
+                    TextEditor(text: $diaryText)
+                        .focused($isDiaryFocused)
+                        .frame(height: 180)
+                        .padding(8)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .onChange(of: diaryText) { _, new in
+                            if new.count > 500 { diaryText = String(new.prefix(500)) }
+                        }
+
+                    Text("\(diaryText.count) / 500")
+                        .font(AranFont.caption())
+                        .foregroundStyle(.secondary)
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 8)
+                }
+
+                Spacer()
+
+                Button {
+                    Task {
+                        await viewModel.saveDiary(
+                            emoji: diaryEmoji.isEmpty ? nil : diaryEmoji,
+                            text: diaryText
+                        )
+                        isDiaryEditing = false
+                    }
+                } label: {
+                    Text("저장")
+                        .font(AranFont.body(16))
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(
+                            diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                ? Color.gray.opacity(0.3)
+                                : Color.black
+                        )
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 32)
             }
-            .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 32)
-        }
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: -4)
-        .onTapGesture { isDiaryFocused = false }
-        .gesture(
-            DragGesture(minimumDistance: 30)
-                .onEnded { value in
-                    guard value.translation.height > 60 else { return }
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+            .navigationTitle("감정 일기")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("닫기") {
                         isDiaryEditing = false
                     }
                 }
-        )
+            }
+            .background(Color(.systemBackground))
+            .onTapGesture { isDiaryFocused = false }
+        }
     }
 
     private func loadExistingDiary() {
