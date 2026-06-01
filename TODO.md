@@ -36,9 +36,10 @@
 ## 미완료
 
 ### 테스트
-- [ ] UseCase Test — TransferRecordUseCase
-- [ ] Repository Test — CycleRecordRepository, TransferRecordRepository (Diary·HospitalVisit·MenstrualCycle은 해당 기능 구현 후)
-- [ ] ViewModel Test — CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel, PGTFormViewModel
+- [x] UseCase Test — TransferRecordUseCase
+- [x] Repository Test — CycleRecordRepository, TransferRecordRepository
+- [x] ViewModel Test — CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel
+- [ ] ViewModel Test — ProcedureRecordViewModel
 - [ ] UI Test — 캘린더 플로우, 약 등록 플로우, 약 검색 플로우, 채취/이식 입력 플로우, 검사 수치 입력 플로우
 
 ### 앱 완성도
