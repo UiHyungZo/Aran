@@ -22,9 +22,12 @@ final class DrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
         )
     }
 
-    func fetchApprovalInfo(itemName: String) async throws -> [DrugApprovalInfo] {
-        let response = try await fetchResponse(itemName: itemName, pageNo: 1)
-        return response.body.items?.map { $0.toDomain() } ?? []
+    func fetchDetail(itemSeq: String) async throws -> Drug? {
+        let response = try await session
+            .request(try DrugApprovalRouter.detail(itemSeq: itemSeq, serviceKey: serviceKey, baseURL: baseURL).asURLRequest())
+            .serializingDecodable(DrugApprovalResponseDTO.self)
+            .value
+        return response.body.items?.first?.toDrug()
     }
 
     private func fetchResponse(itemName: String, pageNo: Int) async throws -> DrugApprovalResponseDTO {

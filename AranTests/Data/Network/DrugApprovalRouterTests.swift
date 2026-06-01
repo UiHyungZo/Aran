@@ -17,4 +17,20 @@ final class DrugApprovalRouterTests: XCTestCase {
         XCTAssertTrue(url.contains("serviceKey=TEST_KEY"))
         XCTAssertTrue(url.contains("pageNo=2"))
     }
+
+    func test_detail_buildsExpectedURLRequest() {
+        let request = try? DrugApprovalRouter.detail(
+            itemSeq: "195700004",
+            serviceKey: "TEST_KEY",
+            baseURL: "https://example.com"
+        ).asURLRequest()
+
+        XCTAssertNotNil(request)
+        let url = request?.url?.absoluteString ?? ""
+        XCTAssertTrue(url.contains("/getDrugPrdtPrmsnDtlInq06"))
+        XCTAssertTrue(url.contains("item_seq=195700004"))
+        XCTAssertTrue(url.contains("serviceKey=TEST_KEY"))
+        XCTAssertTrue(url.contains("pageNo=1"))
+        XCTAssertTrue(url.contains("numOfRows=1"))
+    }
 }

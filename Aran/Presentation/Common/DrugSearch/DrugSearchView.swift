@@ -70,14 +70,21 @@ struct DrugSearchView: View {
                 }
             }
             .navigationDestination(isPresented: Binding(
-                get: { mode == .browse && viewModel.selectedDrug != nil },
-                set: { if !$0 { viewModel.selectedDrug = nil } }
+                get: { mode == .browse && viewModel.isDetailPresented },
+                set: {
+                    viewModel.isDetailPresented = $0
+                    if !$0 {
+                        viewModel.selectedDrug = nil
+                        viewModel.isDetailLoading = false
+                    }
+                }
             )) {
                 if let drug = viewModel.selectedDrug {
                     DrugDetailView(
                         drug: drug,
                         onAddDrug: onAddDrug,
                         isFavorite: viewModel.isFavorite(drug),
+                        isLoadingDetail: viewModel.isDetailLoading,
                         onToggleFavorite: { viewModel.toggleFavorite(drug) }
                     )
                 }
@@ -349,12 +356,7 @@ struct DrugSearchView: View {
         case .browse:
             viewModel.selectDrug(drug)
         case .register:
-            Task {
-                let enrichedDrug = await viewModel.enrichedDrug(drug)
-                await MainActor.run {
-                    onRegisterDrug(enrichedDrug.itemName, enrichedDrug.component ?? "", "")
-                }
-            }
+            onRegisterDrug(drug.itemName, drug.component ?? "", "")
         }
     }
 }

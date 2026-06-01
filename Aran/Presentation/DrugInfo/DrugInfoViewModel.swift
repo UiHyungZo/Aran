@@ -20,6 +20,8 @@ final class DrugInfoViewModel: ObservableObject {
     @Published var favoriteItemSeqs: Set<String> = []
     @Published var favoriteDrugs: [FavoriteDrug] = []
     @Published var isLoadingMore: Bool = false
+    @Published var isDetailPresented = false
+    @Published var isDetailLoading = false
 
     private let searchDrugUseCase: SearchDrugUseCaseProtocol
     private let favoriteDrugUseCase: FavoriteDrugUseCaseProtocol
@@ -29,6 +31,7 @@ final class DrugInfoViewModel: ObservableObject {
     private var currentPage: Int = 1
     private(set) var totalCount: Int = 0
     private var currentKeyword: String = ""
+    private var loadingDetailItemSeq: String?
 
     var hasMorePages: Bool { currentPage * 20 < totalCount }
 
@@ -115,17 +118,43 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func selectDrug(_ drug: Drug) {
-        Task {
-            selectedDrug = await enrichedDrug(drug)
+        presentDrug(drug)
+    }
+
+    private func presentDrug(_ drug: Drug) {
+        let shouldLoadDetail = needsDetailEnrichment(drug)
+        loadingDetailItemSeq = shouldLoadDetail ? drug.itemSeq : nil
+        isDetailLoading = shouldLoadDetail
+        selectedDrug = drug
+        isDetailPresented = true
+        guard shouldLoadDetail else { return }
+        Task { await enrichSelectedDrug(drug) }
+    }
+
+    private func needsDetailEnrichment(_ drug: Drug) -> Bool {
+        guard drug.approvalInfo != nil else { return false }
+        return isBlank(drug.efcyQesitm) || isBlank(drug.useMethodQesitm)
+    }
+
+    private func enrichSelectedDrug(_ drug: Drug) async {
+        defer {
+            if loadingDetailItemSeq == drug.itemSeq {
+                loadingDetailItemSeq = nil
+                isDetailLoading = false
+            }
+        }
+
+        do {
+            let enriched = try await searchDrugUseCase.enrich(drug)
+            guard selectedDrug?.itemSeq == drug.itemSeq else { return }
+            selectedDrug = enriched
+        } catch {
+            // 상세 보강 실패 시 검색 결과로 받은 기존 Drug를 유지한다.
         }
     }
 
-    func enrichedDrug(_ drug: Drug) async -> Drug {
-        do {
-            return try await searchDrugUseCase.enrich(drug)
-        } catch {
-            return drug
-        }
+    private func isBlank(_ value: String?) -> Bool {
+        value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true
     }
 
     func clearSearch() {
@@ -201,7 +230,7 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func selectFavorite(_ favoriteDrug: FavoriteDrug) {
-        selectedDrug = favoriteDrug.drug
+        presentDrug(favoriteDrug.drug)
     }
 
     func loadFavorites() async {

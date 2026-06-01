@@ -22,30 +22,51 @@ Aran은 외부 API와 내부 데이터 흐름을 명확히 분리한다.
 
 용도:
 
-* 약 이름 검색
-* 약 상세 정보 조회
+* 약 이름 검색 (fallback)
+* 효능·용법·주의사항 등 임상 정보 취득
 * 성분명 자동 입력
 * 약 등록 자동화
 
 ---
 
+## 의약품허가정보서비스 (DrugPrdtPrmsnInfoService07)
+
+식품의약품안전처 의약품 허가 정보 조회 API.
+
+용도:
+
+* 전문의약품 검색 (primary)
+* 허가정보(허가일자, 주성분, EDI코드 등) 취득
+* 임상 정보(XML 파싱: 효능·용법·주의사항) 취득
+* e약은요 fallback 전 우선 조회
+
+---
+
 # Base URL
 
-```text id="s4zhtn"
+## e약은요
+
+```text
 https://apis.data.go.kr/1471000/DrbEasyDrugInfoService
+```
+
+## 의약품허가정보서비스
+
+```text
+https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07
 ```
 
 ---
 
 # API Endpoints
 
-## Drug Search
+## e약은요 Drug Search
 
-약 이름 검색.
+약 이름 검색 (fallback).
 
 엔드포인트:
 
-```text id="krm0f1"
+```text
 getDrbEasyDrugList
 ```
 
@@ -53,35 +74,51 @@ getDrbEasyDrugList
 
 * 약 이름 검색
 * register mode
-* browse mode
+* browse mode (전문의약품 결과 없을 때 fallback)
 
 예시:
 
-```text id="lm7kqe"
+```text
 프로게스테론
 에스트라디올
 ```
 
 ---
 
-## Drug Detail
+## 허가정보 Drug Search
 
-약 상세 조회.
+전문의약품 검색 (primary).
 
 엔드포인트:
 
-```text id="r7g4xv"
-getDrbEasyDrugInfo
+```text
+getDrugPrdtPrmsnInq07
 ```
 
 용도:
 
-* 효능
-* 용법
-* 주의사항
-* 경고
-* 상호작용
-* 보관 정보
+* 약 이름 검색 (primary — e약은요보다 우선 조회)
+* 허가정보 + 임상정보(XML 파싱) 취득
+* 결과 없을 시 e약은요로 fallback
+
+---
+
+## 허가정보 Drug Detail
+
+허가정보 API 검색 응답에 효능, 용법 등 본문 필드가 부족할 때만 단건 상세 조회로 보강한다. e약은요 fallback 결과는 검색 응답을 상세 화면에 바로 표시한다.
+
+엔드포인트:
+
+```text
+getDrugPrdtPrmsnDtlInq06
+```
+
+용도:
+
+* 효능 (eeDocData XML 파싱)
+* 용법·용량 (udDocData XML 파싱)
+* 주의사항·경고 (nbDocData XML 파싱)
+* 허가정보 보강
 
 ---
 
@@ -197,16 +234,22 @@ protocol APIClientProtocol {
 
 # Router Policy
 
-## DrugRouter
+## DrugRouter (e약은요)
 
 Alamofire `URLRequestConvertible` 사용.
 
-예시:
-
 ```swift
 enum DrugRouter {
-    case search(keyword: String)
-    case detail(itemSeq: String)
+    case search(keyword: String, pageNo: Int, serviceKey: String, baseURL: String)
+}
+```
+
+## DrugApprovalRouter (의약품허가정보서비스)
+
+```swift
+enum DrugApprovalRouter {
+    case search(itemName: String, pageNo: Int, serviceKey: String, baseURL: String)
+    case detail(itemSeq: String, serviceKey: String, baseURL: String)
 }
 ```
 

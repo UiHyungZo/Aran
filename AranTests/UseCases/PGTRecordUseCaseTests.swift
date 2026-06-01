@@ -173,6 +173,15 @@ private final class MockPGTRecordRepository: PGTRecordRepositoryProtocol {
         return fetchCycleResult
     }
 
+    func fetch(id: UUID) async throws -> PGTRecord? {
+        if let error = shouldThrow { throw error }
+        return fetchAllResult.first { $0.id == id }
+    }
+
+    func update(_ record: PGTRecord) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
     func save(_ record: PGTRecord) async throws {
         if let error = shouldThrow { throw error }
         savedRecords.append(record)

@@ -46,7 +46,7 @@ nonisolated struct DrugApprovalItemDTO: Decodable {
         case rareDrugYN = "RARE_DRUG_YN"
     }
 
-    /// enrich용 메타데이터 (e약은요 fallback 결과 보강에 사용)
+    /// 허가정보 섹션에 표시할 메타데이터
     nonisolated func toDomain() -> DrugApprovalInfo {
         DrugApprovalInfo(
             itemSeq: itemSeq,

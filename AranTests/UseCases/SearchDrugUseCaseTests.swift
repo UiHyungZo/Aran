@@ -54,21 +54,7 @@ final class SearchDrugUseCaseTests: XCTestCase {
 
     func testEnrich_returnsRepositoryEnrichedDrug() async throws {
         let drug = makeDrug(itemSeq: "A", name: "원본")
-        let enrichedDrug = makeDrug(itemSeq: "A", name: "원본")
-            .enriched(with: DrugApprovalInfo(
-                itemSeq: "A",
-                itemName: nil,
-                entpName: nil,
-                itemPermitDate: nil,
-                barCode: nil,
-                ediCode: nil,
-                atcCode: nil,
-                mainItemIngredient: "보강성분",
-                productType: nil,
-                specialtyPublic: nil,
-                bigProductImageURL: nil,
-                rareDrugYN: nil
-            ))
+        let enrichedDrug = makeDrug(itemSeq: "A", name: "원본", component: "보강성분")
         repository.enrichedDrug = enrichedDrug
 
         let result = try await sut.enrich(drug)
@@ -78,11 +64,16 @@ final class SearchDrugUseCaseTests: XCTestCase {
 }
 
 private extension SearchDrugUseCaseTests {
-    func makeDrug(itemSeq: String = UUID().uuidString, name: String) -> Drug {
+    func makeDrug(
+        itemSeq: String = UUID().uuidString,
+        name: String,
+        component: String? = nil
+    ) -> Drug {
         Drug(
             itemSeq: itemSeq,
             itemName: name,
             entpName: "제약사",
+            component: component,
             efcyQesitm: "효능",
             useMethodQesitm: nil,
             atpnWarnQesitm: nil,

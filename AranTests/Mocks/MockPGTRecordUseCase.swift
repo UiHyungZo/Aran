@@ -17,6 +17,15 @@ final class MockPGTRecordUseCase: PGTRecordUseCaseProtocol {
         return stubbedByCycle
     }
 
+    func fetch(id: UUID) async throws -> PGTRecord? {
+        if let error = shouldThrow { throw error }
+        return stubbedAll.first { $0.id == id }
+    }
+
+    func update(_ record: PGTRecord) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
     func save(
         cycleRecordId: UUID,
         testDate: Date,

@@ -77,7 +77,7 @@ struct CycleRecordFormView: View {
                 sectionRetrievalInfo
                 sectionEmbryoRecords
                 sectionPGT
-                saveButto
+                saveButton
             }
             .padding(16)
         }
@@ -348,7 +348,7 @@ struct CycleRecordFormView: View {
         .padding(.horizontal, 16)
     }
 
-    private var saveButto: some View {
+    private var saveButton: some View {
         Button {
             Task {
                 if initialSummary == nil && viewModel.cycleRecords.contains(where: { $0.cycleNumber == cycleNumber }) {

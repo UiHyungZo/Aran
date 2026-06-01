@@ -3,9 +3,10 @@ import Foundation
 
 final class MockDrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
     var searchResult: DrugSearchResult?
-    var infos: [DrugApprovalInfo] = []
+    var detailDrug: Drug?
     var error: Error?
     var capturedItemName: String?
+    var capturedItemSeq: String?
     var capturedPageNo: Int?
 
     func searchDrugs(itemName: String, pageNo: Int) async throws -> DrugSearchResult {
@@ -15,9 +16,9 @@ final class MockDrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
         return searchResult ?? DrugSearchResult(drugs: [], totalCount: 0, pageNo: pageNo)
     }
 
-    func fetchApprovalInfo(itemName: String) async throws -> [DrugApprovalInfo] {
-        capturedItemName = itemName
+    func fetchDetail(itemSeq: String) async throws -> Drug? {
+        capturedItemSeq = itemSeq
         if let error { throw error }
-        return infos
+        return detailDrug
     }
 }

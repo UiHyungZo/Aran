@@ -45,21 +45,21 @@ struct Drug {
         self.approvalInfo = approvalInfo
     }
 
-    func enriched(with approvalInfo: DrugApprovalInfo) -> Drug {
+    func merging(detail: Drug) -> Drug {
         Drug(
             itemSeq: itemSeq,
             itemName: itemName,
             entpName: entpName,
-            component: approvalInfo.mainItemIngredient?.nilIfBlank ?? component,
-            efcyQesitm: efcyQesitm,
-            useMethodQesitm: useMethodQesitm,
-            atpnWarnQesitm: atpnWarnQesitm,
-            atpnQesitm: atpnQesitm,
-            intrcQesitm: intrcQesitm,
-            seQesitm: seQesitm,
-            depositMethodQesitm: depositMethodQesitm,
-            itemImage: itemImage,
-            approvalInfo: approvalInfo
+            component: component?.nilIfBlank ?? detail.component,
+            efcyQesitm: efcyQesitm?.nilIfBlank ?? detail.efcyQesitm,
+            useMethodQesitm: useMethodQesitm?.nilIfBlank ?? detail.useMethodQesitm,
+            atpnWarnQesitm: atpnWarnQesitm?.nilIfBlank ?? detail.atpnWarnQesitm,
+            atpnQesitm: atpnQesitm?.nilIfBlank ?? detail.atpnQesitm,
+            intrcQesitm: intrcQesitm?.nilIfBlank ?? detail.intrcQesitm,
+            seQesitm: seQesitm?.nilIfBlank ?? detail.seQesitm,
+            depositMethodQesitm: depositMethodQesitm?.nilIfBlank ?? detail.depositMethodQesitm,
+            itemImage: itemImage?.nilIfBlank ?? detail.itemImage,
+            approvalInfo: detail.approvalInfo ?? approvalInfo
         )
     }
 }

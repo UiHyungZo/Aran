@@ -4,12 +4,14 @@ struct DrugDetailView: View {
     let drug: Drug
     let onAddDrug: (Drug) -> Void
     let isFavorite: Bool
+    let isLoadingDetail: Bool
     let onToggleFavorite: () -> Void
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 headerSection
+                if isLoadingDetail { detailLoadingSection }
                 if let warning = drug.atpnWarnQesitm { warningSection(warning) }
                 if let efcy = drug.efcyQesitm { detailSection(title: "효능", content: efcy) }
                 if let use = drug.useMethodQesitm { detailSection(title: "사용법", content: use) }
@@ -100,6 +102,19 @@ struct DrugDetailView: View {
                 .font(.system(size: 15))
                 .lineSpacing(4)
         }
+    }
+
+    private var detailLoadingSection: some View {
+        HStack(spacing: 10) {
+            ProgressView()
+            Text("상세 정보를 불러오는 중...")
+                .font(.system(size: 14))
+                .foregroundStyle(Color.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     private func approvalSection(_ approvalInfo: DrugApprovalInfo) -> some View {
