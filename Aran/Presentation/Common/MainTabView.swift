@@ -34,6 +34,26 @@ struct MainTabView: View {
             case .drugInfo: return "약 정보"
             }
         }
+
+        var accessibilityID: String {
+            switch self {
+            case .calendar: return "tab.calendar"
+            case .medication: return "tab.medication"
+            case .exam: return "tab.exam"
+            case .procedureRecord: return "tab.procedureRecord"
+            case .drugInfo: return "tab.drugInfo"
+            }
+        }
+
+        var screenAccessibilityID: String {
+            switch self {
+            case .calendar: return "screen.calendar"
+            case .medication: return "screen.medication"
+            case .exam: return "screen.exam"
+            case .procedureRecord: return "screen.procedureRecord"
+            case .drugInfo: return "screen.drugInfo"
+            }
+        }
     }
 
     var body: some View {
@@ -50,6 +70,13 @@ struct MainTabView: View {
 
     @ViewBuilder
     private var contentView: some View {
+        screenContent
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier(selectedTab.screenAccessibilityID)
+    }
+
+    @ViewBuilder
+    private var screenContent: some View {
         switch selectedTab {
         case .calendar:
             CalendarView(viewModel: container.calendarScene.makeCalendarViewModel())
@@ -122,6 +149,7 @@ private struct TabBarItem: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(tab.accessibilityID)
         .animation(.easeInOut(duration: 0.18), value: isSelected)
     }
 }
