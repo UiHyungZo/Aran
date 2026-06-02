@@ -9,11 +9,13 @@ final class MedicationSearchViewController: UIViewController {
     init(
         searchDrugUseCase: SearchDrugUseCaseProtocol,
         favoriteDrugUseCase: FavoriteDrugUseCaseProtocol,
+        recentSearchUseCase: RecentDrugSearchUseCaseProtocol,
         actions: MedicationSearchActions
     ) {
         viewModel = DrugInfoViewModel(
             searchDrugUseCase: searchDrugUseCase,
-            favoriteDrugUseCase: favoriteDrugUseCase
+            favoriteDrugUseCase: favoriteDrugUseCase,
+            recentSearchUseCase: recentSearchUseCase
         )
         self.actions = actions
         super.init(nibName: nil, bundle: nil)

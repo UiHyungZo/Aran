@@ -47,6 +47,12 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
     private lazy var favoriteDrugUseCase: FavoriteDrugUseCaseProtocol =
         FavoriteDrugUseCase(repository: favoriteDrugRepository)
 
+    private lazy var recentDrugSearchRepository: RecentDrugSearchRepositoryProtocol =
+        RecentDrugSearchRepository(context: dependencies.modelContext)
+
+    private lazy var recentDrugSearchUseCase: RecentDrugSearchUseCaseProtocol =
+        RecentDrugSearchUseCase(repository: recentDrugSearchRepository)
+
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
     }
@@ -64,6 +70,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         MedicationSearchViewController(
             searchDrugUseCase: searchDrugUseCase,
             favoriteDrugUseCase: favoriteDrugUseCase,
+            recentSearchUseCase: recentDrugSearchUseCase,
             actions: actions
         )
     }

@@ -14,7 +14,7 @@
 - 알림 내용 미리보기 + 개별 ON/OFF 토글
 
 ### 최근 검색어 (DrugInfo)
-- `DrugInfoViewModel` — UserDefaults 기반 최근 검색어 저장/조회
+- `DrugInfoViewModel` — UseCase/Repository 경유 최근 검색어 저장/조회
 - `DrugInfoView` 검색 바 아래 최근 검색어 목록 표시
 - 검색어 선택 시 자동 검색 실행
 

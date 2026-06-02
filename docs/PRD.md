@@ -99,7 +99,7 @@ Aran은 IVF 치료 흐름을 관리하는 iOS 포트폴리오 앱이다.
 - 검색 결과 목록
 - 약 상세 정보 — 효능/용법/주의사항/경고 배너
 - 약 추가 연동 — "이 약 추가하기" → MedicationFormVC
-- 최근 검색어 — UserDefaults 저장
+- 최근 검색어 — SwiftData 기반 저장
 
 ---
 

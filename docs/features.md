@@ -507,7 +507,8 @@ Drug Detail
 
 ### 최근 검색어
 
-* UserDefaults 저장/표시
+* SwiftData 기반 저장/표시
+* ViewModel은 UseCase를 통해 저장/조회
 
 ---
 
