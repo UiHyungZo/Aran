@@ -9,6 +9,7 @@ protocol CycleRecordUseCaseProtocol {
     func addEvent(_ event: DayEvent, to date: Date, cycleNumber: Int) async throws
     func removeTransferEvent(transferID: UUID) async throws
     func saveDiary(emoji: String?, text: String, for date: Date) async throws
+    func clearDiary(for date: Date) async throws
     func estimateOvulation(from periodStart: Date, cycleLength: Int) -> Date
 }
 
@@ -146,6 +147,12 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
             let record = CycleRecord(id: UUID(), date: date, events: [], diary: diary)
             try await repository.save(record)
         }
+    }
+
+    func clearDiary(for date: Date) async throws {
+        guard var existing = try await repository.fetch(date: date) else { return }
+        existing.diary = nil
+        try await repository.update(existing)
     }
 
     func estimateOvulation(from periodStart: Date, cycleLength: Int = 28) -> Date {

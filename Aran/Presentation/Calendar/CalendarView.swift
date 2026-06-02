@@ -174,6 +174,7 @@ struct CalendarView: View {
             legendItem(color: AranColor.dotHealthRecord, label: "검사")
             legendItem(color: AranColor.dotPeriod, label: "생리")
             legendItem(color: AranColor.dotOvulation, label: "배란")
+            legendItem(color: AranColor.dotDiary, label: "일기")
             Spacer()
         }
     }
@@ -199,6 +200,7 @@ struct CalendarView: View {
                         events: viewModel.events(for: date),
                         hasHealthRecord: !viewModel.healthRecords(for: date).isEmpty,
                         hasMedication: !viewModel.medications(for: date).isEmpty,
+                        hasDiary: viewModel.diary(for: date) != nil,
                         cellHeight: 54
                     )
                     .onTapGesture {
@@ -557,7 +559,23 @@ struct CalendarView: View {
                 }
                 .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 32)
+                .padding(.bottom, viewModel.diary(for: viewModel.selectedDate) != nil ? 8 : 32)
+
+                if viewModel.diary(for: viewModel.selectedDate) != nil {
+                    Button(role: .destructive) {
+                        Task {
+                            await viewModel.deleteDiary()
+                            isDiaryEditing = false
+                        }
+                    } label: {
+                        Text("일기 삭제")
+                            .font(AranFont.body(16))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 32)
+                }
             }
             .navigationTitle("감정 일기")
             .navigationBarTitleDisplayMode(.inline)
@@ -603,6 +621,7 @@ struct CalendarView: View {
                         events: isCurrent ? viewModel.events(for: date) : [],
                         hasHealthRecord: isCurrent && !viewModel.healthRecords(for: date).isEmpty,
                         hasMedication: isCurrent && !viewModel.medications(for: date).isEmpty,
+                        hasDiary: isCurrent && viewModel.diary(for: date) != nil,
                         cellHeight: cellH
                     )
                     .onTapGesture {
@@ -1078,6 +1097,7 @@ private struct DayCell: View {
     let events: [DayEvent]
     let hasHealthRecord: Bool
     let hasMedication: Bool
+    let hasDiary: Bool
     let cellHeight: CGFloat
 
     var body: some View {
@@ -1104,6 +1124,11 @@ private struct DayCell: View {
                 if hasHealthRecord {
                     Circle()
                         .fill(AranColor.dotHealthRecord)
+                        .frame(width: 5, height: 5)
+                }
+                if hasDiary {
+                    Circle()
+                        .fill(AranColor.dotDiary)
                         .frame(width: 5, height: 5)
                 }
             }

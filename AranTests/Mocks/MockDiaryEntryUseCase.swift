@@ -19,4 +19,8 @@ final class MockDiaryEntryUseCase: DiaryEntryUseCaseProtocol {
     func save(date: Date, emoji: String?, content: String) async throws {
         if let error = shouldThrow { throw error }
     }
+
+    func delete(id: UUID) async throws {
+        if let error = shouldThrow { throw error }
+    }
 }

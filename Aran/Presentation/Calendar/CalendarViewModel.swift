@@ -221,6 +221,20 @@ final class CalendarViewModel: ObservableObject {
         }
     }
 
+    func deleteDiary() async {
+        let key = Calendar.current.startOfDay(for: selectedDate)
+        do {
+            if let entry = diaryEntries[key] {
+                try await diaryEntryUseCase.delete(id: entry.id)
+            }
+            try await cycleRecordUseCase.clearDiary(for: selectedDate)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
     func saveDiary(emoji: String?, text: String) async {
         do {
             try await diaryEntryUseCase.save(date: selectedDate, emoji: emoji, content: text)

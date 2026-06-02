@@ -4,6 +4,7 @@ protocol DiaryEntryUseCaseProtocol {
     func fetchAll() async throws -> [DiaryEntry]
     func fetch(date: Date) async throws -> DiaryEntry?
     func save(date: Date, emoji: String?, content: String) async throws
+    func delete(id: UUID) async throws
 }
 
 final class DiaryEntryUseCase: DiaryEntryUseCaseProtocol {
@@ -19,6 +20,10 @@ final class DiaryEntryUseCase: DiaryEntryUseCaseProtocol {
 
     func fetch(date: Date) async throws -> DiaryEntry? {
         try await repository.fetch(date: date)
+    }
+
+    func delete(id: UUID) async throws {
+        try await repository.delete(id: id)
     }
 
     func save(date: Date, emoji: String?, content: String) async throws {

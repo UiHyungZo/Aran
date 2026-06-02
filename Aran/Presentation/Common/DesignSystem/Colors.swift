@@ -13,6 +13,7 @@ enum AranColor {
     static let dotTransfer = Color("dotTransfer")
     static let dotMedication = Color("dotMedication")
     static let dotHealthRecord = Color("dotHealthRecord")
+    static let dotDiary = Color(red: 0.6, green: 0.4, blue: 0.8)
 
     static let badgePendingBackground = Color("badgePendingBackground")
     static let badgePendingText = Color("badgePendingText")
