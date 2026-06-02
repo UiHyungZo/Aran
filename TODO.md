@@ -28,7 +28,7 @@
 - [x] 알림 미리보기 — 알림 내용 미리보기 + 개별 ON/OFF
 - [x] Swift Charts — 항목별 수치 변화 Line Chart, 정상 범위 레퍼런스 라인
 - [x] 수치 히스토리 화면 — 항목별 날짜순 목록
-- [x] 최근 검색어 — UserDefaults 저장/표시
+- [x] 최근 검색어 — SwiftData 기반 저장/표시
 - [x] 전체 화면 키보드 Dismiss UX 개선 — SwiftUI(`@FocusState` + `scrollDismissesKeyboard` + keyboard toolbar + `onTapGesture`), UIKit(`keyboardDismissMode` + tap gesture + `UITextFieldDelegate`) 8개 파일
 
 ---

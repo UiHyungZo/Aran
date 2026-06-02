@@ -25,8 +25,8 @@ final class DrugInfoViewModel: ObservableObject {
 
     private let searchDrugUseCase: SearchDrugUseCaseProtocol
     private let favoriteDrugUseCase: FavoriteDrugUseCaseProtocol
+    private let recentSearchUseCase: RecentDrugSearchUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
-    private let recentSearchesKey = "recentDrugSearches"
 
     private var currentPage: Int = 1
     private(set) var totalCount: Int = 0
@@ -37,12 +37,14 @@ final class DrugInfoViewModel: ObservableObject {
 
     init(
         searchDrugUseCase: SearchDrugUseCaseProtocol,
-        favoriteDrugUseCase: FavoriteDrugUseCaseProtocol
+        favoriteDrugUseCase: FavoriteDrugUseCaseProtocol,
+        recentSearchUseCase: RecentDrugSearchUseCaseProtocol
     ) {
         self.searchDrugUseCase = searchDrugUseCase
         self.favoriteDrugUseCase = favoriteDrugUseCase
-        loadRecentSearches()
+        self.recentSearchUseCase = recentSearchUseCase
         bindSearch()
+        Task { await loadRecentSearches() }
         Task { await loadFavorites() }
     }
 
@@ -77,14 +79,14 @@ final class DrugInfoViewModel: ObservableObject {
             totalCount = result.totalCount
             let drugs = deduplicated(result.drugs)
             viewState = drugs.isEmpty ? .empty : .results(drugs)
-            saveRecentSearch(trimmedKeyword)
+            await saveRecentSearch(trimmedKeyword)
         } catch {
             do {
                 let result = try await searchDrugUseCase.execute(keyword: trimmedKeyword, pageNo: 1)
                 totalCount = result.totalCount
                 let drugs = deduplicated(result.drugs)
                 viewState = drugs.isEmpty ? .empty : .results(drugs)
-                saveRecentSearch(trimmedKeyword)
+                await saveRecentSearch(trimmedKeyword)
             } catch {
                 let message = (error as? AppError)?.errorDescription ?? error.localizedDescription
                 viewState = .error(message)
@@ -167,20 +169,41 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func removeRecentSearch(_ keyword: String) {
-        recentSearches.removeAll { $0 == keyword }
-        UserDefaults.standard.set(recentSearches, forKey: recentSearchesKey)
+        Task {
+            do {
+                try await recentSearchUseCase.delete(keyword: keyword)
+                await loadRecentSearches()
+            } catch {
+                recentSearches.removeAll { $0 == keyword }
+            }
+        }
     }
 
     func removeRecentSearch(at offsets: IndexSet) {
-        for index in offsets.sorted(by: >) where recentSearches.indices.contains(index) {
-            recentSearches.remove(at: index)
+        let keywords = offsets
+            .sorted(by: >)
+            .compactMap { recentSearches.indices.contains($0) ? recentSearches[$0] : nil }
+        Task {
+            do {
+                for keyword in keywords {
+                    try await recentSearchUseCase.delete(keyword: keyword)
+                }
+                await loadRecentSearches()
+            } catch {
+                recentSearches.removeAll { keywords.contains($0) }
+            }
         }
-        UserDefaults.standard.set(recentSearches, forKey: recentSearchesKey)
     }
 
     func clearRecentSearches() {
-        recentSearches = []
-        UserDefaults.standard.removeObject(forKey: recentSearchesKey)
+        Task {
+            do {
+                try await recentSearchUseCase.clear()
+            } catch {
+                // 최근 검색어 삭제 실패 시 현재 화면 상태만 비운다.
+            }
+            recentSearches = []
+        }
     }
 
     func searchRecentKeyword(_ keyword: String) {
@@ -188,19 +211,21 @@ final class DrugInfoViewModel: ObservableObject {
         Task { await search(keyword: keyword) }
     }
 
-    private func loadRecentSearches() {
-        recentSearches = UserDefaults.standard.stringArray(forKey: recentSearchesKey) ?? []
+    private func loadRecentSearches() async {
+        do {
+            recentSearches = try await recentSearchUseCase.fetchAll()
+        } catch {
+            recentSearches = []
+        }
     }
 
-    private func saveRecentSearch(_ keyword: String) {
-        let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedKeyword.isEmpty else { return }
-
-        var searches = recentSearches.filter { $0 != trimmedKeyword }
-        searches.insert(trimmedKeyword, at: 0)
-        if searches.count > 10 { searches = Array(searches.prefix(10)) }
-        recentSearches = searches
-        UserDefaults.standard.set(searches, forKey: recentSearchesKey)
+    private func saveRecentSearch(_ keyword: String) async {
+        do {
+            try await recentSearchUseCase.save(keyword: keyword)
+            await loadRecentSearches()
+        } catch {
+            // 검색 성공 자체를 저장 실패로 되돌리지 않는다.
+        }
     }
 
     func isFavorite(_ drug: Drug) -> Bool {

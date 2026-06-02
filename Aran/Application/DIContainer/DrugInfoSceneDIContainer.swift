@@ -30,6 +30,12 @@ final class DrugInfoSceneDIContainer {
     private lazy var favoriteDrugUseCase: FavoriteDrugUseCaseProtocol =
         FavoriteDrugUseCase(repository: favoriteDrugRepository)
 
+    private lazy var recentDrugSearchRepository: RecentDrugSearchRepositoryProtocol =
+        RecentDrugSearchRepository(context: dependencies.modelContext)
+
+    private lazy var recentDrugSearchUseCase: RecentDrugSearchUseCaseProtocol =
+        RecentDrugSearchUseCase(repository: recentDrugSearchRepository)
+
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
     }
@@ -37,7 +43,8 @@ final class DrugInfoSceneDIContainer {
     func makeDrugInfoViewModel() -> DrugInfoViewModel {
         DrugInfoViewModel(
             searchDrugUseCase: searchDrugUseCase,
-            favoriteDrugUseCase: favoriteDrugUseCase
+            favoriteDrugUseCase: favoriteDrugUseCase,
+            recentSearchUseCase: recentDrugSearchUseCase
         )
     }
 }

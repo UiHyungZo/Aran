@@ -236,9 +236,29 @@ enum AppSchemaV5: VersionedSchema {
     ]
 }
 
+// SchemaV6: 약 정보 최근 검색어 스키마 등록
+enum AppSchemaV6: VersionedSchema {
+    static let versionIdentifier = Schema.Version(6, 0, 0)
+
+    static var models: [any PersistentModel.Type] = [
+        CycleRecordModel.self,
+        MedicationModel.self,
+        MedicationTimeSlotModel.self,
+        MedicationLogModel.self,
+        HealthRecordModel.self,
+        TransferRecordModel.self,
+        PGTRecordModel.self,
+        FavoriteDrugModel.self,
+        HospitalVisitModel.self,
+        DiaryEntryModel.self,
+        MenstrualCycleModel.self,
+        RecentDrugSearchModel.self,
+    ]
+}
+
 enum AppMigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self, AppSchemaV3.self, AppSchemaV4.self, AppSchemaV5.self]
-    static var stages: [MigrationStage] = [migrateV1ToV2, migrateV2ToV3, migrateV3ToV4, migrateV4ToV5]
+    static var schemas: [any VersionedSchema.Type] = [AppSchemaV1.self, AppSchemaV2.self, AppSchemaV3.self, AppSchemaV4.self, AppSchemaV5.self, AppSchemaV6.self]
+    static var stages: [MigrationStage] = [migrateV1ToV2, migrateV2ToV3, migrateV3ToV4, migrateV4ToV5, migrateV5ToV6]
 
     // scheduleTimes 배열 → MedicationTimeSlotModel 관계로 변환
     static let migrateV1ToV2 = MigrationStage.custom(
@@ -273,5 +293,10 @@ enum AppMigrationPlan: SchemaMigrationPlan {
     static let migrateV4ToV5 = MigrationStage.lightweight(
         fromVersion: AppSchemaV4.self,
         toVersion: AppSchemaV5.self
+    )
+
+    static let migrateV5ToV6 = MigrationStage.lightweight(
+        fromVersion: AppSchemaV5.self,
+        toVersion: AppSchemaV6.self
     )
 }

@@ -5,20 +5,24 @@ import XCTest
 final class DrugInfoViewModelTests: XCTestCase {
     private var searchUseCase: MockSearchDrugUseCase!
     private var favoriteRepository: MockFavoriteDrugRepository!
+    private var recentSearchRepository: MockRecentDrugSearchRepository!
     private var sut: DrugInfoViewModel!
 
     override func setUp() {
         super.setUp()
         searchUseCase = MockSearchDrugUseCase()
         favoriteRepository = MockFavoriteDrugRepository()
+        recentSearchRepository = MockRecentDrugSearchRepository()
         sut = DrugInfoViewModel(
             searchDrugUseCase: searchUseCase,
-            favoriteDrugUseCase: FavoriteDrugUseCase(repository: favoriteRepository)
+            favoriteDrugUseCase: FavoriteDrugUseCase(repository: favoriteRepository),
+            recentSearchUseCase: RecentDrugSearchUseCase(repository: recentSearchRepository)
         )
     }
 
     override func tearDown() {
         sut = nil
+        recentSearchRepository = nil
         favoriteRepository = nil
         searchUseCase = nil
         super.tearDown()
@@ -131,6 +135,19 @@ final class DrugInfoViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedDrug?.itemSeq, "D")
         XCTAssertNil(sut.selectedDrug?.efcyQesitm)
         XCTAssertFalse(sut.isDetailLoading)
+    }
+
+    func testSearch_whenSearchSucceeds_savesRecentSearchKeyword() async {
+        searchUseCase.stubbedResult = DrugSearchResult(
+            drugs: [makeDrug(itemSeq: "A", itemName: "프로게스테론")],
+            totalCount: 1,
+            pageNo: 1
+        )
+
+        await sut.search(keyword: " 프로게스테론 ")
+
+        XCTAssertEqual(recentSearchRepository.savedKeywords, ["프로게스테론"])
+        XCTAssertEqual(sut.recentSearches, ["프로게스테론"])
     }
 }
 
