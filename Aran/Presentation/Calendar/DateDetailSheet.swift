@@ -357,9 +357,25 @@ private struct DiaryEditSheet: View {
             .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             .padding(.horizontal, 16)
             .padding(.top, 16)
-            .padding(.bottom, 32)
+            .padding(.bottom, viewModel.selectedDiary != nil ? 8 : 32)
+
+            if viewModel.selectedDiary != nil {
+                Button(role: .destructive) {
+                    Task {
+                        await viewModel.deleteDiary()
+                        dismiss()
+                    }
+                } label: {
+                    Text("일기 삭제")
+                        .font(AranFont.body(16))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 32)
+            }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
         .onTapGesture { isDiaryFocused = false }
         .onAppear {
             if let diary = viewModel.selectedDiary {

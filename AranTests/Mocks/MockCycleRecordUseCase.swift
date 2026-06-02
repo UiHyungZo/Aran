@@ -44,6 +44,10 @@ final class MockCycleRecordUseCase: CycleRecordUseCaseProtocol {
         if let error = shouldThrow { throw error }
     }
 
+    func clearDiary(for date: Date) async throws {
+        if let error = shouldThrow { throw error }
+    }
+
     func estimateOvulation(from periodStart: Date, cycleLength: Int) -> Date {
         Calendar.current.date(byAdding: .day, value: cycleLength - 14, to: periodStart) ?? periodStart
     }
