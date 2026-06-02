@@ -196,7 +196,7 @@ struct DateDetailSheet: View {
 
     private var diarySection: some View {
         Section {
-            if let diary = viewModel.selectedRecord?.diary, !diary.text.isEmpty {
+            if let diary = viewModel.selectedDiary, !diary.text.isEmpty {
                 HStack(spacing: 8) {
                     if let emoji = diary.emoji {
                         Text(emoji).font(AranFont.body(22))
@@ -215,7 +215,7 @@ struct DateDetailSheet: View {
         } header: {
             SectionHeaderView(
                 title: "감정 일기",
-                buttonTitle: viewModel.selectedRecord?.diary != nil ? "편집" : "추가"
+                buttonTitle: viewModel.selectedDiary != nil ? "편집" : "추가"
             ) {
                 isDiarySheetPresented = true
             }
@@ -362,7 +362,7 @@ private struct DiaryEditSheet: View {
         .presentationDetents([.medium])
         .onTapGesture { isDiaryFocused = false }
         .onAppear {
-            if let diary = viewModel.selectedRecord?.diary {
+            if let diary = viewModel.selectedDiary {
                 diaryEmoji = diary.emoji ?? ""
                 diaryText = diary.text
             }
@@ -410,8 +410,7 @@ private struct HospitalVisitFormSheet: View {
                     Button("저장") {
                         Task {
                             let note = memo.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let fullNote = note.isEmpty ? visitType : "\(visitType) — \(note)"
-                            await viewModel.addEvent(.hospitalVisit(note: fullNote), to: viewModel.selectedDate)
+                            await viewModel.saveHospitalVisit(visitTypes: [visitType], memo: note.isEmpty ? nil : note)
                             dismiss()
                         }
                     }
