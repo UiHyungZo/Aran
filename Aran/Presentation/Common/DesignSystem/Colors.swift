@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 enum AranColor {
-    static let primary = Color(uiColor: UIColor(named: "primaryColor") ?? .systemPink)
+    static let primary = Color("primaryColor")
     static let secondary = Color("secondaryColor")
     static let background = Color("backgroundColor")
 
@@ -13,7 +13,7 @@ enum AranColor {
     static let dotTransfer = Color("dotTransfer")
     static let dotMedication = Color("dotMedication")
     static let dotHealthRecord = Color("dotHealthRecord")
-    static let dotDiary = Color(red: 0.6, green: 0.4, blue: 0.8)
+    static let dotDiary = Color("dotDiary")
 
     static let badgePendingBackground = Color("badgePendingBackground")
     static let badgePendingText = Color("badgePendingText")

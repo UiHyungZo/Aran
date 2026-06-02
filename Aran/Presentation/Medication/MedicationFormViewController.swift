@@ -99,8 +99,8 @@ final class MedicationFormViewController: UIViewController {
 
         deleteButton.setTitle("이 약 삭제", for: .normal)
         deleteButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
-        deleteButton.setTitleColor(UIColor(red: 0.8, green: 0.1, blue: 0.1, alpha: 1), for: .normal)
-        deleteButton.backgroundColor = UIColor(red: 1.0, green: 0.92, blue: 0.92, alpha: 1)
+        deleteButton.setTitleColor(UIColor(named: "badgeFailedText"), for: .normal)
+        deleteButton.backgroundColor = UIColor(named: "badgeFailedBackground")
         deleteButton.layer.cornerRadius = 10
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
@@ -343,7 +343,9 @@ final class MedicationFormViewController: UIViewController {
         titleLabel.textColor = .secondaryLabel
 
         control.backgroundColor = isPrefilled
-            ? UIColor(red: 0.933, green: 0.929, blue: 0.996, alpha: 1)
+            ? UIColor { $0.userInterfaceStyle == .dark
+                ? UIColor(red: 0.18, green: 0.16, blue: 0.28, alpha: 1)
+                : UIColor(red: 0.933, green: 0.929, blue: 0.996, alpha: 1) }
             : .secondarySystemGroupedBackground
         control.layer.cornerRadius = 8
 

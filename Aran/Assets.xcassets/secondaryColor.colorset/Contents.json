@@ -6,7 +6,7 @@
       ],
       "color": {
         "color-space": "srgb",
-        "components": { "red": "0.749", "green": "0.353", "blue": "0.949", "alpha": "1.000" }
+        "components": { "red": "0.600", "green": "0.400", "blue": "0.800", "alpha": "1.000" }
       },
       "idiom": "universal"
     },
@@ -16,7 +16,7 @@
       ],
       "color": {
         "color-space": "srgb",
-        "components": { "red": "0.820", "green": "0.550", "blue": "1.000", "alpha": "1.000" }
+        "components": { "red": "0.720", "green": "0.560", "blue": "0.950", "alpha": "1.000" }
       },
       "idiom": "universal"
     }

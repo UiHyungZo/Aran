@@ -90,9 +90,13 @@ final class MedicationCell: UITableViewCell {
         case .oral:
             return AranColor.primaryUI
         case .injection:
-            return UIColor(red: 0.2, green: 0.7, blue: 0.5, alpha: 1)
+            return UIColor { $0.userInterfaceStyle == .dark
+                ? UIColor(red: 0.35, green: 0.85, blue: 0.6, alpha: 1)
+                : UIColor(red: 0.2, green: 0.7, blue: 0.5, alpha: 1) }
         case .patch:
-            return UIColor(red: 0.95, green: 0.6, blue: 0.2, alpha: 1)
+            return UIColor { $0.userInterfaceStyle == .dark
+                ? UIColor(red: 1.0, green: 0.7, blue: 0.35, alpha: 1)
+                : UIColor(red: 0.95, green: 0.6, blue: 0.2, alpha: 1) }
         case .other:
             return .systemGray
         }

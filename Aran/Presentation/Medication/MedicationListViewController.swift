@@ -215,7 +215,7 @@ extension MedicationListViewController: UITableViewDelegate {
             self?.toggleRelay.accept(medication)
             completion(true)
         }
-        toggleAction.backgroundColor = UIColor(red: 0.533, green: 0.533, blue: 0.533, alpha: 1.0)
+        toggleAction.backgroundColor = .systemGray
 
         return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
     }
