@@ -34,7 +34,7 @@ final class DiaryEntryUseCase: DiaryEntryUseCaseProtocol {
             existing.content = trimmed
             try await repository.update(existing)
         } else {
-            try await repository.save(DiaryEntry(date: date, emoji: emoji, content: trimmed))
+            try await repository.save(DiaryEntry(id: UUID(), date: date, emoji: emoji, content: trimmed))
         }
     }
 }

@@ -172,6 +172,8 @@ struct CalendarView: View {
             legendItem(color: AranColor.dotTransfer, label: "이식일")
             legendItem(color: AranColor.dotMedication, label: "약 알림")
             legendItem(color: AranColor.dotHealthRecord, label: "검사")
+            legendItem(color: AranColor.dotPeriod, label: "생리")
+            legendItem(color: AranColor.dotOvulation, label: "배란")
             Spacer()
         }
     }
@@ -450,9 +452,25 @@ struct CalendarView: View {
             .joined(separator: " · ")
     }
 
+    private static let periodDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "M월 d일"
+        return f
+    }()
+
     private var periodSubtitle: String {
-        let hasPeriod = viewModel.menstrualCycleStarting(on: viewModel.selectedDate) != nil
-        return hasPeriod ? "생리 시작일로 기록됨" : "오늘로 기록하기"
+        guard let nextPeriod = viewModel.nextPredictedPeriodDate else {
+            return "오늘로 기록하기"
+        }
+        var parts = ["다음 생리 \(Self.periodDateFormatter.string(from: nextPeriod))"]
+        if let days = viewModel.daysUntilNextPeriod, days >= 0 {
+            parts[0] += days == 0 ? " (D-DAY)" : " (D-\(days))"
+        }
+        if let ovulation = viewModel.nextOvulationDate {
+            parts.append("배란 \(Self.periodDateFormatter.string(from: ovulation))")
+        }
+        return parts.joined(separator: " · ")
     }
 
     // MARK: - 감정 일기 편집 패널
@@ -750,9 +768,12 @@ private struct CalendarHealthRecordInputSheet: View {
     @State private var unitText = HealthRecordType.defaultUnits[HealthRecordType.fsh] ?? ""
     @State private var date: Date
     @State private var note = ""
+    @State private var itemTypes: [String] = HealthRecordType.defaults
+    @State private var customUnits: [String: String] = [:]
+    @State private var isCustomItemAlertPresented = false
+    @State private var customNameInput = ""
+    @State private var customUnitInput = ""
     @FocusState private var isFocused: Bool
-
-    private let items = HealthRecordType.defaults
 
     init(viewModel: CalendarViewModel, existingRecord: HealthRecord? = nil) {
         self.viewModel = viewModel
@@ -769,13 +790,21 @@ private struct CalendarHealthRecordInputSheet: View {
             Form {
                 Section("검사 항목") {
                     if existingRecord == nil {
-                        Picker("항목", selection: $selectedType) {
-                            ForEach(items, id: \.self) { item in
-                                Text(item).tag(item)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(itemTypes, id: \.self) { item in
+                                    chip(title: item, selected: item == selectedType) {
+                                        selectedType = item
+                                        unitText = customUnits[item] ?? HealthRecordType.defaultUnits[item] ?? ""
+                                    }
+                                }
+                                chip(title: "+ 직접 추가", selected: false) {
+                                    customNameInput = ""
+                                    customUnitInput = ""
+                                    isCustomItemAlertPresented = true
+                                }
                             }
-                        }
-                        .onChange(of: selectedType) { _, newValue in
-                            unitText = HealthRecordType.defaultUnits[newValue] ?? unitText
+                            .padding(.vertical, 4)
                         }
                     } else {
                         LabeledContent("항목", value: selectedType)
@@ -861,7 +890,45 @@ private struct CalendarHealthRecordInputSheet: View {
                     Button("완료") { isFocused = false }
                 }
             }
+            .alert("직접 추가", isPresented: $isCustomItemAlertPresented) {
+                TextField("항목 이름", text: $customNameInput)
+                TextField("단위", text: $customUnitInput)
+                Button("취소", role: .cancel) {}
+                Button("확인") { addCustomItem() }
+            }
         }
+    }
+
+    @ViewBuilder
+    private func chip(title: String, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(AranFont.caption())
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(selected ? AranColor.dotHealthRecord : Color(.systemBackground))
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(selected ? AranColor.dotHealthRecord : Color(.systemGray4), lineWidth: 1)
+                )
+                .foregroundStyle(selected ? Color.white : Color.primary)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func addCustomItem() {
+        let name = customNameInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        let unit = customUnitInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !unit.isEmpty else { return }
+        if !itemTypes.contains(name) {
+            itemTypes.append(name)
+        }
+        customUnits[name] = unit
+        selectedType = name
+        unitText = unit
     }
 
     private static func formatValue(_ value: Double) -> String {
@@ -927,6 +994,7 @@ private struct MenstrualCycleFormSheet: View {
 
     @State private var startDate: Date
     @State private var cycleLength: Int = 28
+    @State private var periodLength: Int = 5
 
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -954,6 +1022,7 @@ private struct MenstrualCycleFormSheet: View {
 
                 Section("주기 설정") {
                     Stepper("\(cycleLength)일 주기", value: $cycleLength, in: 21 ... 42)
+                    Stepper("생리 기간 \(periodLength)일", value: $periodLength, in: 2 ... 10)
                 }
 
                 Section("배란 예정일") {
@@ -966,6 +1035,20 @@ private struct MenstrualCycleFormSheet: View {
                             .foregroundStyle(AranColor.dotOvulation)
                     }
                 }
+
+                if let existing = viewModel.menstrualCycleStarting(on: viewModel.selectedDate) {
+                    Section {
+                        Button(role: .destructive) {
+                            Task {
+                                await viewModel.deleteMenstrualCycle(id: existing.id)
+                                dismiss()
+                            }
+                        } label: {
+                            Text("생리 기록 삭제")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
+                }
             }
             .navigationTitle("생리 주기 기록")
             .navigationBarTitleDisplayMode(.inline)
@@ -976,7 +1059,7 @@ private struct MenstrualCycleFormSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            await viewModel.saveMenstrualCycle(startDate: startDate, cycleLength: cycleLength)
+                            await viewModel.saveMenstrualCycle(startDate: startDate, cycleLength: cycleLength, periodLength: periodLength)
                             dismiss()
                         }
                     }

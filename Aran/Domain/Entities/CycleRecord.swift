@@ -41,6 +41,7 @@ enum DayEvent {
     case hospitalVisit(note: String?)
     case ovulation
     case periodStart
+    case periodPredicted
     case embryoRetrieval(count: Int)
     case embryoTransfer(transferID: UUID)
     case medication(medicationID: UUID)
@@ -50,6 +51,7 @@ enum DayEvent {
         case .hospitalVisit: return "dotHospital"
         case .ovulation: return "dotOvulation"
         case .periodStart: return "dotPeriod"
+        case .periodPredicted: return "dotPeriodPredicted"
         case .embryoRetrieval: return "dotRetrieval"
         case .embryoTransfer: return "dotTransfer"
         case .medication: return "dotMedication"

@@ -6,7 +6,7 @@ struct DiaryEntry: Identifiable {
     var emoji: String?
     var content: String
 
-    init(id: UUID = UUID(), date: Date = Date(), emoji: String? = nil, content: String) {
+    init(id: UUID, date: Date = Date(), emoji: String? = nil, content: String) {
         self.id = id
         self.date = date
         self.emoji = emoji

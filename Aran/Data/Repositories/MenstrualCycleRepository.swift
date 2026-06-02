@@ -38,6 +38,7 @@ final class MenstrualCycleRepository: MenstrualCycleRepositoryProtocol {
         guard let model = try context.fetch(descriptor).first else { return }
         model.startDate = cycle.startDate
         model.cycleLength = cycle.cycleLength
+        model.periodLength = cycle.periodLength
         try context.save()
     }
 

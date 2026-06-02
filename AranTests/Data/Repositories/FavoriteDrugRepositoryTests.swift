@@ -55,6 +55,7 @@ final class FavoriteDrugRepositoryTests: XCTestCase {
 private extension FavoriteDrugRepositoryTests {
     func makeFavorite(itemSeq: String, itemName: String = "프로게스테론") -> FavoriteDrug {
         FavoriteDrug(
+            id: UUID(),
             itemSeq: itemSeq,
             itemName: itemName,
             entpName: "제약사",

@@ -153,11 +153,43 @@ final class CalendarViewModel: ObservableObject {
         let day = Calendar.current.startOfDay(for: date)
         return menstrualCycles.contains { cycle in
             let start = Calendar.current.startOfDay(for: cycle.startDate)
-            guard let end = Calendar.current.date(byAdding: .day, value: cycle.cycleLength, to: start) else {
+            guard let end = Calendar.current.date(byAdding: .day, value: cycle.periodLength, to: start) else {
                 return false
             }
             return day >= start && day < end
         }
+    }
+
+    func isPredictedPeriodDate(_ date: Date) -> Bool {
+        guard !isPeriodDate(date) else { return false }
+        guard let latest = latestCycle else { return false }
+        let day = Calendar.current.startOfDay(for: date)
+        let nextStart = Calendar.current.startOfDay(for: menstrualCycleUseCase.nextPeriodDate(after: latest))
+        guard let end = Calendar.current.date(byAdding: .day, value: latest.periodLength, to: nextStart) else {
+            return false
+        }
+        return day >= nextStart && day < end
+    }
+
+    private var latestCycle: MenstrualCycle? {
+        menstrualCycles.max { $0.startDate < $1.startDate }
+    }
+
+    var nextPredictedPeriodDate: Date? {
+        guard let latest = latestCycle else { return nil }
+        return menstrualCycleUseCase.nextPeriodDate(after: latest)
+    }
+
+    var nextOvulationDate: Date? {
+        guard let latest = latestCycle else { return nil }
+        return menstrualCycleUseCase.calculateOvulationDate(startDate: latest.startDate, cycleLength: latest.cycleLength)
+    }
+
+    var daysUntilNextPeriod: Int? {
+        guard let next = nextPredictedPeriodDate else { return nil }
+        let today = Calendar.current.startOfDay(for: Date())
+        let target = Calendar.current.startOfDay(for: next)
+        return Calendar.current.dateComponents([.day], from: today, to: target).day
     }
 
     func isOvulationDate(_ date: Date) -> Bool {
@@ -230,9 +262,19 @@ final class CalendarViewModel: ObservableObject {
         }
     }
 
-    func saveMenstrualCycle(startDate: Date, cycleLength: Int) async {
+    func saveMenstrualCycle(startDate: Date, cycleLength: Int, periodLength: Int) async {
         do {
-            try await menstrualCycleUseCase.save(startDate: startDate, cycleLength: cycleLength)
+            try await menstrualCycleUseCase.save(startDate: startDate, cycleLength: cycleLength, periodLength: periodLength)
+            await loadMonthRecords()
+            await loadRecord(for: selectedDate)
+        } catch {
+            errorMessage = (error as? AppError)?.errorDescription ?? error.localizedDescription
+        }
+    }
+
+    func deleteMenstrualCycle(id: UUID) async {
+        do {
+            try await menstrualCycleUseCase.delete(id: id)
             await loadMonthRecords()
             await loadRecord(for: selectedDate)
         } catch {
@@ -400,6 +442,9 @@ final class CalendarViewModel: ObservableObject {
         })
         if isPeriodDate(date) {
             events.append(.periodStart)
+        }
+        if isPredictedPeriodDate(date) {
+            events.append(.periodPredicted)
         }
         if isOvulationDate(date) {
             events.append(.ovulation)

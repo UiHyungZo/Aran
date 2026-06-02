@@ -17,7 +17,7 @@ struct FavoriteDrug: Identifiable, Equatable {
     let createdAt: Date
 
     init(
-        id: UUID = UUID(),
+        id: UUID,
         itemSeq: String,
         itemName: String,
         entpName: String,
@@ -52,6 +52,7 @@ struct FavoriteDrug: Identifiable, Equatable {
 extension FavoriteDrug {
     init(drug: Drug, createdAt: Date = Date()) {
         self.init(
+            id: UUID(),
             itemSeq: drug.itemSeq,
             itemName: drug.itemName,
             entpName: drug.entpName,

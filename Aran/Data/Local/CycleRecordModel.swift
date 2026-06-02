@@ -44,6 +44,7 @@ enum DayEventDTO: Codable {
     case hospitalVisit(note: String?)
     case ovulation
     case periodStart
+    case periodPredicted
     case embryoRetrieval(count: Int)
     case embryoTransfer(transferID: UUID)
     case medication(medicationID: UUID)
@@ -53,6 +54,7 @@ enum DayEventDTO: Codable {
         case let .hospitalVisit(note): return .hospitalVisit(note: note)
         case .ovulation: return .ovulation
         case .periodStart: return .periodStart
+        case .periodPredicted: return .periodPredicted
         case let .embryoRetrieval(count): return .embryoRetrieval(count: count)
         case let .embryoTransfer(id): return .embryoTransfer(transferID: id)
         case let .medication(id): return .medication(medicationID: id)

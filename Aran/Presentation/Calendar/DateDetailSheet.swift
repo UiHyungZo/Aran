@@ -675,6 +675,7 @@ private extension DayEvent {
         case let .hospitalVisit(note): return "병원 방문" + (note.map { " — \($0)" } ?? "")
         case .ovulation: return "배란일"
         case .periodStart: return "생리 시작"
+        case .periodPredicted: return "예상 생리"
         case let .embryoRetrieval(count): return "난자 채취 \(count)개"
         case .embryoTransfer: return "배아 이식"
         case .medication: return "약물 복용"

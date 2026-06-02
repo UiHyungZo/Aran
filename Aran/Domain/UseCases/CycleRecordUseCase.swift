@@ -138,7 +138,7 @@ final class CycleRecordUseCase: CycleRecordUseCaseProtocol {
     }
 
     func saveDiary(emoji: String?, text: String, for date: Date) async throws {
-        let diary = DiaryEntry(date: date, emoji: emoji, content: text)
+        let diary = DiaryEntry(id: UUID(), date: date, emoji: emoji, content: text)
         if var existing = try await repository.fetch(date: date) {
             existing.diary = diary
             try await repository.update(existing)

@@ -36,7 +36,7 @@ enum CycleRecordMapper {
     static func toDomain(_ model: CycleRecordModel) -> CycleRecord {
         let events = decodeEvents(from: model.eventsData)
         let diary: DiaryEntry? = model.diaryText.map {
-            DiaryEntry(date: model.date, emoji: model.diaryEmoji, content: $0)
+            DiaryEntry(id: UUID(), date: model.date, emoji: model.diaryEmoji, content: $0)
         }
         return CycleRecord(
             id: model.id,
@@ -106,6 +106,7 @@ private extension DayEventDTO {
         case let .hospitalVisit(note): self = .hospitalVisit(note: note)
         case .ovulation: self = .ovulation
         case .periodStart: self = .periodStart
+        case .periodPredicted: self = .periodPredicted
         case let .embryoRetrieval(count): self = .embryoRetrieval(count: count)
         case let .embryoTransfer(transferID): self = .embryoTransfer(transferID: transferID)
         case let .medication(id): self = .medication(medicationID: id)
