@@ -43,7 +43,7 @@ final class ExamHistoryViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = AranColor.backgroundUI
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
@@ -56,7 +56,7 @@ final class ExamHistoryViewController: UIViewController {
         tableView.register(ExamHistoryCell.self, forCellReuseIdentifier: ExamHistoryCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .systemGroupedBackground
+        tableView.backgroundColor = AranColor.backgroundUI
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 68
         tableView.separatorStyle = .none
@@ -222,9 +222,9 @@ final class ExamHistoryHeaderView: UIView {
     }
 
     private func setupUI() {
-        backgroundColor = .systemGroupedBackground
+        backgroundColor = AranColor.backgroundUI
 
-        cardView.backgroundColor = .secondarySystemGroupedBackground
+        cardView.backgroundColor = AranColor.surfaceUI
         cardView.layer.cornerRadius = 8
 
         latestLabel.font = .systemFont(ofSize: 16, weight: .bold)
@@ -323,8 +323,8 @@ final class ExamHistoryCell: UITableViewCell {
 
     private func setupUI() {
         selectionStyle = .default
-        backgroundColor = .systemBackground
-        contentView.backgroundColor = .systemBackground
+        backgroundColor = AranColor.surfaceUI
+        contentView.backgroundColor = AranColor.surfaceUI
 
         dateLabel.font = AranFont.captionUI(12)
         dateLabel.textColor = .secondaryLabel
@@ -408,7 +408,7 @@ final class ExamHistoryCell: UITableViewCell {
             } else {
                 trendLabel.text = "→"
                 trendLabel.textColor = .secondaryLabel
-                trendLabel.backgroundColor = .secondarySystemGroupedBackground
+                trendLabel.backgroundColor = AranColor.surfaceUI
             }
             trendLabel.isHidden = false
         } else {

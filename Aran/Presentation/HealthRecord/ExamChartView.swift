@@ -32,14 +32,14 @@ struct ExamChartView: View {
                     yStart: .value("정상 하한", referenceRange.lowerBound),
                     yEnd: .value("정상 상한", referenceRange.upperBound)
                 )
-                .foregroundStyle(AranColor.dotHealthRecord.opacity(0.12))
+                .foregroundStyle(AranColor.accentHealth.opacity(0.12))
 
                 RuleMark(y: .value("정상 하한", referenceRange.lowerBound))
-                    .foregroundStyle(AranColor.dotHealthRecord.opacity(0.45))
+                    .foregroundStyle(AranColor.accentHealth.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
 
                 RuleMark(y: .value("정상 상한", referenceRange.upperBound))
-                    .foregroundStyle(AranColor.dotHealthRecord.opacity(0.45))
+                    .foregroundStyle(AranColor.accentHealth.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
             }
 
@@ -48,14 +48,14 @@ struct ExamChartView: View {
                     x: .value("날짜", record.recordDate),
                     y: .value(type, record.value)
                 )
-                .foregroundStyle(AranColor.dotHealthRecord)
+                .foregroundStyle(AranColor.accentHealth)
                 .interpolationMethod(.catmullRom)
 
                 PointMark(
                     x: .value("날짜", record.recordDate),
                     y: .value(type, record.value)
                 )
-                .foregroundStyle(AranColor.dotHealthRecord)
+                .foregroundStyle(AranColor.accentHealth)
             }
         }
         .chartXAxis {

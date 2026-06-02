@@ -31,8 +31,11 @@ struct FavoriteDrugListView: View {
                     }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(AranColor.background)
             }
         }
+        .background(AranColor.background)
         .navigationTitle("즐겨찾기")
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.loadFavorites() }
@@ -77,7 +80,7 @@ private struct FavoriteDrugRow: View {
 
             Text("자세히 보기")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(AranColor.primary)
+                .foregroundStyle(AranColor.accentDrug)
         }
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)

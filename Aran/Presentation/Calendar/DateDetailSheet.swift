@@ -28,6 +28,8 @@ struct DateDetailSheet: View {
                 healthRecordSection
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AranColor.background)
             .navigationTitle(Self.dateFormatter.string(from: viewModel.selectedDate))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -99,7 +101,7 @@ struct DateDetailSheet: View {
                                 .font(AranFont.caption())
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(AranColor.dotTransfer.opacity(0.15))
+                                .background(AranColor.accentProcedure.opacity(0.12))
                                 .clipShape(Capsule())
                         }
                         Text("\(record.embryoGrade) \(record.embryoCount)개")
@@ -108,7 +110,7 @@ struct DateDetailSheet: View {
                         Text(record.result.rawValue)
                             .font(AranFont.caption())
                             .foregroundStyle(
-                                record.result == .pregnant ? AranColor.dotTransfer
+                                record.result == .pregnant ? AranColor.accentProcedure
                                     : record.result == .notPregnant ? AranColor.dotPeriod
                                     : .secondary
                             )
@@ -118,7 +120,7 @@ struct DateDetailSheet: View {
                         Button("수정") {
                             transferToEdit = record
                         }
-                        .tint(.blue)
+                        .tint(AranColor.accentProcedure)
                     }
                     .swipeActions {
                         Button("삭제", role: .destructive) {
@@ -317,7 +319,7 @@ private struct DiaryEditSheet: View {
                     .focused($isDiaryFocused)
                     .frame(height: 120)
                     .padding(8)
-                    .background(Color(.secondarySystemBackground))
+                    .background(AranColor.surface)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
@@ -567,7 +569,7 @@ private struct TransferRecordFormView: View {
                             } label: {
                                 Label("배아 행 추가", systemImage: "plus.circle")
                             }
-                            .foregroundStyle(AranColor.dotTransfer)
+                            .foregroundStyle(AranColor.accentProcedure)
                         }
                     }
                 }

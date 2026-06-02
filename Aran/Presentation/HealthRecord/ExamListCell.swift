@@ -24,8 +24,8 @@ final class ExamListCell: UITableViewCell {
 
     private func setupUI() {
         selectionStyle = .default
-        backgroundColor = .systemBackground
-        contentView.backgroundColor = .systemBackground
+        backgroundColor = AranColor.surfaceUI
+        contentView.backgroundColor = AranColor.surfaceUI
 
         itemLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         itemLabel.textColor = .label
@@ -107,7 +107,7 @@ final class ExamListCell: UITableViewCell {
             } else {
                 trendText = "→ 변화없음"
                 trendLabel.textColor = .secondaryLabel
-                trendLabel.backgroundColor = .secondarySystemGroupedBackground
+                trendLabel.backgroundColor = AranColor.surfaceUI
             }
             trendLabel.text = trendText
             trendLabel.isHidden = false

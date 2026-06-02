@@ -19,8 +19,8 @@ final class MedicationCell: UITableViewCell {
 
     private func setupUI() {
         selectionStyle = .none
-        backgroundColor = .systemBackground
-        contentView.backgroundColor = .systemBackground
+        backgroundColor = AranColor.surfaceUI
+        contentView.backgroundColor = AranColor.surfaceUI
         accessoryType = .disclosureIndicator
 
         statusButton.isUserInteractionEnabled = false
@@ -88,15 +88,11 @@ final class MedicationCell: UITableViewCell {
     private func typeColor(for type: MedicationType) -> UIColor {
         switch type {
         case .oral:
-            return AranColor.primaryUI
+            return AranColor.accentMedicationUI
         case .injection:
-            return UIColor { $0.userInterfaceStyle == .dark
-                ? UIColor(red: 0.35, green: 0.85, blue: 0.6, alpha: 1)
-                : UIColor(red: 0.2, green: 0.7, blue: 0.5, alpha: 1) }
+            return .systemGray
         case .patch:
-            return UIColor { $0.userInterfaceStyle == .dark
-                ? UIColor(red: 1.0, green: 0.7, blue: 0.35, alpha: 1)
-                : UIColor(red: 0.95, green: 0.6, blue: 0.2, alpha: 1) }
+            return .systemGray2
         case .other:
             return .systemGray
         }

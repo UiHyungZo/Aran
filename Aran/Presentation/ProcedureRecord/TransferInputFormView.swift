@@ -160,7 +160,7 @@ struct TransferInputFormView: View {
                         } label: {
                             Label("배아 행 추가", systemImage: "plus.circle")
                         }
-                        .foregroundStyle(AranColor.dotTransfer)
+                        .foregroundStyle(AranColor.accentProcedure)
                     }
                 }
             }

@@ -63,7 +63,7 @@ final class MedicationListViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .secondarySystemGroupedBackground
+        view.backgroundColor = AranColor.backgroundUI
         title = "약 / 주사"
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
@@ -73,7 +73,7 @@ final class MedicationListViewController: UIViewController {
         tableView.register(MedicationCell.self, forCellReuseIdentifier: MedicationCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .secondarySystemGroupedBackground
+        tableView.backgroundColor = AranColor.backgroundUI
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 64
         tableView.separatorStyle = .none
@@ -227,7 +227,7 @@ extension MedicationListViewController: UITableViewDelegate {
         label.textColor = .secondaryLabel
 
         let container = UIView()
-        container.backgroundColor = .secondarySystemGroupedBackground
+        container.backgroundColor = AranColor.backgroundUI
         container.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

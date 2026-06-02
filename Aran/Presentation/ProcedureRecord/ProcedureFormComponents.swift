@@ -30,7 +30,7 @@ struct CounterRow: View {
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.primary)
                         .frame(width: 32, height: 32)
-                        .background(Color(.secondarySystemGroupedBackground), in: Circle())
+                        .background(AranColor.surface, in: Circle())
                 }
                 .disabled(value <= minValue)
 
@@ -47,14 +47,14 @@ struct CounterRow: View {
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(width: 32, height: 32)
-                        .background(AranColor.dotTransfer, in: Circle())
+                        .background(AranColor.accentProcedure, in: Circle())
                 }
                 .disabled(value >= maxValue)
             }
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
-        .background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 8))
+        .background(AranColor.background, in: RoundedRectangle(cornerRadius: 8))
     }
 }
 
@@ -70,7 +70,7 @@ struct EmbryoStageToggle: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(
-                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                        isOn ? AranColor.accentProcedure : AranColor.surface,
                         in: Capsule()
                     )
                     .foregroundStyle(isOn ? .white : .primary)
@@ -92,7 +92,7 @@ struct EmbryoSimpleGradeChips: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(
-                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                        isOn ? AranColor.accentProcedure : AranColor.surface,
                         in: Capsule()
                     )
                     .foregroundStyle(isOn ? .white : .primary)
@@ -114,7 +114,7 @@ struct TransferResultChips: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(
-                        isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                        isOn ? AranColor.accentProcedure : AranColor.surface,
                         in: Capsule()
                     )
                     .foregroundStyle(isOn ? .white : .primary)
@@ -138,7 +138,7 @@ struct PGTTypeChips: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(
-                            isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                            isOn ? AranColor.accentProcedure : AranColor.surface,
                             in: Capsule()
                         )
                         .foregroundStyle(isOn ? .white : .primary)
@@ -153,7 +153,7 @@ struct PGTTypeChips: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(
-                            isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                            isOn ? AranColor.accentProcedure : AranColor.surface,
                             in: Capsule()
                         )
                         .foregroundStyle(isOn ? .white : .primary)

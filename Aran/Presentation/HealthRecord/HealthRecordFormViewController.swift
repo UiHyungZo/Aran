@@ -57,7 +57,7 @@ final class HealthRecordFormViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = AranColor.backgroundUI
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
@@ -267,7 +267,7 @@ final class HealthRecordFormViewController: UIViewController {
                 self?.saveButton.isEnabled = isEnabled
                 self?.saveButton.backgroundColor = isEnabled
                     ? AranColor.healthRecordUI
-                    : .secondarySystemGroupedBackground
+                    : AranColor.surfaceUI
             })
             .disposed(by: disposeBag)
 
@@ -341,11 +341,11 @@ final class HealthRecordFormViewController: UIViewController {
             button.setTitleColor(.white, for: .normal)
             button.layer.borderColor = AranColor.healthRecordUI.resolvedColor(with: traitCollection).cgColor
         } else if mode.isTypeLocked {
-            button.backgroundColor = .systemBackground
+            button.backgroundColor = AranColor.surfaceUI
             button.setTitleColor(.tertiaryLabel, for: .normal)
             button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         } else {
-            button.backgroundColor = .systemBackground
+            button.backgroundColor = AranColor.surfaceUI
             button.setTitleColor(button.isEnabled ? .label : .tertiaryLabel, for: .normal)
             button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         }

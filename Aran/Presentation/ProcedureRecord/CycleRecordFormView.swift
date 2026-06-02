@@ -81,7 +81,7 @@ struct CycleRecordFormView: View {
             }
             .padding(16)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(AranColor.background)
         .navigationTitle(initialSummary != nil ? "\(cycleNumber)차 편집" : "채취/배아 기록")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -161,7 +161,7 @@ struct CycleRecordFormView: View {
 
                 CounterRow("동결 개수", $frozenCount, unit: "개", maxValue: fertilizedCount)
             }
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+            .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
         }
     }
 
@@ -178,13 +178,13 @@ struct CycleRecordFormView: View {
                     } label: {
                         Label("배아 추가", systemImage: "plus.circle.fill")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AranColor.dotTransfer)
+                            .foregroundStyle(AranColor.accentProcedure)
                     }
                     .disabled(fertilizedCount == 0)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(16)
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
             } else {
                 VStack(spacing: 0) {
                     ForEach(Array(embryoRecords.enumerated()), id: \.element.id) { index, embryo in
@@ -205,13 +205,13 @@ struct CycleRecordFormView: View {
                     } label: {
                         Label("배아 추가", systemImage: "plus.circle.fill")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AranColor.dotTransfer)
+                            .foregroundStyle(AranColor.accentProcedure)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .disabled(embryoRecords.count >= fertilizedCount || fertilizedCount == 0)
                 }
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
             }
         }
     }
@@ -227,7 +227,7 @@ struct CycleRecordFormView: View {
                             .padding(.horizontal, 16)
                     }
                 }
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom, 16)
             }
 
@@ -314,17 +314,17 @@ struct CycleRecordFormView: View {
                         TextField("선택", text: $pgtMemo, axis: .vertical)
                             .font(.body)
                             .padding(8)
-                            .background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
+                            .background(AranColor.background, in: RoundedRectangle(cornerRadius: 6))
                             .frame(minHeight: 60, alignment: .topLeading)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                 }
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
             } else {
-                Color(.secondarySystemGroupedBackground)
+                AranColor.surface
                     .frame(height: 0)
-                    .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                    .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
             }
         }
     }
@@ -410,7 +410,7 @@ struct CycleRecordFormView: View {
                 .frame(maxWidth: .infinity)
                 .padding(12)
                 .background(
-                    isSaveDisabled ? Color(.systemGray4) : AranColor.dotTransfer,
+                    isSaveDisabled ? Color(.systemGray4) : AranColor.accentProcedure,
                     in: RoundedRectangle(cornerRadius: 8)
                 )
                 .foregroundStyle(.white)
@@ -566,7 +566,7 @@ private struct EmbryoFormSheet: View {
                             }
                             .padding(12)
                         }
-                        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                        .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
                     }
 
                     VStack(spacing: 0) {
@@ -596,7 +596,7 @@ private struct EmbryoFormSheet: View {
                                 TextField("예: 4AA / 8세포", text: $rawGrade)
                                     .font(.body)
                                     .padding(8)
-                                    .background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
+                                    .background(AranColor.background, in: RoundedRectangle(cornerRadius: 6))
                             }
                             .padding(12)
 
@@ -615,7 +615,7 @@ private struct EmbryoFormSheet: View {
                                             .padding(.horizontal, 14)
                                             .padding(.vertical, 8)
                                             .background(
-                                                isOn ? AranColor.dotTransfer : Color(.secondarySystemGroupedBackground),
+                                                isOn ? AranColor.accentProcedure : AranColor.surface,
                                                 in: Capsule()
                                             )
                                             .foregroundStyle(isOn ? .white : .primary)
@@ -641,13 +641,13 @@ private struct EmbryoFormSheet: View {
                                 .padding(12)
                             }
                         }
-                        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                        .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
                     }
 
                     if !isEditing && addedCount > 0 {
                         Text("\(addedCount)개 추가됨")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AranColor.dotTransfer)
+                            .foregroundStyle(AranColor.accentProcedure)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
 
@@ -682,7 +682,7 @@ private struct EmbryoFormSheet: View {
                             .frame(maxWidth: .infinity)
                             .padding(12)
                             .background(
-                                isAddDisabled ? Color(.systemGray4) : AranColor.dotTransfer,
+                                isAddDisabled ? Color(.systemGray4) : AranColor.accentProcedure,
                                 in: RoundedRectangle(cornerRadius: 8)
                             )
                             .foregroundStyle(.white)
@@ -691,7 +691,7 @@ private struct EmbryoFormSheet: View {
                 }
                 .padding(16)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(AranColor.background)
             .navigationTitle(isEditing ? "배아 수정" : "배아 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -732,8 +732,8 @@ private struct EmbryoRecordRow: View {
                     .font(.caption.weight(.medium))
                     .padding(.horizontal, 7)
                     .padding(.vertical, 3)
-                    .background(AranColor.dotTransfer.opacity(0.12), in: Capsule())
-                    .foregroundStyle(AranColor.dotTransfer)
+                    .background(AranColor.accentProcedure.opacity(0.12), in: Capsule())
+                    .foregroundStyle(AranColor.accentProcedure)
             }
             if let raw = embryo.rawGrade, !raw.isEmpty {
                 Text(raw)

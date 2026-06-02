@@ -65,7 +65,7 @@ final class MedicationFormViewController: UIViewController {
     // MARK: - UI Setup
 
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = AranColor.backgroundUI
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
@@ -91,7 +91,7 @@ final class MedicationFormViewController: UIViewController {
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
-        saveButton.backgroundColor = AranColor.primaryUI
+        saveButton.backgroundColor = AranColor.accentMedicationUI
         saveButton.layer.cornerRadius = 10
         saveButton.isEnabled = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
@@ -99,8 +99,8 @@ final class MedicationFormViewController: UIViewController {
 
         deleteButton.setTitle("이 약 삭제", for: .normal)
         deleteButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
-        deleteButton.setTitleColor(UIColor(named: "badgeFailedText"), for: .normal)
-        deleteButton.backgroundColor = UIColor(named: "badgeFailedBackground")
+        deleteButton.setTitleColor(AranColor.badgeFailedTextUI, for: .normal)
+        deleteButton.backgroundColor = AranColor.badgeFailedBackgroundUI
         deleteButton.layer.cornerRadius = 10
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
@@ -167,7 +167,7 @@ final class MedicationFormViewController: UIViewController {
     private func makeDateRangeSection() -> UIView {
         startDatePicker.datePickerMode = .date
         startDatePicker.preferredDatePickerStyle = .compact
-        startDatePicker.tintColor = AranColor.primaryUI
+        startDatePicker.tintColor = AranColor.accentMedicationUI
         startDatePicker.locale = Locale(identifier: "ko_KR")
         let startDate = initialMedication?.schedule.startDate ?? Date()
         startDatePicker.date = startDate
@@ -175,7 +175,7 @@ final class MedicationFormViewController: UIViewController {
 
         endDatePicker.datePickerMode = .date
         endDatePicker.preferredDatePickerStyle = .compact
-        endDatePicker.tintColor = AranColor.primaryUI
+        endDatePicker.tintColor = AranColor.accentMedicationUI
         endDatePicker.locale = Locale(identifier: "ko_KR")
         if let endDate = initialMedication?.schedule.endDate {
             endDatePicker.date = endDate
@@ -188,7 +188,7 @@ final class MedicationFormViewController: UIViewController {
             endDatePicker.alpha = 0.4
         }
 
-        endDateSwitch.onTintColor = AranColor.primaryUI
+        endDateSwitch.onTintColor = AranColor.accentMedicationUI
 
         let startLabel = UILabel()
         startLabel.text = "시작일"
@@ -229,7 +229,7 @@ final class MedicationFormViewController: UIViewController {
         let addButton = UIButton(type: .system)
         addButton.setTitle("+ 시간 추가", for: .normal)
         addButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        addButton.setTitleColor(AranColor.primaryUI, for: .normal)
+        addButton.setTitleColor(AranColor.accentMedicationUI, for: .normal)
         addButton.contentHorizontalAlignment = .leading
         addButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
         addButton.addTarget(self, action: #selector(addTimeTapped), for: .touchUpInside)
@@ -242,7 +242,7 @@ final class MedicationFormViewController: UIViewController {
         let picker = UIDatePicker()
         picker.datePickerMode = .time
         picker.preferredDatePickerStyle = .compact
-        picker.tintColor = AranColor.primaryUI
+        picker.tintColor = AranColor.accentMedicationUI
         picker.locale = Locale(identifier: "ko_KR")
         picker.date = date
         picker.addTarget(self, action: #selector(pickerValueChanged), for: .valueChanged)
@@ -307,7 +307,7 @@ final class MedicationFormViewController: UIViewController {
     }
 
     private func makeNotificationRow() -> UIView {
-        notificationSwitch.onTintColor = AranColor.primaryUI
+        notificationSwitch.onTintColor = AranColor.accentMedicationUI
         notificationSwitch.isOn = initialMedication?.isEnabled ?? false
 
         let titleLabel = UILabel()
@@ -343,10 +343,8 @@ final class MedicationFormViewController: UIViewController {
         titleLabel.textColor = .secondaryLabel
 
         control.backgroundColor = isPrefilled
-            ? UIColor { $0.userInterfaceStyle == .dark
-                ? UIColor(red: 0.18, green: 0.16, blue: 0.28, alpha: 1)
-                : UIColor(red: 0.933, green: 0.929, blue: 0.996, alpha: 1) }
-            : .secondarySystemGroupedBackground
+            ? AranColor.accentMedicationUI.withAlphaComponent(0.12)
+            : AranColor.surfaceUI
         control.layer.cornerRadius = 8
 
         let fieldStack = UIStackView(arrangedSubviews: [titleLabel, control])
@@ -419,8 +417,8 @@ final class MedicationFormViewController: UIViewController {
             .drive(onNext: { [weak self] isEnabled in
                 self?.saveButton.isEnabled = isEnabled
                 self?.saveButton.backgroundColor = isEnabled
-                    ? AranColor.primaryUI
-                    : .secondarySystemGroupedBackground
+                    ? AranColor.accentMedicationUI
+                    : AranColor.surfaceUI
             })
             .disposed(by: disposeBag)
 

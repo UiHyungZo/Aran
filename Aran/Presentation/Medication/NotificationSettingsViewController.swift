@@ -45,13 +45,13 @@ final class NotificationSettingsViewController: UIViewController {
 
     private func setupUI() {
         title = "알림 설정"
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = AranColor.backgroundUI
 
         tableView.register(NotificationToggleCell.self, forCellReuseIdentifier: NotificationToggleCell.reuseIdentifier)
         tableView.register(NotificationPreviewCell.self, forCellReuseIdentifier: NotificationPreviewCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .systemGroupedBackground
+        tableView.backgroundColor = AranColor.backgroundUI
         tableView.sectionHeaderTopPadding = 8
 
         view.addSubview(tableView)
@@ -190,7 +190,7 @@ private final class NotificationToggleCell: UITableViewCell {
 
     private func setupUI() {
         selectionStyle = .none
-        toggle.onTintColor = AranColor.primaryUI
+        toggle.onTintColor = AranColor.accentMedicationUI
         toggle.addTarget(self, action: #selector(toggleChanged), for: .valueChanged)
 
         nameLabel.font = .systemFont(ofSize: 15, weight: .medium)
@@ -255,7 +255,7 @@ private final class NotificationPreviewCell: UITableViewCell {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
 
-        cardView.backgroundColor = .secondarySystemGroupedBackground
+        cardView.backgroundColor = AranColor.surfaceUI
         cardView.layer.cornerRadius = 12
 
         appIconLabel.text = "💊"

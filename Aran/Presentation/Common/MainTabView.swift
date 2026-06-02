@@ -54,6 +54,16 @@ struct MainTabView: View {
             case .drugInfo: return "screen.drugInfo"
             }
         }
+
+        var accentColor: Color {
+            switch self {
+            case .calendar: return AranColor.primary
+            case .medication: return AranColor.accentMedication
+            case .exam: return AranColor.accentHealth
+            case .procedureRecord: return AranColor.accentProcedure
+            case .drugInfo: return AranColor.accentDrug
+            }
+        }
     }
 
     var body: some View {
@@ -120,7 +130,7 @@ private struct CustomTabBar: View {
         }
         .padding(.top, 10)
         .padding(.bottom, 28) // safe area 보정
-        .background(Color(.systemBackground))
+        .background(AranColor.surface)
     }
 }
 
@@ -134,18 +144,18 @@ private struct TabBarItem: View {
             VStack(spacing: 4) {
                 Image(systemName: tab.icon)
                     .font(.system(size: 20, weight: .medium))
-                    .foregroundStyle(isSelected ? AranColor.primary : Color.gray)
+                    .foregroundStyle(isSelected ? tab.accentColor : Color.gray)
                     .padding(10)
                     .background(
                         isSelected
-                            ? AranColor.primary.opacity(0.15)
+                            ? tab.accentColor.opacity(0.15)
                             : Color.clear,
                         in: RoundedRectangle(cornerRadius: 12)
                     )
 
                 Text(tab.label)
                     .font(.system(size: 10))
-                    .foregroundStyle(isSelected ? AranColor.primary : Color.gray)
+                    .foregroundStyle(isSelected ? tab.accentColor : Color.gray)
             }
         }
         .buttonStyle(.plain)

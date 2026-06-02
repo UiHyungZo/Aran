@@ -86,6 +86,7 @@ struct CalendarView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .background(AranColor.background)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isWeekMode)
         .fullScreenCover(isPresented: $isDiaryEditing) {
             diaryFullScreen
@@ -309,7 +310,7 @@ struct CalendarView: View {
             }
         }
         .frame(maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(AranColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: -2)
     }
@@ -518,7 +519,7 @@ struct CalendarView: View {
                         .focused($isDiaryFocused)
                         .frame(height: 180)
                         .padding(8)
-                        .background(Color(.secondarySystemBackground))
+                        .background(AranColor.surface)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
@@ -552,7 +553,7 @@ struct CalendarView: View {
                         .background(
                             diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                                 ? Color.gray.opacity(0.3)
-                                : Color.black
+                                : AranColor.primary
                         )
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -586,7 +587,7 @@ struct CalendarView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(AranColor.background)
             .onTapGesture { isDiaryFocused = false }
         }
     }
@@ -927,11 +928,11 @@ private struct CalendarHealthRecordInputSheet: View {
                 .padding(.vertical, 6)
                 .background(
                     Capsule()
-                        .fill(selected ? AranColor.dotHealthRecord : Color(.systemBackground))
+                        .fill(selected ? AranColor.accentHealth : AranColor.surface)
                 )
                 .overlay(
                     Capsule()
-                        .stroke(selected ? AranColor.dotHealthRecord : Color(.systemGray4), lineWidth: 1)
+                        .stroke(selected ? AranColor.accentHealth : Color(.systemGray4), lineWidth: 1)
                 )
                 .foregroundStyle(selected ? Color.white : Color.primary)
         }

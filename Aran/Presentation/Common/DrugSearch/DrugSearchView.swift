@@ -41,10 +41,10 @@ struct DrugSearchView: View {
                     } label: {
                         Text("찾는 약이 없나요? 직접 입력하기")
                             .font(.system(size: 15, weight: .medium))
-                            .foregroundStyle(AranColor.primary)
+                            .foregroundStyle(AranColor.accentDrug)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
-                            .background(.regularMaterial)
+                            .background(AranColor.surface)
                     }
                     .buttonStyle(.plain)
                 }
@@ -93,6 +93,7 @@ struct DrugSearchView: View {
                 FavoriteDrugListView(viewModel: viewModel)
             }
         }
+        .background(AranColor.background)
         .task { await viewModel.loadFavorites() }
         .animation(.easeInOut(duration: 0.2), value: viewModel.showDebugChip)
         .alert("상세 정보 오류", isPresented: Binding(
@@ -126,22 +127,22 @@ struct DrugSearchView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .background(Color(.systemGray6))
+        .background(AranColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
     private var debounceChip: some View {
         HStack(spacing: 6) {
             Circle()
-                .fill(Color.green)
+                .fill(AranColor.accentDrug)
                 .frame(width: 8, height: 8)
             Text("Combine .debounce(0.3s) -> API 호출 완료")
                 .font(.system(size: 12))
-                .foregroundStyle(Color.green)
+                .foregroundStyle(AranColor.accentDrug)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
-        .background(Color.green.opacity(0.1))
+        .background(AranColor.accentDrug.opacity(0.12))
         .clipShape(Capsule())
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -222,6 +223,8 @@ struct DrugSearchView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(AranColor.background)
         .scrollDismissesKeyboard(.never)
     }
     
@@ -271,7 +274,7 @@ struct DrugSearchView: View {
                 } label: {
                     Text("직접 입력하기")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(AranColor.primary)
+                        .foregroundStyle(AranColor.accentDrug)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }
@@ -296,7 +299,7 @@ struct DrugSearchView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(20)
-            .background(Color(.systemGray6))
+            .background(AranColor.surface)
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .padding(.horizontal, 32)
             Spacer()
@@ -329,7 +332,7 @@ struct DrugSearchView: View {
                         .foregroundStyle(.white)
                         .padding(.horizontal, 28)
                         .padding(.vertical, 11)
-                        .background(AranColor.primary)
+                        .background(AranColor.accentDrug)
                         .clipShape(Capsule())
                 }
                 
@@ -342,7 +345,7 @@ struct DrugSearchView: View {
                     } label: {
                         Text("직접 입력하기")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(AranColor.primary)
+                            .foregroundStyle(AranColor.accentDrug)
                     }
                 }
             }
@@ -385,10 +388,10 @@ private struct DrugResultCell: View {
                 
                 Text(actionTitle)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(AranColor.primary)
+                    .foregroundStyle(AranColor.accentDrug)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 7)
-                    .overlay(Capsule().stroke(AranColor.primary, lineWidth: 1))
+                    .overlay(Capsule().stroke(AranColor.accentDrug, lineWidth: 1))
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)

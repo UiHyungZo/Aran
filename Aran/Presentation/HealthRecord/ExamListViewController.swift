@@ -39,7 +39,7 @@ final class ExamListViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = AranColor.backgroundUI
         title = "검사 기록"
 
         let addButton = UIButton(type: .system)
@@ -54,7 +54,7 @@ final class ExamListViewController: UIViewController {
         tableView.register(ExamListCell.self, forCellReuseIdentifier: ExamListCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .systemGroupedBackground
+        tableView.backgroundColor = AranColor.backgroundUI
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 72
         tableView.separatorStyle = .none

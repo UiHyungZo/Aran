@@ -33,7 +33,7 @@ struct ProcedureRecordView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .tint(AranColor.dotTransfer)
+                    .tint(AranColor.accentProcedure)
                 }
             }
             .sheet(isPresented: $viewModel.isFormPresented) {
@@ -70,7 +70,7 @@ struct ProcedureRecordView: View {
         VStack(spacing: 12) {
             Image(systemName: "tray")
                 .font(.system(size: 46))
-                .foregroundStyle(AranColor.dotTransfer.opacity(0.45))
+                .foregroundStyle(AranColor.accentProcedure.opacity(0.45))
             Text("첫 번째 차수를 기록해보세요")
                 .font(.headline)
             Text("채취 기록을 먼저 추가한 뒤 이식과 검사 결과를 이어서 관리할 수 있어요")
@@ -82,7 +82,7 @@ struct ProcedureRecordView: View {
                 viewModel.isFormPresented = true
             }
             .buttonStyle(.borderedProminent)
-            .tint(AranColor.dotTransfer)
+            .tint(AranColor.accentProcedure)
             .padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -116,6 +116,8 @@ struct ProcedureRecordView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AranColor.background)
         .refreshable {
             await viewModel.load()
         }
@@ -168,11 +170,11 @@ struct CountPill: View {
                 .foregroundStyle(.secondary)
             Text("\(count)")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(AranColor.dotTransfer)
+                .foregroundStyle(AranColor.accentProcedure)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 8))
+        .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 8))
     }
 }
 

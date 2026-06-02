@@ -39,6 +39,8 @@ struct CycleRecordDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AranColor.background)
         .navigationTitle("\(cycleNumber)차 채취 상세")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isEditFormPresented) {
@@ -89,7 +91,7 @@ struct CycleRecordDetailView: View {
                 Button("편집") {
                     isEditFormPresented = true
                 }
-                .foregroundStyle(AranColor.dotTransfer)
+                .foregroundStyle(AranColor.accentProcedure)
             }
         }
         .task { await viewModel.load() }
@@ -186,7 +188,7 @@ struct CycleRecordDetailView: View {
                     Label("이식 추가", systemImage: "plus.circle")
                 }
                 .font(.caption)
-                .foregroundStyle(AranColor.dotTransfer)
+                .foregroundStyle(AranColor.accentProcedure)
                 .textCase(nil)
             }
         }
@@ -234,7 +236,8 @@ private struct TransferRow: View {
                     .font(.caption.weight(.medium))
                     .padding(.horizontal, 7)
                     .padding(.vertical, 3)
-                    .background(Color(.secondarySystemGroupedBackground), in: Capsule())
+                    .background(AranColor.accentProcedure.opacity(0.12), in: Capsule())
+                    .foregroundStyle(AranColor.accentProcedure)
                 Text("\(record.embryoGrade)  \(record.embryoCount)개")
                     .font(.body.weight(.medium))
                     .foregroundStyle(.primary)

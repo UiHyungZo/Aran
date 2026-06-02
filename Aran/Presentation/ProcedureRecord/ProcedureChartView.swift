@@ -31,10 +31,10 @@ struct ProcedureChartView: View {
                     .cornerRadius(4)
                 }
                 .chartForegroundStyleScale([
-                    "채취": AranColor.dotTransfer.opacity(0.4),
-                    "수정": AranColor.dotTransfer.opacity(0.6),
-                    "동결": AranColor.dotTransfer.opacity(0.8),
-                    "이식": AranColor.dotTransfer
+                    "채취": AranColor.accentProcedure.opacity(0.4),
+                    "수정": AranColor.accentProcedure.opacity(0.6),
+                    "동결": AranColor.accentProcedure.opacity(0.8),
+                    "이식": AranColor.accentProcedure
                 ])
                 .chartYAxis {
                     AxisMarks(values: .stride(by: 1)) { _ in
