@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import XCTest
 
+@MainActor
 final class ExamHistoryViewModelTests: XCTestCase {
     private var useCase: MockHealthRecordUseCase!
     private var sut: ExamHistoryViewModel!
@@ -22,7 +23,7 @@ final class ExamHistoryViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testLoad_whenRecordsExist_emitsLatestSummaryAndTrend() {
+    func testLoad_whenRecordsExist_emitsLatestSummaryAndTrend() async {
         // given
         useCase.stubbedByType = [
             makeRecord(value: 8.0),
@@ -66,7 +67,7 @@ final class ExamHistoryViewModelTests: XCTestCase {
         appear.onNext(())
 
         // then
-        wait(for: [recordsExpectation, summaryExpectation, trendExpectation], timeout: 2.0)
+        await fulfillment(of: [recordsExpectation, summaryExpectation, trendExpectation], timeout: 2.0)
         XCTAssertEqual(records.count, 2)
         XCTAssertEqual(summary, "8 mIU/mL")
         XCTAssertEqual(trend, "↑ 1.20 mIU/mL")

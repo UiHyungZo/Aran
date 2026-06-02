@@ -1,6 +1,6 @@
 import Foundation
-import RxCocoa
-import RxSwift
+@preconcurrency import RxCocoa
+@preconcurrency import RxSwift
 
 struct HealthRecordSummary {
     let type: String
@@ -10,6 +10,7 @@ struct HealthRecordSummary {
 
 typealias ExamSection = (title: String, summaries: [HealthRecordSummary])
 
+@MainActor
 final class HealthRecordViewModel {
     struct Input {
         let viewWillAppear: Observable<Void>

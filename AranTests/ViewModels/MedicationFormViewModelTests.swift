@@ -91,7 +91,7 @@ final class MedicationFormViewModelTests: XCTestCase {
 
     // MARK: - saveCompleted
 
-    func testSave_onSuccess_emitsSaveCompleted() {
+    func testSave_onSuccess_emitsSaveCompleted() async {
         // given
         let saveTapped = PublishSubject<Void>()
         let input = makeInput(drugName: "약A", dosage: "50mg", saveTapped: saveTapped.asObservable())
@@ -106,10 +106,10 @@ final class MedicationFormViewModelTests: XCTestCase {
         saveTapped.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 
-    func testSave_onFailure_emitsError() {
+    func testSave_onFailure_emitsError() async {
         // given
         mockUseCase.shouldThrow = AppError.storageError(NSError(domain: "test", code: -1))
         let saveTapped = PublishSubject<Void>()
@@ -126,10 +126,10 @@ final class MedicationFormViewModelTests: XCTestCase {
         saveTapped.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 
-    func testSave_whenInitialMedicationExists_updatesExistingMedication() {
+    func testSave_whenInitialMedicationExists_updatesExistingMedication() async {
         // given
         let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
         sut = MedicationFormViewModel(
@@ -150,14 +150,14 @@ final class MedicationFormViewModelTests: XCTestCase {
         saveTapped.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertTrue(mockUseCase.savedMedications.isEmpty)
         XCTAssertEqual(mockUseCase.updatedMedications.first?.id, initialMedication.id)
         XCTAssertEqual(mockUseCase.updatedMedications.first?.drugName, "수정약")
         XCTAssertEqual(mockUseCase.updatedMedications.first?.dosage, "200mg")
     }
 
-    func testSave_whenInitialMedicationExists_preservesMatchingTimeSlotID() {
+    func testSave_whenInitialMedicationExists_preservesMatchingTimeSlotID() async {
         // given
         let slotID = UUID()
         let medicationID = UUID()
@@ -206,11 +206,11 @@ final class MedicationFormViewModelTests: XCTestCase {
         saveTapped.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(mockUseCase.updatedMedications.first?.schedule.timeSlots.first?.id, slotID)
     }
 
-    func testSave_whenComponentFilled_savesComponent() {
+    func testSave_whenComponentFilled_savesComponent() async {
         // given
         let saveTapped = PublishSubject<Void>()
         let input = makeInput(
@@ -230,7 +230,7 @@ final class MedicationFormViewModelTests: XCTestCase {
         saveTapped.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(mockUseCase.savedMedications.first?.component, "Follitropin alfa")
     }
 }

@@ -23,7 +23,7 @@ final class MedicationViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testViewDidLoad_loadsAndEmitsMedications() {
+    func testViewDidLoad_loadsAndEmitsMedications() async {
         // given
         let med = makeMedication(name: "프로게스테론")
         mockUseCase.stubbedMedications = [med]
@@ -44,12 +44,12 @@ final class MedicationViewModelTests: XCTestCase {
         viewDidLoad.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result.first?.drugName, "프로게스테론")
     }
 
-    func testViewDidLoad_onError_emitsErrorMessage() {
+    func testViewDidLoad_onError_emitsErrorMessage() async {
         // given
         mockUseCase.shouldThrow = AppError.storageError(NSError(domain: "test", code: -1))
         let viewDidLoad = PublishSubject<Void>()
@@ -65,10 +65,10 @@ final class MedicationViewModelTests: XCTestCase {
         viewDidLoad.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 
-    func testToggleMedication_callsUseCaseAndReloads() {
+    func testToggleMedication_callsUseCaseAndReloads() async {
         // given
         let med = makeMedication(name: "클로미펜")
         let toggle = PublishSubject<Medication>()
@@ -84,11 +84,11 @@ final class MedicationViewModelTests: XCTestCase {
         toggle.onNext(med)
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(mockUseCase.toggledMedications.first?.id, med.id)
     }
 
-    func testToggleTimeSlot_callsUseCaseAndReloads() {
+    func testToggleTimeSlot_callsUseCaseAndReloads() async {
         // given
         let med = makeMedication(name: "에스트로겐")
         let slotID = UUID()
@@ -105,12 +105,12 @@ final class MedicationViewModelTests: XCTestCase {
         toggle.onNext(MedicationViewModel.TimeSlotToggleRequest(medication: med, timeSlotID: slotID))
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(mockUseCase.toggledTimeSlots.first?.medication.id, med.id)
         XCTAssertEqual(mockUseCase.toggledTimeSlots.first?.slotID, slotID)
     }
 
-    func testDeleteMedication_callsUseCaseAndReloads() {
+    func testDeleteMedication_callsUseCaseAndReloads() async {
         // given
         let med = makeMedication(name: "황체호르몬")
         let delete = PublishSubject<Medication>()
@@ -126,11 +126,11 @@ final class MedicationViewModelTests: XCTestCase {
         delete.onNext(med)
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(mockUseCase.deletedMedications.first?.id, med.id)
     }
 
-    func testViewDidLoad_setsIsLoadingFalseAfterLoad() {
+    func testViewDidLoad_setsIsLoadingFalseAfterLoad() async {
         // given
         let viewDidLoad = PublishSubject<Void>()
         let output = sut.transform(input: makeInput(viewDidLoad: viewDidLoad.asObservable()))
@@ -146,7 +146,7 @@ final class MedicationViewModelTests: XCTestCase {
         viewDidLoad.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 }
 

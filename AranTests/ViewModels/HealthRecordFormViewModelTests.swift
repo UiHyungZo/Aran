@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import XCTest
 
+@MainActor
 final class HealthRecordFormViewModelTests: XCTestCase {
     private var useCase: MockHealthRecordUseCase!
     private var sut: HealthRecordFormViewModel!
@@ -37,7 +38,7 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
-    func testSave_whenAddMode_savesRecord() {
+    func testSave_whenAddMode_savesRecord() async {
         // given
         let saveTap = PublishSubject<Void>()
         let input = makeInput(saveTap: saveTap.asObservable())
@@ -52,12 +53,12 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         saveTap.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(useCase.savedRecords.first?.type, HealthRecordType.fsh)
         XCTAssertEqual(useCase.savedRecords.first?.value, 7.2)
     }
 
-    func testSave_whenAddLockedMode_ignoresSelectedTypeAndSavesLockedType() {
+    func testSave_whenAddLockedMode_ignoresSelectedTypeAndSavesLockedType() async {
         // given
         sut = HealthRecordFormViewModel(useCase: useCase, mode: .addLocked(type: HealthRecordType.amh))
 
@@ -78,12 +79,12 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         saveTap.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(useCase.savedRecords.first?.type, HealthRecordType.amh)
         XCTAssertEqual(useCase.savedRecords.first?.unit, "ng/mL")
     }
 
-    func testSave_whenEditMode_updatesExistingRecordID() {
+    func testSave_whenEditMode_updatesExistingRecordID() async {
         // given
         let record = makeRecord(value: 6.8)
         sut = HealthRecordFormViewModel(useCase: useCase, mode: .edit(record: record))
@@ -101,12 +102,12 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         saveTap.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(useCase.updatedRecords.first?.id, record.id)
         XCTAssertEqual(useCase.updatedRecords.first?.value, 8.0)
     }
 
-    func testDelete_whenEditMode_deletesRecord() {
+    func testDelete_whenEditMode_deletesRecord() async {
         // given
         let record = makeRecord()
         sut = HealthRecordFormViewModel(useCase: useCase, mode: .edit(record: record))
@@ -124,7 +125,7 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         deleteTap.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(useCase.deletedIDs, [record.id])
     }
 }

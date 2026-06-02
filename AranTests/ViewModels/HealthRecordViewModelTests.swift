@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import XCTest
 
+@MainActor
 final class HealthRecordViewModelTests: XCTestCase {
     private var useCase: MockHealthRecordUseCase!
     private var sut: HealthRecordViewModel!
@@ -22,7 +23,7 @@ final class HealthRecordViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testLoad_whenRecordsExist_buildsSectionsInPRDOrder() {
+    func testLoad_whenRecordsExist_buildsSectionsInPRDOrder() async {
         // given
         useCase.stubbedLatestPerItem = [
             HealthRecordType.fsh: [
@@ -54,7 +55,7 @@ final class HealthRecordViewModelTests: XCTestCase {
         appear.onNext(())
 
         // then
-        wait(for: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 2.0)
         XCTAssertEqual(result.map(\.title), ["난소 기능 검사", "호르몬 검사", "임신 확인", "직접 추가"])
         XCTAssertEqual(result.first?.summaries.first?.type, HealthRecordType.fsh)
         XCTAssertEqual(result.first?.summaries.first?.latestRecord.value, 7.2)

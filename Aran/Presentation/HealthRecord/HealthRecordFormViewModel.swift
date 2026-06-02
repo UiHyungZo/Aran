@@ -1,7 +1,8 @@
 import Foundation
-import RxCocoa
-import RxSwift
+@preconcurrency import RxCocoa
+@preconcurrency import RxSwift
 
+@MainActor
 final class HealthRecordFormViewModel {
     enum FormMode {
         case add
