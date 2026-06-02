@@ -33,13 +33,28 @@
 
 ---
 
-## 미완료
+- [x] 즐겨찾기 — FavoriteDrug Domain/Data/Repository/UseCase + FavoriteDrugListView
+- [x] 전문의약품 API — DrugApprovalAPIClient, DrugApprovalRouter, DrugApprovalDTO, DrugApprovalInfo (e약은요 fallback 포함)
+- [x] 캘린더 검사 탭 detail — DateDetailSheet 내 HealthRecord 항목 상세 표시
+- [x] 감정 일기 전체 sheet 완성 — CalendarView 내 DiaryEntry 전체 편집 UX
+
+---
 
 ### 테스트
 - [x] UseCase Test — TransferRecordUseCase
-- [x] Repository Test — CycleRecordRepository, TransferRecordRepository
+- [x] UseCase Test — FavoriteDrugUseCase, MedicationLogUseCase, MenstrualCycleUseCase, PGTRecordUseCase
+- [x] Repository Test — CycleRecordRepository, TransferRecordRepository, FavoriteDrugRepository
+- [x] Network Test — DrugApprovalRouter
+- [x] Mapper Test — DrugApprovalMapper
 - [x] ViewModel Test — CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel
-- [ ] ViewModel Test — ProcedureRecordViewModel
+
+---
+
+## 미완료
+
+### 테스트
+- [x] UseCase Test — DiaryEntryUseCase, HospitalVisitUseCase
+- [x] ViewModel Test — MedicationViewModel, ProcedureRecordViewModel
 - [ ] UI Test — 캘린더 플로우, 약 등록 플로우, 약 검색 플로우, 채취/이식 입력 플로우, 검사 수치 입력 플로우
 
 ### 앱 완성도
