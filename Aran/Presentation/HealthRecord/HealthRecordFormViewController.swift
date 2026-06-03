@@ -326,6 +326,13 @@ final class HealthRecordFormViewController: UIViewController {
             })
             .disposed(by: disposeBag)
 
+        output.initialUnitText
+            .drive(onNext: { [weak self] unit in
+                self?.unitField.text = unit
+                self?.unitField.sendActions(for: .editingChanged)
+            })
+            .disposed(by: disposeBag)
+
         output.saved
             .drive(onNext: { [weak self] in self?.closeAfterMutation() })
             .disposed(by: disposeBag)

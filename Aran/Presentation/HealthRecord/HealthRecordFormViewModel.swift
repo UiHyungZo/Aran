@@ -22,6 +22,7 @@ final class HealthRecordFormViewModel {
 
     struct Output {
         let isSaveEnabled: Driver<Bool>
+        let initialUnitText: Driver<String>
         let saved: Driver<Void>
         let deleted: Driver<Void>
         let error: Driver<String>
@@ -94,6 +95,27 @@ final class HealthRecordFormViewModel {
                     && !unit.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
             .asDriver(onErrorJustReturn: false)
+
+        let initialUnitText: Driver<String>
+        if case let .addLocked(type) = mode {
+            let fallbackUnit = HealthRecordType.defaultUnits[type] ?? ""
+            initialUnitText = Observable<String>.create { [weak self] observer in
+                Task {
+                    do {
+                        let records = try await self?.useCase.fetch(type: type) ?? []
+                        observer.onNext(records.first?.unit ?? fallbackUnit)
+                        observer.onCompleted()
+                    } catch {
+                        observer.onNext(fallbackUnit)
+                        observer.onCompleted()
+                    }
+                }
+                return Disposables.create()
+            }
+            .asDriver(onErrorJustReturn: fallbackUnit)
+        } else {
+            initialUnitText = .empty()
+        }
 
         input.saveTap
             .withLatestFrom(
@@ -172,6 +194,7 @@ final class HealthRecordFormViewModel {
 
         return Output(
             isSaveEnabled: isSaveEnabled,
+            initialUnitText: initialUnitText,
             saved: savedRelay.asDriver(onErrorJustReturn: ()),
             deleted: deletedRelay.asDriver(onErrorJustReturn: ()),
             error: errorRelay.asDriver(onErrorJustReturn: "")

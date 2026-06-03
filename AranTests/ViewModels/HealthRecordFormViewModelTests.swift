@@ -84,6 +84,49 @@ final class HealthRecordFormViewModelTests: XCTestCase {
         XCTAssertEqual(useCase.savedRecords.first?.unit, "ng/mL")
     }
 
+    func testInitialUnitText_whenAddLockedModeUsesLatestRecordUnit() async {
+        // given
+        let older = makeRecord(type: "비타민D", unit: "ng/mL", date: Date(timeIntervalSinceNow: -86400))
+        let newer = makeRecord(type: "비타민D", unit: "IU/L", date: Date())
+        useCase.stubbedByType = [newer, older]
+        sut = HealthRecordFormViewModel(useCase: useCase, mode: .addLocked(type: "비타민D"))
+
+        let output = sut.transform(input: makeInput())
+
+        let expectation = XCTestExpectation(description: "initial unit")
+        var result = ""
+        output.initialUnitText
+            .drive(onNext: {
+                result = $0
+                expectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // then
+        await fulfillment(of: [expectation], timeout: 2.0)
+        XCTAssertEqual(result, "IU/L")
+    }
+
+    func testInitialUnitText_whenAddLockedModeHasNoRecordsUsesDefaultUnit() async {
+        // given
+        sut = HealthRecordFormViewModel(useCase: useCase, mode: .addLocked(type: HealthRecordType.amh))
+
+        let output = sut.transform(input: makeInput())
+
+        let expectation = XCTestExpectation(description: "default unit")
+        var result = ""
+        output.initialUnitText
+            .drive(onNext: {
+                result = $0
+                expectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // then
+        await fulfillment(of: [expectation], timeout: 2.0)
+        XCTAssertEqual(result, "ng/mL")
+    }
+
     func testSave_whenEditMode_updatesExistingRecordID() async {
         // given
         let record = makeRecord(value: 6.8)
@@ -151,13 +194,18 @@ private extension HealthRecordFormViewModelTests {
         )
     }
 
-    func makeRecord(value: Double = 7.2) -> HealthRecord {
+    func makeRecord(
+        type: String = HealthRecordType.fsh,
+        value: Double = 7.2,
+        unit: String = "mIU/mL",
+        date: Date = Date()
+    ) -> HealthRecord {
         HealthRecord(
             id: UUID(),
-            type: HealthRecordType.fsh,
+            type: type,
             value: value,
-            unit: "mIU/mL",
-            recordDate: Date(),
+            unit: unit,
+            recordDate: date,
             memo: nil
         )
     }
