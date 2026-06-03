@@ -15,6 +15,15 @@ struct DrugSearchView: View {
     
     @FocusState private var isSearchFocused: Bool
     @State private var isFavoriteListPresented = false
+
+    private var accentColor: Color {
+        switch mode {
+        case .browse:
+            AranColor.accentDrug
+        case .register:
+            AranColor.accentMedication
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -111,7 +120,7 @@ struct DrugSearchView: View {
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(viewModel.searchText.isEmpty ? Color.gray : AranColor.accentMedication)
+                .foregroundStyle(viewModel.searchText.isEmpty ? Color.gray : accentColor)
             
             TextField("약 이름으로 검색하세요", text: $viewModel.searchText)
                 .focused($isSearchFocused)
@@ -256,6 +265,7 @@ struct DrugSearchView: View {
                     DrugResultCell(
                         drug: drug,
                         actionTitle: mode == .browse ? "자세히 보기" : "이 약 추가하기",
+                        accentColor: accentColor,
                         accessibilityID: "drugSearch.result.\(index)"
                     ) {
                         handleDrugSelection(drug)
@@ -373,6 +383,7 @@ struct DrugSearchView: View {
 private struct DrugResultCell: View {
     let drug: Drug
     let actionTitle: String
+    let accentColor: Color
     let accessibilityID: String
     let onSelect: () -> Void
     
@@ -397,10 +408,10 @@ private struct DrugResultCell: View {
                     Spacer()
                     Text(actionTitle)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(AranColor.accentMedication)
+                        .foregroundStyle(accentColor)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 7)
-                        .overlay(Capsule().stroke(AranColor.accentMedication, lineWidth: 1))
+                        .overlay(Capsule().stroke(accentColor, lineWidth: 1))
                 }
             }
             .padding(.horizontal, 20)
