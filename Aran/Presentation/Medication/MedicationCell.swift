@@ -87,16 +87,7 @@ final class MedicationCell: UITableViewCell {
         return "\(timeStr)\(suffix) · 매일"
     }
 
-    private func typeColor(for type: MedicationType) -> UIColor {
-        switch type {
-        case .oral:
-            return AranColor.accentMedicationUI
-        case .injection:
-            return .systemGray
-        case .patch:
-            return .systemGray2
-        case .other:
-            return .systemGray
-        }
+    private func typeColor(for _: MedicationType) -> UIColor {
+        AranColor.accentMedicationUI
     }
 }

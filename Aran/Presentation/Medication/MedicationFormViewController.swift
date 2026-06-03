@@ -164,7 +164,7 @@ final class MedicationFormViewController: UIViewController {
         return makeStack(rows: [
             makeFieldRow(label: "약 이름 *", control: drugNameField, isPrefilled: !initialDrugName.isEmpty),
             makeFieldRow(label: "종류", control: typeSegment, isPrefilled: false),
-            makeFieldRow(label: "용량/메모", control: dosageField, isPrefilled: false),
+            makeFieldRow(label: "용량/메모", control: dosageField, isPrefilled: !initialDosage.isEmpty),
         ])
     }
 

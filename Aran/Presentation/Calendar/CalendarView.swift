@@ -39,10 +39,6 @@ struct CalendarView: View {
         return f
     }()
 
-    private func numberOfWeeks(for month: Date) -> Int {
-        Int(ceil(Double(daysInMonth(for: month).count) / 7.0))
-    }
-
     // MARK: - Body
 
     var body: some View {
@@ -454,12 +450,6 @@ struct CalendarView: View {
             .joined(separator: " · ")
     }
 
-    private var medicationSubtitle: String {
-        let meds = viewModel.medications(for: viewModel.selectedDate)
-        guard !meds.isEmpty else { return "복용 약 없음" }
-        return meds.prefix(3).map(\.drugName).joined(separator: " · ")
-    }
-
     private var diarySubtitle: String {
         guard let diary = viewModel.diary(for: viewModel.selectedDate), !diary.text.isEmpty else { return "기록 없음" }
         let prefix = diary.emoji.map { $0 + " " } ?? ""
@@ -590,7 +580,7 @@ struct CalendarView: View {
                 .padding(.bottom, viewModel.diary(for: viewModel.selectedDate) != nil ? 8 : 32)
 
                 if viewModel.diary(for: viewModel.selectedDate) != nil {
-                    Button(role: .destructive) {
+                    Button {
                         Task {
                             await viewModel.deleteDiary()
                             isDiaryEditing = false
@@ -600,6 +590,9 @@ struct CalendarView: View {
                             .font(AranFont.body(16))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
+                            .background(AranColor.badgeFailedBackground)
+                            .foregroundStyle(AranColor.badgeFailedText)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 32)

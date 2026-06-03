@@ -23,13 +23,14 @@ struct DrugSearchView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .padding(.bottom, 8)
-                
+                /*
                 if viewModel.showDebugChip {
                     debounceChip
                         .padding(.horizontal, 16)
                         .padding(.bottom, 8)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
+                */
                 
                 Divider()
                 contentView
@@ -41,7 +42,7 @@ struct DrugSearchView: View {
                     } label: {
                         Text("찾는 약이 없나요? 직접 입력하기")
                             .font(.system(size: 15, weight: .medium))
-                            .foregroundStyle(AranColor.accentDrug)
+                            .foregroundStyle(AranColor.accentMedication)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
                             .background(AranColor.surface)
@@ -110,7 +111,7 @@ struct DrugSearchView: View {
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Color.gray)
+                .foregroundStyle(viewModel.searchText.isEmpty ? Color.gray : AranColor.accentMedication)
             
             TextField("약 이름으로 검색하세요", text: $viewModel.searchText)
                 .focused($isSearchFocused)
@@ -277,7 +278,7 @@ struct DrugSearchView: View {
                 } label: {
                     Text("직접 입력하기")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(AranColor.accentDrug)
+                        .foregroundStyle(AranColor.accentMedication)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }
@@ -383,7 +384,7 @@ private struct DrugResultCell: View {
                     .foregroundStyle(Color.primary)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
-                
+
                 let subtitle = [drug.component, drug.entpName]
                     .compactMap { $0 }
                     .joined(separator: " · ")
@@ -391,13 +392,16 @@ private struct DrugResultCell: View {
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .lineLimit(1)
-                
-                Text(actionTitle)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(AranColor.accentDrug)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 7)
-                    .overlay(Capsule().stroke(AranColor.accentDrug, lineWidth: 1))
+
+                HStack {
+                    Spacer()
+                    Text(actionTitle)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(AranColor.accentMedication)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 7)
+                        .overlay(Capsule().stroke(AranColor.accentMedication, lineWidth: 1))
+                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)

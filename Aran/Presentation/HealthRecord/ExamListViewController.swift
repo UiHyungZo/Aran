@@ -45,8 +45,8 @@ final class ExamListViewController: UIViewController {
         let addButton = UIButton(type: .system)
         addButton.setImage(UIImage(systemName: "plus"), for: .normal)
         addButton.accessibilityIdentifier = "exam.addButton"
-        addButton.tintColor = AranColor.healthRecordUI
-        addButton.backgroundColor = AranColor.healthRecordUI.withAlphaComponent(0.1)
+        addButton.tintColor = .white
+        addButton.backgroundColor = AranColor.healthRecordUI
         addButton.layer.cornerRadius = 15
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)

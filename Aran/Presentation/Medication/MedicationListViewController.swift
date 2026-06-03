@@ -213,6 +213,7 @@ extension MedicationListViewController: UITableViewDelegate {
             self?.deleteRelay.accept(medication)
             completion(true)
         }
+        deleteAction.backgroundColor = AranColor.badgeFailedTextUI
 
         let toggleTitle = medication.isEnabled ? "알림 끄기" : "알림 켜기"
         let toggleAction = UIContextualAction(style: .normal, title: toggleTitle) { [weak self] _, _, completion in

@@ -44,15 +44,8 @@ struct ExamChartView: View {
             }
 
             ForEach(points) { record in
-                LineMark(
-                    x: .value("날짜", record.recordDate),
-                    y: .value(type, record.value)
-                )
-                .foregroundStyle(AranColor.accentHealth)
-                .interpolationMethod(.catmullRom)
-
-                PointMark(
-                    x: .value("날짜", record.recordDate),
+                BarMark(
+                    x: .value("날짜", record.recordDate, unit: .day),
                     y: .value(type, record.value)
                 )
                 .foregroundStyle(AranColor.accentHealth)

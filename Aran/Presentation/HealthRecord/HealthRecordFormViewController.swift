@@ -10,14 +10,14 @@ final class HealthRecordFormViewController: UIViewController {
 
     private let scrollView = UIScrollView()
     private let contentStack = UIStackView()
-    private let chipScrollView = UIScrollView()
-    private let chipStackView = UIStackView()
+    private let chipFlowView = ChipFlowView()
     private var itemChipButtons: [UIButton] = []
     private var itemTypes = HealthRecordType.defaults
     private var customUnits: [String: String] = [:]
     private var selectedChipIndex: Int?
     private let selectedTypeRelay: BehaviorRelay<String>
 
+    private let typeDisplayField = UITextField()
     private let valueField = UITextField()
     private let unitField = UITextField()
     private let datePicker = UIDatePicker()
@@ -91,13 +91,15 @@ final class HealthRecordFormViewController: UIViewController {
         ])
 
         setupScrollView(below: headerRow)
-        contentStack.addArrangedSubview(makeChipSection())
-        contentStack.addArrangedSubview(makeValueSection())
-        contentStack.addArrangedSubview(makeDateSection())
+        contentStack.addArrangedSubview(makeTypeValueRow())
+        contentStack.addArrangedSubview(makeDateUnitRow())
         contentStack.addArrangedSubview(makeMemoSection())
         contentStack.addArrangedSubview(makeSaveButton())
         if isEditMode {
             contentStack.addArrangedSubview(makeDeleteButton())
+        }
+        if !mode.isTypeLocked {
+            contentStack.addArrangedSubview(makeChipSection())
         }
         configureInitialValues()
     }
@@ -130,57 +132,45 @@ final class HealthRecordFormViewController: UIViewController {
         ])
     }
 
-    private func makeChipSection() -> UIView {
-        let label = sectionTitle("검사 항목")
+    private func makeTypeValueRow() -> UIView {
+        let typeLabel = sectionTitle("검사 항목")
+        configureTextField(typeDisplayField, placeholder: "항목")
+        typeDisplayField.isUserInteractionEnabled = false
+        if !mode.isTypeLocked {
+            let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 28, height: 16))
+            let chevron = UIImageView(image: UIImage(systemName: "chevron.down"))
+            chevron.frame = CGRect(x: 4, y: 0, width: 14, height: 16)
+            chevron.tintColor = AranColor.healthRecordUI
+            chevron.contentMode = .scaleAspectFit
+            chevronContainer.addSubview(chevron)
+            typeDisplayField.rightView = chevronContainer
+            typeDisplayField.rightViewMode = .always
+        }
 
-        chipScrollView.showsHorizontalScrollIndicator = false
-        chipStackView.axis = .horizontal
-        chipStackView.spacing = 8
-        chipStackView.alignment = .center
-        rebuildChipButtons()
-
-        chipScrollView.addSubview(chipStackView)
-        chipStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            chipStackView.topAnchor.constraint(equalTo: chipScrollView.contentLayoutGuide.topAnchor, constant: 4),
-            chipStackView.leadingAnchor.constraint(equalTo: chipScrollView.contentLayoutGuide.leadingAnchor),
-            chipStackView.trailingAnchor.constraint(equalTo: chipScrollView.contentLayoutGuide.trailingAnchor),
-            chipStackView.bottomAnchor.constraint(equalTo: chipScrollView.contentLayoutGuide.bottomAnchor, constant: -4),
-            chipStackView.heightAnchor.constraint(equalTo: chipScrollView.frameLayoutGuide.heightAnchor),
-        ])
-        chipScrollView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-
-        let container = UIStackView(arrangedSubviews: [label, chipScrollView])
-        container.axis = .vertical
-        container.spacing = 8
-        container.isLayoutMarginsRelativeArrangement = true
-        container.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
-        return container
-    }
-
-    private func makeValueSection() -> UIView {
-        let label = sectionTitle("수치")
+        let valueLabel = sectionTitle("수치")
         configureTextField(valueField, placeholder: "예: 8.2")
         valueField.keyboardType = .decimalPad
         valueField.accessibilityIdentifier = "healthForm.value"
-        configureTextField(unitField, placeholder: "단위")
-        unitField.accessibilityIdentifier = "healthForm.unit"
-        unitField.widthAnchor.constraint(equalToConstant: 110).isActive = true
 
-        let fieldRow = UIStackView(arrangedSubviews: [valueField, unitField])
-        fieldRow.axis = .horizontal
-        fieldRow.spacing = 8
+        let typeCol = UIStackView(arrangedSubviews: [typeLabel, typeDisplayField])
+        typeCol.axis = .vertical
+        typeCol.spacing = 6
 
-        let container = UIStackView(arrangedSubviews: [label, fieldRow])
-        container.axis = .vertical
-        container.spacing = 6
-        container.isLayoutMarginsRelativeArrangement = true
-        container.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 0, bottom: 8, trailing: 0)
-        return container
+        let valueCol = UIStackView(arrangedSubviews: [valueLabel, valueField])
+        valueCol.axis = .vertical
+        valueCol.spacing = 6
+
+        let row = UIStackView(arrangedSubviews: [typeCol, valueCol])
+        row.axis = .horizontal
+        row.spacing = 8
+        row.distribution = .fillEqually
+        row.isLayoutMarginsRelativeArrangement = true
+        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+        return row
     }
 
-    private func makeDateSection() -> UIView {
-        let label = sectionTitle("측정일")
+    private func makeDateUnitRow() -> UIView {
+        let dateLabel = sectionTitle("측정일")
         datePicker.datePickerMode = .date
         datePicker.accessibilityIdentifier = "healthForm.date"
         datePicker.preferredDatePickerStyle = .compact
@@ -188,13 +178,51 @@ final class HealthRecordFormViewController: UIViewController {
         datePicker.tintColor = AranColor.healthRecordUI
         datePicker.maximumDate = Date()
 
-        let row = UIStackView(arrangedSubviews: [label, datePicker])
+        let dateWrapper = UIView()
+        dateWrapper.backgroundColor = AranColor.healthRecordFieldBackgroundUI
+        dateWrapper.layer.cornerRadius = 8
+        dateWrapper.translatesAutoresizingMaskIntoConstraints = false
+        dateWrapper.heightAnchor.constraint(equalToConstant: 42).isActive = true
+
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        dateWrapper.addSubview(datePicker)
+        NSLayoutConstraint.activate([
+            datePicker.leadingAnchor.constraint(equalTo: dateWrapper.leadingAnchor, constant: 12),
+            datePicker.centerYAnchor.constraint(equalTo: dateWrapper.centerYAnchor),
+            datePicker.trailingAnchor.constraint(lessThanOrEqualTo: dateWrapper.trailingAnchor, constant: -4),
+        ])
+
+        let unitLabel = sectionTitle("단위")
+        configureTextField(unitField, placeholder: "단위")
+        unitField.accessibilityIdentifier = "healthForm.unit"
+
+        let dateCol = UIStackView(arrangedSubviews: [dateLabel, dateWrapper])
+        dateCol.axis = .vertical
+        dateCol.spacing = 6
+
+        let unitCol = UIStackView(arrangedSubviews: [unitLabel, unitField])
+        unitCol.axis = .vertical
+        unitCol.spacing = 6
+
+        let row = UIStackView(arrangedSubviews: [dateCol, unitCol])
         row.axis = .horizontal
-        row.alignment = .center
-        row.distribution = .equalSpacing
+        row.spacing = 8
+        row.distribution = .fillEqually
         row.isLayoutMarginsRelativeArrangement = true
-        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 0, bottom: 8, trailing: 0)
+        row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0)
         return row
+    }
+
+    private func makeChipSection() -> UIView {
+        let label = sectionTitle("항목 선택")
+        rebuildChipButtons()
+
+        let container = UIStackView(arrangedSubviews: [label, chipFlowView])
+        container.axis = .vertical
+        container.spacing = 8
+        container.isLayoutMarginsRelativeArrangement = true
+        container.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 24, trailing: 0)
+        return container
     }
 
     private func makeMemoSection() -> UIView {
@@ -233,7 +261,17 @@ final class HealthRecordFormViewController: UIViewController {
         deleteButton.layer.cornerRadius = 10
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        return deleteButton
+
+        let wrapper = UIView()
+        wrapper.addSubview(deleteButton)
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            deleteButton.topAnchor.constraint(equalTo: wrapper.topAnchor, constant: 8),
+            deleteButton.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
+            deleteButton.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor),
+            deleteButton.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
+        ])
+        return wrapper
     }
 
     private func configureTextField(_ textField: UITextField, placeholder: String) {
@@ -312,20 +350,21 @@ final class HealthRecordFormViewController: UIViewController {
     }
 
     private func rebuildChipButtons() {
-        chipStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        chipFlowView.subviews.forEach { $0.removeFromSuperview() }
         itemChipButtons.removeAll()
 
         for (index, type) in itemTypes.enumerated() {
             let button = makeChipButton(title: type, tag: index)
-            chipStackView.addArrangedSubview(button)
+            chipFlowView.addSubview(button)
             itemChipButtons.append(button)
         }
 
-        if !mode.isTypeLocked {
-            let addButton = makeChipButton(title: "+ 직접 추가", tag: itemTypes.count)
-            chipStackView.addArrangedSubview(addButton)
-            itemChipButtons.append(addButton)
-        }
+        let addButton = makeChipButton(title: "+ 직접 추가", tag: itemTypes.count)
+        chipFlowView.addSubview(addButton)
+        itemChipButtons.append(addButton)
+
+        chipFlowView.setNeedsLayout()
+        chipFlowView.layoutIfNeeded()
     }
 
     private func makeChipButton(title: String, tag: Int) -> UIButton {
@@ -338,7 +377,6 @@ final class HealthRecordFormViewController: UIViewController {
         button.layer.borderWidth = 1
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 14, bottom: 6, right: 14)
         button.addTarget(self, action: #selector(chipTapped(_:)), for: .touchUpInside)
-        button.isEnabled = true
         setChipStyle(button, selected: false)
         return button
     }
@@ -348,21 +386,14 @@ final class HealthRecordFormViewController: UIViewController {
             button.backgroundColor = AranColor.healthRecordUI
             button.setTitleColor(.white, for: .normal)
             button.layer.borderColor = AranColor.healthRecordUI.resolvedColor(with: traitCollection).cgColor
-        } else if mode.isTypeLocked {
-            button.backgroundColor = AranColor.surfaceUI
-            button.setTitleColor(.tertiaryLabel, for: .normal)
-            button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         } else {
             button.backgroundColor = AranColor.surfaceUI
-            button.setTitleColor(button.isEnabled ? .label : .tertiaryLabel, for: .normal)
+            button.setTitleColor(.label, for: .normal)
             button.layer.borderColor = UIColor.systemGray4.resolvedColor(with: traitCollection).cgColor
         }
     }
 
     @objc private func chipTapped(_ sender: UIButton) {
-        if mode.isTypeLocked {
-            return
-        }
         if sender.tag == itemTypes.count {
             showCustomItemAlert()
             return
@@ -376,6 +407,7 @@ final class HealthRecordFormViewController: UIViewController {
         refreshChipStyles()
         let type = itemTypes[index]
         selectedTypeRelay.accept(type)
+        typeDisplayField.text = type
         let unit = customUnits[type] ?? HealthRecordType.defaultUnits[type] ?? ""
         unitField.text = unit
         unitField.sendActions(for: .editingChanged)
@@ -392,6 +424,7 @@ final class HealthRecordFormViewController: UIViewController {
         case .add:
             selectChip(at: 0)
         case let .addLocked(type):
+            typeDisplayField.text = type
             if !itemTypes.contains(type) {
                 itemTypes.append(type)
             }
@@ -403,17 +436,17 @@ final class HealthRecordFormViewController: UIViewController {
                 unitField.sendActions(for: .editingChanged)
             }
         case let .edit(record):
+            typeDisplayField.text = record.type
             if !itemTypes.contains(record.type) {
                 itemTypes.append(record.type)
                 customUnits[record.type] = record.unit
-                rebuildChipButtons()
             }
             valueField.text = formatValue(record.value)
             unitField.text = record.unit
             datePicker.date = record.recordDate
             memoField.text = record.memo
             if let index = itemTypes.firstIndex(of: record.type) {
-                selectChip(at: index)
+                selectedChipIndex = index
             }
         }
     }
@@ -488,10 +521,56 @@ final class HealthRecordFormViewController: UIViewController {
 private extension HealthRecordFormViewModel.FormMode {
     var isTypeLocked: Bool {
         switch self {
-        case .addLocked(_), .edit(_):
+        case .addLocked, .edit:
             return true
         case .add:
             return false
         }
+    }
+}
+
+// MARK: - ChipFlowView
+
+private final class ChipFlowView: UIView {
+    var spacing: CGFloat = 8
+    var lineSpacing: CGFloat = 8
+
+    override var intrinsicContentSize: CGSize {
+        CGSize(width: bounds.width, height: totalHeight())
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        applyLayout()
+        invalidateIntrinsicContentSize()
+    }
+
+    private func totalHeight() -> CGFloat {
+        calculateLayout(in: bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width, apply: false)
+    }
+
+    @discardableResult
+    private func calculateLayout(in width: CGFloat, apply: Bool) -> CGFloat {
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowH: CGFloat = 0
+        for sub in subviews {
+            let sz = sub.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+            if x + sz.width > width, x > 0 {
+                x = 0
+                y += rowH + lineSpacing
+                rowH = 0
+            }
+            if apply {
+                sub.frame = CGRect(x: x, y: y, width: sz.width, height: sz.height)
+            }
+            x += sz.width + spacing
+            rowH = max(rowH, sz.height)
+        }
+        return y + rowH
+    }
+
+    private func applyLayout() {
+        calculateLayout(in: bounds.width, apply: true)
     }
 }
