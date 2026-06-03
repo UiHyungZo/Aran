@@ -67,10 +67,13 @@ final class MedicationListViewController: UIViewController {
         title = "약 / 주사"
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        addButton.accessibilityIdentifier = "medication.addButton"
         let bellButton = UIBarButtonItem(image: UIImage(systemName: "bell"), style: .plain, target: self, action: #selector(bellTapped))
+        bellButton.accessibilityIdentifier = "medication.notificationButton"
         navigationItem.rightBarButtonItems = [addButton, bellButton]
 
         tableView.register(MedicationCell.self, forCellReuseIdentifier: MedicationCell.reuseIdentifier)
+        tableView.accessibilityIdentifier = "medication.table"
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = AranColor.backgroundUI
@@ -80,6 +83,7 @@ final class MedicationListViewController: UIViewController {
         tableView.sectionHeaderTopPadding = 0
 
         emptyLabel.text = "등록된 약/주사가 없습니다."
+        emptyLabel.accessibilityIdentifier = "medication.emptyLabel"
         emptyLabel.font = AranFont.captionUI(13)
         emptyLabel.textColor = .secondaryLabel
         emptyLabel.textAlignment = .center

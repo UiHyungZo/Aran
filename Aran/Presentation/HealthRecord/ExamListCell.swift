@@ -78,7 +78,10 @@ final class ExamListCell: UITableViewCell {
     }
 
     func configure(with summary: HealthRecordSummary) {
+        accessibilityIdentifier = "exam.cell.\(summary.type)"
+        accessibilityLabel = summary.type
         itemLabel.text = summary.type
+        itemLabel.accessibilityIdentifier = "exam.cell.\(summary.type).title"
 
         trailingStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         configureNumeric(summary: summary)
@@ -92,7 +95,9 @@ final class ExamListCell: UITableViewCell {
     private func configureNumeric(summary: HealthRecordSummary) {
         let unit = summary.latestRecord.unit
         valueLabel.text = formatValue(summary.latestRecord.value)
+        valueLabel.accessibilityIdentifier = "exam.cell.\(summary.type).value"
         unitLabel.text = unit
+        unitLabel.accessibilityIdentifier = "exam.cell.\(summary.type).unit"
 
         if let trend = summary.trend {
             let trendText: String
@@ -110,6 +115,7 @@ final class ExamListCell: UITableViewCell {
                 trendLabel.backgroundColor = AranColor.surfaceUI
             }
             trendLabel.text = trendText
+            trendLabel.accessibilityIdentifier = "exam.cell.\(summary.type).trend"
             trendLabel.isHidden = false
             trailingStack.addArrangedSubview(valueLabel)
             trailingStack.addArrangedSubview(unitLabel)

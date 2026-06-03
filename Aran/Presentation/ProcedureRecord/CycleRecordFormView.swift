@@ -147,19 +147,19 @@ struct CycleRecordFormView: View {
 
                 Divider().padding(.horizontal, 16)
 
-                CounterRow("차수", $cycleNumber, unit: "차", minValue: 1)
+                CounterRow("차수", $cycleNumber, unit: "차", minValue: 1, accessibilityIDPrefix: "procedureForm.cycle")
 
                 Divider().padding(.horizontal, 16)
 
-                CounterRow("채취 개수", $retrievalCount, unit: "개")
+                CounterRow("채취 개수", $retrievalCount, unit: "개", accessibilityIDPrefix: "procedureForm.retrieval")
 
                 Divider().padding(.horizontal, 16)
 
-                CounterRow("수정 개수", $fertilizedCount, unit: "개", maxValue: retrievalCount)
+                CounterRow("수정 개수", $fertilizedCount, unit: "개", maxValue: retrievalCount, accessibilityIDPrefix: "procedureForm.fertilized")
 
                 Divider().padding(.horizontal, 16)
 
-                CounterRow("동결 개수", $frozenCount, unit: "개", maxValue: fertilizedCount)
+                CounterRow("동결 개수", $frozenCount, unit: "개", maxValue: fertilizedCount, accessibilityIDPrefix: "procedureForm.frozen")
             }
             .background(AranColor.surface, in: RoundedRectangle(cornerRadius: 10))
         }
@@ -249,16 +249,20 @@ struct CycleRecordFormView: View {
 
                     if pgtType.showsEmbryoCounts {
                         CounterRow("정상", $pgtNormalCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtAbnormalCount - pgtMosaicCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtAbnormalCount - pgtMosaicCount - pgtInconclusiveCount),
+                                   accessibilityIDPrefix: "procedureForm.pgt.normal")
                         Divider().padding(.horizontal, 16)
                         CounterRow("이상", $pgtAbnormalCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtMosaicCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtMosaicCount - pgtInconclusiveCount),
+                                   accessibilityIDPrefix: "procedureForm.pgt.abnormal")
                         Divider().padding(.horizontal, 16)
                         CounterRow("모자이크", $pgtMosaicCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtInconclusiveCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtInconclusiveCount),
+                                   accessibilityIDPrefix: "procedureForm.pgt.mosaic")
                         Divider().padding(.horizontal, 16)
                         CounterRow("판정불가", $pgtInconclusiveCount, unit: "개",
-                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtMosaicCount))
+                                   maxValue: max(0, fertilizedCount - usedEmbryoCountForSelectedType - pgtNormalCount - pgtAbnormalCount - pgtMosaicCount),
+                                   accessibilityIDPrefix: "procedureForm.pgt.inconclusive")
 
                         if hasInvalidPGTEmbryoResult {
                             Text("최소 1개 이상의 배아 결과를 입력해주세요.")
@@ -416,6 +420,7 @@ struct CycleRecordFormView: View {
                 .foregroundStyle(.white)
         }
         .disabled(isSaveDisabled)
+        .accessibilityIdentifier("procedureForm.save")
     }
 }
 

@@ -63,6 +63,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private static func makeModelContainer() throws -> ModelContainer {
         let schema = Schema(AppSchemaV6.models)
+        if UITestEnvironment.isEnabled {
+            let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            return try ModelContainer(for: schema, configurations: [configuration])
+        }
+
         let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
         let configuration = ModelConfiguration(schema: schema, url: storeURL)
 

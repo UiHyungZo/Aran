@@ -9,17 +9,23 @@ final class DrugInfoSceneDIContainer {
         let drugAPIEndpoint: String
         let drugApprovalServiceKey: String
         let drugApprovalAPIEndpoint: String
+        let drugRepositoryOverride: DrugRepositoryProtocol?
     }
 
     private let dependencies: Dependencies
 
-    private lazy var drugRepository: DrugRepositoryProtocol =
-        DrugRepository(
+    private lazy var drugRepository: DrugRepositoryProtocol = {
+        if let drugRepositoryOverride = dependencies.drugRepositoryOverride {
+            return drugRepositoryOverride
+        }
+
+        return DrugRepository(
             serviceKey: dependencies.drugServiceKey,
             baseURL: dependencies.drugAPIEndpoint,
             approvalServiceKey: dependencies.drugApprovalServiceKey,
             approvalBaseURL: dependencies.drugApprovalAPIEndpoint
         )
+    }()
 
     private lazy var searchDrugUseCase: SearchDrugUseCaseProtocol =
         SearchDrugUseCase(repository: drugRepository)

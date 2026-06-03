@@ -56,6 +56,8 @@ final class MedicationCell: UITableViewCell {
     }
 
     func configure(with medication: Medication, isInAlarmGroup: Bool) {
+        accessibilityIdentifier = "medication.cell.\(medication.drugName)"
+        accessibilityLabel = medication.drugName
         nameLabel.text = medication.drugName
 
         if isInAlarmGroup {

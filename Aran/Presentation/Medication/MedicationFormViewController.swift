@@ -88,6 +88,7 @@ final class MedicationFormViewController: UIViewController {
 
         let saveTitle = initialMedication == nil ? "저장하기" : "수정 저장"
         saveButton.setTitle(saveTitle, for: .normal)
+        saveButton.accessibilityIdentifier = "medicationForm.save"
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
@@ -98,6 +99,7 @@ final class MedicationFormViewController: UIViewController {
         saveButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
 
         deleteButton.setTitle("이 약 삭제", for: .normal)
+        deleteButton.accessibilityIdentifier = "medicationForm.delete"
         deleteButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
         deleteButton.setTitleColor(AranColor.badgeFailedTextUI, for: .normal)
         deleteButton.backgroundColor = AranColor.badgeFailedBackgroundUI
@@ -138,6 +140,7 @@ final class MedicationFormViewController: UIViewController {
 
     private func makeInfoFields() -> UIView {
         drugNameField.placeholder = "약 검색으로 자동 입력"
+        drugNameField.accessibilityIdentifier = "medicationForm.drugName"
         drugNameField.text = initialDrugName
         drugNameField.borderStyle = .none
         drugNameField.font = AranFont.bodyUI()
@@ -145,6 +148,7 @@ final class MedicationFormViewController: UIViewController {
         drugNameField.returnKeyType = .next
 
         dosageField.placeholder = "예) 300IU/0.5mL"
+        dosageField.accessibilityIdentifier = "medicationForm.dosage"
         dosageField.text = initialDosage
         dosageField.borderStyle = .none
         dosageField.font = AranFont.bodyUI()
@@ -308,6 +312,7 @@ final class MedicationFormViewController: UIViewController {
 
     private func makeNotificationRow() -> UIView {
         notificationSwitch.onTintColor = AranColor.accentMedicationUI
+        notificationSwitch.accessibilityIdentifier = "medicationForm.notificationSwitch"
         notificationSwitch.isOn = initialMedication?.isEnabled ?? false
 
         let titleLabel = UILabel()

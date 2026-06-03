@@ -9,7 +9,7 @@ import XCTest
 
 final class AranUITestsLaunchTests: XCTestCase {
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
+        false
     }
 
     override func setUpWithError() throws {
@@ -18,8 +18,7 @@ final class AranUITestsLaunchTests: XCTestCase {
 
     @MainActor
     func testLaunch() {
-        let app = XCUIApplication()
-        app.launch()
+        let app = launchUITestApp()
 
         // Insert steps here to perform after app launch but before taking a screenshot,
         // such as logging into a test account or navigating somewhere in the app

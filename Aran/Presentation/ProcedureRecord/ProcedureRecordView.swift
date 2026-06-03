@@ -34,6 +34,7 @@ struct ProcedureRecordView: View {
                         Image(systemName: "plus")
                     }
                     .tint(AranColor.accentProcedure)
+                    .accessibilityIdentifier("procedure.addButton")
                 }
             }
             .sheet(isPresented: $viewModel.isFormPresented) {
@@ -83,6 +84,7 @@ struct ProcedureRecordView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(AranColor.accentProcedure)
+            .accessibilityIdentifier("procedure.empty.addButton")
             .padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -103,6 +105,7 @@ struct ProcedureRecordView: View {
                     } label: {
                         CycleSummaryCard(summary: summary)
                     }
+                    .accessibilityIdentifier("procedure.cycle.\(summary.cycleNumber)")
                     .swipeActions(edge: .trailing) {
                         Button("삭제", role: .destructive) {
                             if summary.transferRecords.isEmpty && summary.pgtRecords.isEmpty {

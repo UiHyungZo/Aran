@@ -47,6 +47,7 @@ struct DrugSearchView: View {
                             .background(AranColor.surface)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("drugSearch.directInputButton")
                 }
             }
             .navigationTitle(title)
@@ -115,6 +116,7 @@ struct DrugSearchView: View {
                 .focused($isSearchFocused)
                 .submitLabel(.search)
                 .onSubmit { isSearchFocused = false }
+                .accessibilityIdentifier("drugSearch.searchField")
             
             if !viewModel.searchText.isEmpty {
                 Button {
@@ -249,10 +251,11 @@ struct DrugSearchView: View {
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
                 
-                ForEach(drugs, id: \.itemSeq) { drug in
+                ForEach(Array(drugs.enumerated()), id: \.element.itemSeq) { index, drug in
                     DrugResultCell(
                         drug: drug,
-                        actionTitle: mode == .browse ? "자세히 보기" : "이 약 추가하기"
+                        actionTitle: mode == .browse ? "자세히 보기" : "이 약 추가하기",
+                        accessibilityID: "drugSearch.result.\(index)"
                     ) {
                         handleDrugSelection(drug)
                     }
@@ -280,6 +283,7 @@ struct DrugSearchView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
+                .accessibilityIdentifier("drugSearch.directInputButton")
             }
         }
         .scrollDismissesKeyboard(.immediately)
@@ -347,6 +351,7 @@ struct DrugSearchView: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(AranColor.accentDrug)
                     }
+                    .accessibilityIdentifier("drugSearch.directInputButton")
                 }
             }
             .padding(.horizontal, 40)
@@ -367,6 +372,7 @@ struct DrugSearchView: View {
 private struct DrugResultCell: View {
     let drug: Drug
     let actionTitle: String
+    let accessibilityID: String
     let onSelect: () -> Void
     
     var body: some View {
@@ -398,5 +404,6 @@ private struct DrugResultCell: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(accessibilityID)
     }
 }

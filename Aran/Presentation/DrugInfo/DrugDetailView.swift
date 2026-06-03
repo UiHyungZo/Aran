@@ -166,5 +166,6 @@ struct DrugDetailView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(AranColor.surface)
+        .accessibilityIdentifier("drugDetail.addMedicationButton")
     }
 }

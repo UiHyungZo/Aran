@@ -6,13 +6,22 @@ struct CounterRow: View {
     var unit: String = ""
     var minValue: Int = 0
     var maxValue: Int = Int.max
+    var accessibilityIDPrefix: String?
 
-    init(_ label: String, _ value: Binding<Int>, unit: String = "", minValue: Int = 0, maxValue: Int = Int.max) {
+    init(
+        _ label: String,
+        _ value: Binding<Int>,
+        unit: String = "",
+        minValue: Int = 0,
+        maxValue: Int = Int.max,
+        accessibilityIDPrefix: String? = nil
+    ) {
         self.label = label
         self._value = value
         self.unit = unit
         self.minValue = minValue
         self.maxValue = maxValue
+        self.accessibilityIDPrefix = accessibilityIDPrefix
     }
 
     var body: some View {
@@ -33,10 +42,12 @@ struct CounterRow: View {
                         .background(AranColor.surface, in: Circle())
                 }
                 .disabled(value <= minValue)
+                .accessibilityIdentifier(accessibilityIDPrefix.map { "\($0).decrement" } ?? "")
 
                 Text("\(value)\(unit)")
                     .font(.subheadline.weight(.semibold))
                     .frame(minWidth: 50, alignment: .center)
+                    .accessibilityIdentifier(accessibilityIDPrefix.map { "\($0).value" } ?? "")
 
                 Button {
                     if value < maxValue {
@@ -50,6 +61,7 @@ struct CounterRow: View {
                         .background(AranColor.accentProcedure, in: Circle())
                 }
                 .disabled(value >= maxValue)
+                .accessibilityIdentifier(accessibilityIDPrefix.map { "\($0).increment" } ?? "")
             }
         }
         .padding(.vertical, 12)

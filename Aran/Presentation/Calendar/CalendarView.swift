@@ -119,7 +119,9 @@ struct CalendarView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .task { await viewModel.loadMonthRecords() }
+        .onAppear {
+            Task { await viewModel.loadMonthRecords() }
+        }
         .onChange(of: scenePhase) { _, newPhase in
             guard newPhase == .active else { return }
             Task { await viewModel.loadMonthRecords() }
@@ -273,7 +275,8 @@ struct CalendarView: View {
                     summaryRow(
                         title: "병원 일정",
                         subtitle: hospitalSubtitle,
-                        actionLabel: visits.isEmpty ? "추가" : "수정 >"
+                        actionLabel: visits.isEmpty ? "추가" : "수정 >",
+                        accessibilityID: "calendar.summary.hospital"
                     ) {
                         editingVisit = visits.first
                         isHospitalFormPresented = true
@@ -283,7 +286,12 @@ struct CalendarView: View {
                     medicationSummaryRows
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "감정 일기", subtitle: diarySubtitle, actionLabel: diaryActionLabel) {
+                    summaryRow(
+                        title: "감정 일기",
+                        subtitle: diarySubtitle,
+                        actionLabel: diaryActionLabel,
+                        accessibilityID: "calendar.summary.diary"
+                    ) {
                         loadExistingDiary()
                         isDiaryEditing = true
                     }
@@ -293,7 +301,8 @@ struct CalendarView: View {
                     summaryRow(
                         title: "검사 수치",
                         subtitle: healthSubtitle,
-                        actionLabel: records.isEmpty ? "추가" : "수정 >"
+                        actionLabel: records.isEmpty ? "추가" : "수정 >",
+                        accessibilityID: "calendar.summary.healthRecord"
                     ) {
                         if records.isEmpty {
                             isHealthRecordSheetPresented = true
@@ -303,7 +312,12 @@ struct CalendarView: View {
                     }
                     Divider().padding(.leading, 16)
 
-                    summaryRow(title: "생리 시작일", subtitle: periodSubtitle, actionLabel: "기록") {
+                    summaryRow(
+                        title: "생리 시작일",
+                        subtitle: periodSubtitle,
+                        actionLabel: "기록",
+                        accessibilityID: "calendar.summary.period"
+                    ) {
                         isMenstrualSheetPresented = true
                     }
                 }
@@ -313,39 +327,43 @@ struct CalendarView: View {
         .background(AranColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: -2)
+        .accessibilityIdentifier("calendar.summaryPanel")
     }
 
     private func summaryRow(
         title: String,
         subtitle: String,
         actionLabel: String? = nil,
+        accessibilityID: String,
         onTap: @escaping () -> Void
     ) -> some View {
-        Button(action: onTap) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(title)
-                        .font(AranFont.body(15))
-                        .foregroundStyle(.primary)
-                    Text(subtitle)
-                        .font(AranFont.caption())
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-                Spacer()
-                if let actionLabel {
-                    Text(actionLabel)
-                        .font(AranFont.caption())
-                        .foregroundStyle(AranColor.primary)
-                }
-                Image(systemName: "chevron.right")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+        HStack {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(AranFont.body(15))
+                    .foregroundStyle(.primary)
+                Text(subtitle)
+                    .font(AranFont.caption())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            Spacer()
+            if let actionLabel {
+                Text(actionLabel)
+                    .font(AranFont.caption())
+                    .foregroundStyle(AranColor.primary)
+            }
+            Image(systemName: "chevron.right")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier(accessibilityID)
+        .accessibilityAddTraits(.isButton)
     }
 
     @ViewBuilder
@@ -367,10 +385,26 @@ struct CalendarView: View {
             .padding(.top, 12)
             .padding(.bottom, meds.isEmpty ? 12 : 6)
 
-            ForEach(meds) { med in
+            ForEach(Array(meds.enumerated()), id: \.element.id) { medIndex, med in
                 let sortedSlots = med.schedule.sortedTimeSlots
-                ForEach(sortedSlots, id: \.id) { slot in
-                    Button {
+                ForEach(Array(sortedSlots.enumerated()), id: \.element.id) { slotIndex, slot in
+                    let isTaken = viewModel.isMedicationTaken(med, on: viewModel.selectedDate, timeSlotID: slot.id)
+                    HStack {
+                        medicationCheckmark(
+                            isTaken: isTaken
+                        )
+                        Text(med.drugName)
+                            .font(AranFont.body())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(formattedTime(slot.time))
+                            .font(AranFont.caption())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
                         Task {
                             await viewModel.toggleMedicationLog(
                                 medicationId: med.id,
@@ -378,23 +412,12 @@ struct CalendarView: View {
                                 timeSlotID: slot.id
                             )
                         }
-                    } label: {
-                        HStack {
-                            medicationCheckmark(
-                                isTaken: viewModel.isMedicationTaken(med, on: viewModel.selectedDate, timeSlotID: slot.id)
-                            )
-                            Text(med.drugName)
-                                .font(AranFont.body())
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text(formattedTime(slot.time))
-                                .font(AranFont.caption())
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
                     }
-                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("calendar.medicationLog.\(medIndex).\(slotIndex)")
+                    .accessibilityLabel(med.drugName)
+                    .accessibilityValue(isTaken ? "taken" : "notTaken")
+                    .accessibilityAddTraits(.isButton)
                 }
             }
         }
@@ -515,10 +538,12 @@ struct CalendarView: View {
                     .padding(.top, 4)
 
                 ZStack(alignment: .bottomTrailing) {
-                    TextEditor(text: $diaryText)
+                    TextField("오늘 하루를 기록하세요", text: $diaryText, axis: .vertical)
                         .focused($isDiaryFocused)
-                        .frame(height: 180)
-                        .padding(8)
+                        .lineLimit(7, reservesSpace: true)
+                        .textFieldStyle(.plain)
+                        .frame(height: 180, alignment: .topLeading)
+                        .padding(12)
                         .background(AranColor.surface)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .padding(.horizontal, 16)
@@ -526,6 +551,7 @@ struct CalendarView: View {
                         .onChange(of: diaryText) { _, new in
                             if new.count > 500 { diaryText = String(new.prefix(500)) }
                         }
+                        .accessibilityIdentifier("calendar.diary.text")
 
                     Text("\(diaryText.count) / 500")
                         .font(AranFont.caption())
@@ -559,6 +585,7 @@ struct CalendarView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 .disabled(diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .accessibilityIdentifier("calendar.diary.save")
                 .padding(.horizontal, 16)
                 .padding(.bottom, viewModel.diary(for: viewModel.selectedDate) != nil ? 8 : 32)
 
@@ -587,8 +614,10 @@ struct CalendarView: View {
                     }
                 }
             }
-            .background(AranColor.background)
-            .onTapGesture { isDiaryFocused = false }
+            .background(
+                AranColor.background
+                    .onTapGesture { isDiaryFocused = false }
+            )
         }
     }
 
@@ -684,6 +713,7 @@ private struct CalendarHospitalVisitFormSheet: View {
                 Section("메모 (선택)") {
                     TextField("예: 담당 의사 면담", text: $memo)
                         .focused($isFocused)
+                        .accessibilityIdentifier("calendar.hospital.memo")
                 }
 
                 if let visit = existingVisit {
@@ -726,6 +756,7 @@ private struct CalendarHospitalVisitFormSheet: View {
                         }
                     }
                     .disabled(selectedTypes.isEmpty)
+                    .accessibilityIdentifier("calendar.hospital.save")
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -759,6 +790,7 @@ private struct FlowChipLayout: View {
                         .clipShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("calendar.hospital.type.\(item)")
             }
         }
     }
@@ -833,12 +865,14 @@ private struct CalendarHealthRecordInputSheet: View {
 
                 Section("수치") {
                     HStack {
-                        TextField("수치", text: $valueText)
-                            .focused($isFocused)
-                            .keyboardType(.decimalPad)
-                        TextField("단위", text: $unitText)
-                            .focused($isFocused)
-                            .multilineTextAlignment(.trailing)
+                TextField("수치", text: $valueText)
+                    .focused($isFocused)
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("calendar.health.value")
+                TextField("단위", text: $unitText)
+                    .focused($isFocused)
+                    .multilineTextAlignment(.trailing)
+                    .accessibilityIdentifier("calendar.health.unit")
                     }
                 }
 
@@ -904,6 +938,7 @@ private struct CalendarHealthRecordInputSheet: View {
                         Double(valueText.replacingOccurrences(of: ",", with: ".")) == nil
                             || unitText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                     )
+                    .accessibilityIdentifier("calendar.health.save")
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -937,6 +972,7 @@ private struct CalendarHealthRecordInputSheet: View {
                 .foregroundStyle(selected ? Color.white : Color.primary)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("calendar.health.type.\(title)")
     }
 
     private func addCustomItem() {
@@ -1083,6 +1119,7 @@ private struct MenstrualCycleFormSheet: View {
                             dismiss()
                         }
                     }
+                    .accessibilityIdentifier("calendar.period.save")
                 }
             }
         }
@@ -1136,5 +1173,19 @@ private struct DayCell: View {
             .frame(height: 6)
         }
         .frame(height: cellHeight)
+        .accessibilityIdentifier(accessibilityID)
+    }
+
+    private var accessibilityID: String {
+        if Calendar.current.isDateInToday(date) {
+            return "calendar.day.today"
+        }
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return String(
+            format: "calendar.day.%04d-%02d-%02d",
+            components.year ?? 0,
+            components.month ?? 0,
+            components.day ?? 0
+        )
     }
 }

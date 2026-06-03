@@ -13,6 +13,7 @@ final class AppDIContainer {
     }
 
     private lazy var appConfigurations = AppConfigurations()
+    private lazy var drugRepositoryOverride = UITestEnvironment.makeDrugRepositoryOverride()
 
     lazy var calendarScene = CalendarSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var medicationScene = MedicationSceneDIContainer(dependencies: .init(
@@ -20,7 +21,8 @@ final class AppDIContainer {
         drugServiceKey: appConfigurations.drugAPIDecoding,
         drugAPIEndpoint: appConfigurations.drugAPIEndpoint,
         drugApprovalServiceKey: appConfigurations.drugAPIPrdtDecoding,
-        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint
+        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint,
+        drugRepositoryOverride: drugRepositoryOverride
     ))
     lazy var healthRecordScene = HealthRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
     lazy var procedureRecordScene = ProcedureRecordSceneDIContainer(dependencies: .init(modelContext: modelContext))
@@ -29,7 +31,8 @@ final class AppDIContainer {
         drugServiceKey: appConfigurations.drugAPIDecoding,
         drugAPIEndpoint: appConfigurations.drugAPIEndpoint,
         drugApprovalServiceKey: appConfigurations.drugAPIPrdtDecoding,
-        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint
+        drugApprovalAPIEndpoint: appConfigurations.drugAPIPrdtEndpoint,
+        drugRepositoryOverride: drugRepositoryOverride
     ))
 
     init(modelContainer: ModelContainer) {

@@ -44,6 +44,7 @@ final class ExamListViewController: UIViewController {
 
         let addButton = UIButton(type: .system)
         addButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addButton.accessibilityIdentifier = "exam.addButton"
         addButton.tintColor = AranColor.healthRecordUI
         addButton.backgroundColor = AranColor.healthRecordUI.withAlphaComponent(0.1)
         addButton.layer.cornerRadius = 15
@@ -52,6 +53,7 @@ final class ExamListViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
 
         tableView.register(ExamListCell.self, forCellReuseIdentifier: ExamListCell.reuseIdentifier)
+        tableView.accessibilityIdentifier = "exam.table"
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = AranColor.backgroundUI
@@ -60,6 +62,7 @@ final class ExamListViewController: UIViewController {
         tableView.separatorStyle = .none
 
         emptyLabel.text = "기록된 검사 수치가 없습니다."
+        emptyLabel.accessibilityIdentifier = "exam.emptyLabel"
         emptyLabel.font = AranFont.captionUI(13)
         emptyLabel.textColor = .secondaryLabel
         emptyLabel.textAlignment = .center

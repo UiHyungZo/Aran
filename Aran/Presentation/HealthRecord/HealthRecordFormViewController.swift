@@ -69,6 +69,7 @@ final class HealthRecordFormViewController: UIViewController {
 
         let closeButton = UIButton(type: .system)
         closeButton.setImage(UIImage(systemName: isEditMode ? "chevron.left" : "xmark.circle.fill"), for: .normal)
+        closeButton.accessibilityIdentifier = "healthForm.close"
         closeButton.tintColor = .secondaryLabel
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
@@ -161,7 +162,9 @@ final class HealthRecordFormViewController: UIViewController {
         let label = sectionTitle("수치")
         configureTextField(valueField, placeholder: "예: 8.2")
         valueField.keyboardType = .decimalPad
+        valueField.accessibilityIdentifier = "healthForm.value"
         configureTextField(unitField, placeholder: "단위")
+        unitField.accessibilityIdentifier = "healthForm.unit"
         unitField.widthAnchor.constraint(equalToConstant: 110).isActive = true
 
         let fieldRow = UIStackView(arrangedSubviews: [valueField, unitField])
@@ -179,6 +182,7 @@ final class HealthRecordFormViewController: UIViewController {
     private func makeDateSection() -> UIView {
         let label = sectionTitle("측정일")
         datePicker.datePickerMode = .date
+        datePicker.accessibilityIdentifier = "healthForm.date"
         datePicker.preferredDatePickerStyle = .compact
         datePicker.locale = Locale(identifier: "ko_KR")
         datePicker.tintColor = AranColor.healthRecordUI
@@ -196,6 +200,7 @@ final class HealthRecordFormViewController: UIViewController {
     private func makeMemoSection() -> UIView {
         let label = sectionTitle("메모 (선택)")
         configureTextField(memoField, placeholder: "참고사항을 입력하세요")
+        memoField.accessibilityIdentifier = "healthForm.memo"
 
         let container = UIStackView(arrangedSubviews: [label, memoField])
         container.axis = .vertical
@@ -207,6 +212,7 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func makeSaveButton() -> UIView {
         saveButton.setTitle(isEditMode ? "수정 저장" : "+ 추가하기", for: .normal)
+        saveButton.accessibilityIdentifier = "healthForm.save"
         saveButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.secondaryLabel, for: .disabled)
@@ -220,6 +226,7 @@ final class HealthRecordFormViewController: UIViewController {
 
     private func makeDeleteButton() -> UIView {
         deleteButton.setTitle("이 기록 삭제", for: .normal)
+        deleteButton.accessibilityIdentifier = "healthForm.delete"
         deleteButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         deleteButton.setTitleColor(AranColor.trendUpTextUI, for: .normal)
         deleteButton.backgroundColor = AranColor.trendUpBackgroundUI
@@ -324,6 +331,7 @@ final class HealthRecordFormViewController: UIViewController {
     private func makeChipButton(title: String, tag: Int) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
+        button.accessibilityIdentifier = "healthForm.type.\(title)"
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .medium)
         button.tag = tag
         button.layer.cornerRadius = 14

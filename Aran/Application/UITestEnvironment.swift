@@ -1,0 +1,61 @@
+import Foundation
+
+#if DEBUG
+enum UITestEnvironment {
+    static let launchArgument = "-ui-testing"
+
+    static var isEnabled: Bool {
+        ProcessInfo.processInfo.arguments.contains(launchArgument)
+    }
+
+    static func makeDrugRepositoryOverride() -> DrugRepositoryProtocol? {
+        isEnabled ? UITestDrugRepository() : nil
+    }
+}
+
+private final class UITestDrugRepository: DrugRepositoryProtocol {
+    private let testDrug = Drug(
+        itemSeq: "UITEST-DRUG-001",
+        itemName: "프로게스테론테스트정",
+        entpName: "아란제약",
+        component: "프로게스테론",
+        efcyQesitm: "UI 테스트용 효능 정보입니다.",
+        useMethodQesitm: "UI 테스트용 사용법 정보입니다.",
+        atpnWarnQesitm: nil,
+        atpnQesitm: "UI 테스트용 주의사항 정보입니다.",
+        intrcQesitm: nil,
+        seQesitm: nil,
+        depositMethodQesitm: nil,
+        itemImage: nil,
+        approvalInfo: DrugApprovalInfo(
+            itemSeq: "UITEST-DRUG-001",
+            itemName: "프로게스테론테스트정",
+            entpName: "아란제약",
+            itemPermitDate: "20260602",
+            barCode: nil,
+            ediCode: "UITEST001",
+            atcCode: nil,
+            mainItemIngredient: "프로게스테론",
+            productType: "정제",
+            specialtyPublic: "일반의약품",
+            bigProductImageURL: nil,
+            rareDrugYN: "N"
+        )
+    )
+
+    func search(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
+        let normalizedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        let drugs = normalizedKeyword.isEmpty ? [] : [testDrug]
+        return DrugSearchResult(drugs: drugs, totalCount: drugs.count, pageNo: pageNo)
+    }
+
+    func enrich(_ drug: Drug) async throws -> Drug {
+        drug.itemSeq == testDrug.itemSeq ? drug.merging(detail: testDrug) : drug
+    }
+}
+#else
+enum UITestEnvironment {
+    static var isEnabled: Bool { false }
+    static func makeDrugRepositoryOverride() -> DrugRepositoryProtocol? { nil }
+}
+#endif
