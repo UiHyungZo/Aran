@@ -41,7 +41,7 @@ final class HealthRecordFlowCoordinator {
             onSaved?()
         })
         if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
         }
         navigationController?.topViewController?.present(vc, animated: true)

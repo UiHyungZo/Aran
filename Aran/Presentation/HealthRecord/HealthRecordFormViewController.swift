@@ -21,6 +21,7 @@ final class HealthRecordFormViewController: UIViewController {
     private let valueField = UITextField()
     private let unitField = UITextField()
     private let datePicker = UIDatePicker()
+    private let dateTextField = UITextField()
     private let memoField = UITextField()
     private let saveButton = UIButton(type: .system)
     private let deleteButton = UIButton(type: .system)
@@ -68,7 +69,9 @@ final class HealthRecordFormViewController: UIViewController {
         titleLabel.textAlignment = .center
 
         let closeButton = UIButton(type: .system)
-        closeButton.setImage(UIImage(systemName: isEditMode ? "chevron.left" : "xmark.circle.fill"), for: .normal)
+        if !isEditMode{
+            closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        }
         closeButton.accessibilityIdentifier = "healthForm.close"
         closeButton.tintColor = .secondaryLabel
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
@@ -173,30 +176,28 @@ final class HealthRecordFormViewController: UIViewController {
         let dateLabel = sectionTitle("측정일")
         datePicker.datePickerMode = .date
         datePicker.accessibilityIdentifier = "healthForm.date"
-        datePicker.preferredDatePickerStyle = .compact
+        datePicker.preferredDatePickerStyle = .wheels
         datePicker.locale = Locale(identifier: "ko_KR")
         datePicker.tintColor = AranColor.healthRecordUI
         datePicker.maximumDate = Date()
 
-        let dateWrapper = UIView()
-        dateWrapper.backgroundColor = AranColor.healthRecordFieldBackgroundUI
-        dateWrapper.layer.cornerRadius = 8
-        dateWrapper.translatesAutoresizingMaskIntoConstraints = false
-        dateWrapper.heightAnchor.constraint(equalToConstant: 42).isActive = true
+        configureTextField(dateTextField, placeholder: "날짜")
+        dateTextField.accessibilityIdentifier = "healthForm.dateDisplay"
+        dateTextField.tintColor = .clear
+        dateTextField.inputView = datePicker
 
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        dateWrapper.addSubview(datePicker)
-        NSLayoutConstraint.activate([
-            datePicker.leadingAnchor.constraint(equalTo: dateWrapper.leadingAnchor, constant: 12),
-            datePicker.centerYAnchor.constraint(equalTo: dateWrapper.centerYAnchor),
-            datePicker.trailingAnchor.constraint(lessThanOrEqualTo: dateWrapper.trailingAnchor, constant: -4),
-        ])
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let done = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(dismissKeyboard))
+        done.tintColor = AranColor.healthRecordUI
+        toolbar.setItems([.flexibleSpace(), done], animated: false)
+        dateTextField.inputAccessoryView = toolbar
 
         let unitLabel = sectionTitle("단위")
         configureTextField(unitField, placeholder: "단위")
         unitField.accessibilityIdentifier = "healthForm.unit"
 
-        let dateCol = UIStackView(arrangedSubviews: [dateLabel, dateWrapper])
+        let dateCol = UIStackView(arrangedSubviews: [dateLabel, dateTextField])
         dateCol.axis = .vertical
         dateCol.spacing = 6
 
@@ -295,6 +296,15 @@ final class HealthRecordFormViewController: UIViewController {
     }
 
     private func bindViewModel() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "yyyy년 M월 d일"
+
+        datePicker.rx.date
+            .map { dateFormatter.string(from: $0) }
+            .bind(to: dateTextField.rx.text)
+            .disposed(by: disposeBag)
+
         let input = HealthRecordFormViewModel.Input(
             selectedType: selectedTypeRelay.asObservable(),
             valueText: valueField.rx.text.orEmpty.asObservable(),
@@ -483,11 +493,7 @@ final class HealthRecordFormViewController: UIViewController {
     }
 
     @objc private func closeTapped() {
-        if isEditMode {
-            navigationController?.popViewController(animated: true)
-        } else {
-            dismiss(animated: true)
-        }
+        dismiss(animated: true)
     }
 
     @objc private func dismissKeyboard() {

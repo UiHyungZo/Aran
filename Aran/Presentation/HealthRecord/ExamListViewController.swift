@@ -42,15 +42,9 @@ final class ExamListViewController: UIViewController {
         view.backgroundColor = AranColor.backgroundUI
         title = "검사 기록"
 
-        let addButton = UIButton(type: .system)
-        addButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         addButton.accessibilityIdentifier = "exam.addButton"
-        addButton.tintColor = .white
-        addButton.backgroundColor = AranColor.healthRecordUI
-        addButton.layer.cornerRadius = 15
-        addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
-        addButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
+        navigationItem.rightBarButtonItem = addButton
 
         tableView.register(ExamListCell.self, forCellReuseIdentifier: ExamListCell.reuseIdentifier)
         tableView.accessibilityIdentifier = "exam.table"
