@@ -237,7 +237,7 @@ private extension TransferInputFormView {
         init() {}
 
         init(record: TransferRecord) {
-            embryoGrade = record.embryoGrade
+            embryoGrade = record.embryoGrade == "미입력" ? "" : record.embryoGrade
             embryoCount = record.embryoCount
             transferType = record.transferType
             result = record.result

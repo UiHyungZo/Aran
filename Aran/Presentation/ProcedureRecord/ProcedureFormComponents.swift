@@ -77,15 +77,20 @@ struct EmbryoStageToggle: View {
         HStack(spacing: 8) {
             ForEach(EmbryoStage.allCases, id: \.self) { stage in
                 let isOn = selection == stage
-                Button(stage.rawValue) { selection = stage }
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(
-                        isOn ? AranColor.accentProcedure : AranColor.surface,
-                        in: Capsule()
-                    )
-                    .foregroundStyle(isOn ? .white : .primary)
+                Button {
+                    selection = stage
+                } label: {
+                    Text(stage.displayName)
+                        .multilineTextAlignment(.center)
+                }
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(
+                    isOn ? AranColor.accentProcedure : AranColor.surface,
+                    in: Capsule()
+                )
+                .foregroundStyle(isOn ? .white : .primary)
             }
         }
     }

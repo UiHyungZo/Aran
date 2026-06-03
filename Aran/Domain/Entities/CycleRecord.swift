@@ -2,8 +2,20 @@ import Foundation
 
 enum EmbryoStage: String, Codable, CaseIterable {
     case cleavageDay3 = "3일배아"
+    case morulaDy4 = "4일배아"
     case blastocystDay5 = "5일배아"
     case blastocystDay6 = "6일배아"
+    case blastocystDay7 = "7일배아"
+
+    var displayName: String {
+        switch self {
+        case .cleavageDay3:   return "3일 배아"
+        case .morulaDy4:      return "4일 배아"
+        case .blastocystDay5: return "5일 배아"
+        case .blastocystDay6: return "6일 배아"
+        case .blastocystDay7: return "7일 배아"
+        }
+    }
 }
 
 enum EmbryoSimpleGrade: String, Codable, CaseIterable {
