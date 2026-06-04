@@ -32,6 +32,7 @@ final class DrugInfoViewModel: ObservableObject {
     private(set) var totalCount: Int = 0
     private var currentKeyword: String = ""
     private var loadingDetailItemSeq: String?
+    private var enrichTask: Task<Void, Never>?
 
     var hasMorePages: Bool { currentPage * 20 < totalCount }
 
@@ -137,7 +138,23 @@ final class DrugInfoViewModel: ObservableObject {
         isDetailLoading = shouldLoadDetail
         selectedDrug = drug
         guard shouldLoadDetail else { return }
-        Task { await enrichSelectedDrug(drug) }
+        enrichTask?.cancel()
+        enrichTask = Task { await enrichSelectedDrug(drug) }
+    }
+
+    func clearDetailState() {
+        enrichTask?.cancel()
+        enrichTask = nil
+        if pendingFavoriteToggle, let drug = selectedDrug {
+            pendingFavoriteToggle = false
+            performToggle(drug)
+        }
+        pendingFavoriteToggle = false
+        isDetailLoading = false
+        loadingDetailItemSeq = nil
+        // selectedDrug은 nil로 만들지 않는다.
+        // navigationDestination의 destination이 selectedDrug에 의존하므로
+        // pop 애니메이션 도중 nil이 되면 destination이 사라져 뒤로가기가 깨진다.
     }
 
     private func needsDetailEnrichment(_ drug: Drug) -> Bool {
@@ -156,10 +173,16 @@ final class DrugInfoViewModel: ObservableObject {
             let enriched = try await searchDrugUseCase.enrich(drug)
             guard selectedDrug?.itemSeq == drug.itemSeq else { return }
             selectedDrug = enriched
+            // 이미 즐겨찾기한 약이면 enrich된 완전한 데이터로 갱신 캐싱한다.
+            // 다음에 즐겨찾기에서 열 때 enrich를 재호출하지 않도록.
+            try? await favoriteDrugUseCase.updateDetailIfFavorited(drug: enriched)
+            await loadFavorites()
             if pendingFavoriteToggle {
                 pendingFavoriteToggle = false
                 performToggle(enriched)
             }
+        } catch is CancellationError {
+            pendingFavoriteToggle = false
         } catch {
             if pendingFavoriteToggle {
                 pendingFavoriteToggle = false

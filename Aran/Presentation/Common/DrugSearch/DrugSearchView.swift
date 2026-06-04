@@ -85,8 +85,7 @@ struct DrugSearchView: View {
                 set: {
                     viewModel.isDetailPresented = $0
                     if !$0 {
-                        viewModel.selectedDrug = nil
-                        viewModel.isDetailLoading = false
+                        viewModel.clearDetailState()
                     }
                 }
             )) {
