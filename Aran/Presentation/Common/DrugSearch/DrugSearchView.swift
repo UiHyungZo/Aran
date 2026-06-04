@@ -254,13 +254,13 @@ struct DrugSearchView: View {
     
     private func resultsView(drugs: [Drug]) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 Text("검색 결과 \(viewModel.totalCount)건")
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                
+
                 ForEach(Array(drugs.enumerated()), id: \.element.itemSeq) { index, drug in
                     DrugResultCell(
                         drug: drug,
@@ -273,13 +273,13 @@ struct DrugSearchView: View {
                     Divider()
                         .padding(.horizontal, 20)
                 }
-                
+
                 if viewModel.hasMorePages {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .onAppear {
-                            Task { await viewModel.loadMore() }
+                        .task {
+                            await viewModel.loadMore()
                         }
                 }
                 
@@ -288,7 +288,7 @@ struct DrugSearchView: View {
                 } label: {
                     Text("직접 입력하기")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(AranColor.accentMedication)
+                        .foregroundStyle(accentColor)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }

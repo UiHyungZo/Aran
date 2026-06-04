@@ -3,6 +3,7 @@ import Foundation
 final class DrugRepository: DrugRepositoryProtocol {
     private let apiClient: any DrugAPIClientProtocol
     private let approvalAPIClient: (any DrugApprovalAPIClientProtocol)?
+    private var currentSearchUseFallback = false
 
     init(apiClient: any DrugAPIClientProtocol, approvalAPIClient: (any DrugApprovalAPIClientProtocol)? = nil) {
         self.apiClient = apiClient
@@ -26,19 +27,28 @@ final class DrugRepository: DrugRepositoryProtocol {
     }
 
     /// primary = 전문의약품(approvalAPIClient), fallback = e약은요(apiClient)
+    /// page 1에서 결정된 API 소스를 이후 페이지에도 일관되게 사용한다.
     func search(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
         guard let approvalAPIClient else {
             return try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
         }
-        do {
-            let primary = try await approvalAPIClient.searchDrugs(itemName: keyword, pageNo: pageNo)
-            if !primary.drugs.isEmpty || pageNo != 1 {
-                return primary
-            }
+        if pageNo == 1 {
+            do {
+                let primary = try await approvalAPIClient.searchDrugs(itemName: keyword, pageNo: pageNo)
+                if !primary.drugs.isEmpty {
+                    currentSearchUseFallback = false
+                    return primary
+                }
+            } catch {}
             let fallback = try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
-            return fallback.drugs.isEmpty ? primary : fallback
-        } catch {
-            return try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
+            currentSearchUseFallback = true
+            return fallback
+        } else {
+            if currentSearchUseFallback {
+                return try await searchEasyDrug(keyword: keyword, pageNo: pageNo)
+            } else {
+                return try await approvalAPIClient.searchDrugs(itemName: keyword, pageNo: pageNo)
+            }
         }
     }
 

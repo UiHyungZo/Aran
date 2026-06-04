@@ -105,11 +105,11 @@ final class DrugInfoViewModel: ObservableObject {
                 let combined = deduplicated(existing + result.drugs)
                 viewState = .results(combined)
             }
-            currentPage = nextPage
             totalCount = result.totalCount
         } catch {
             // 추가 로딩 실패 시 기존 결과 유지
         }
+        currentPage = nextPage
         isLoadingMore = false
     }
 
