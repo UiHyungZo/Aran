@@ -119,22 +119,28 @@ final class DrugInfoViewModel: ObservableObject {
         }
     }
 
+    private var pendingFavoriteToggle = false
+
     func selectDrug(_ drug: Drug) {
-        presentDrug(drug)
+        prepareForDetail(drug)
+        isDetailPresented = true
     }
 
-    private func presentDrug(_ drug: Drug) {
+    func selectFavorite(_ favoriteDrug: FavoriteDrug) {
+        prepareForDetail(favoriteDrug.drug)
+    }
+
+    private func prepareForDetail(_ drug: Drug) {
+        pendingFavoriteToggle = false
         let shouldLoadDetail = needsDetailEnrichment(drug)
         loadingDetailItemSeq = shouldLoadDetail ? drug.itemSeq : nil
         isDetailLoading = shouldLoadDetail
         selectedDrug = drug
-        isDetailPresented = true
         guard shouldLoadDetail else { return }
         Task { await enrichSelectedDrug(drug) }
     }
 
     private func needsDetailEnrichment(_ drug: Drug) -> Bool {
-        guard drug.approvalInfo != nil else { return false }
         return isBlank(drug.efcyQesitm) || isBlank(drug.useMethodQesitm)
     }
 
@@ -150,8 +156,15 @@ final class DrugInfoViewModel: ObservableObject {
             let enriched = try await searchDrugUseCase.enrich(drug)
             guard selectedDrug?.itemSeq == drug.itemSeq else { return }
             selectedDrug = enriched
+            if pendingFavoriteToggle {
+                pendingFavoriteToggle = false
+                performToggle(enriched)
+            }
         } catch {
-            // 상세 보강 실패 시 검색 결과로 받은 기존 Drug를 유지한다.
+            if pendingFavoriteToggle {
+                pendingFavoriteToggle = false
+                performToggle(selectedDrug ?? drug)
+            }
         }
     }
 
@@ -233,6 +246,14 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func toggleFavorite(_ drug: Drug) {
+        if isDetailLoading {
+            pendingFavoriteToggle = true
+            return
+        }
+        performToggle(drug)
+    }
+
+    private func performToggle(_ drug: Drug) {
         Task {
             do {
                 try await favoriteDrugUseCase.toggle(drug: drug)
@@ -252,10 +273,6 @@ final class DrugInfoViewModel: ObservableObject {
                 detailError = (error as? AppError)?.errorDescription ?? error.localizedDescription
             }
         }
-    }
-
-    func selectFavorite(_ favoriteDrug: FavoriteDrug) {
-        presentDrug(favoriteDrug.drug)
     }
 
     func loadFavorites() async {

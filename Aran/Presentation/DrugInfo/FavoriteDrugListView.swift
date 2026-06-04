@@ -2,6 +2,8 @@ import SwiftUI
 
 struct FavoriteDrugListView: View {
     @ObservedObject var viewModel: DrugInfoViewModel
+    let onAddDrug: (Drug) -> Void
+    @State private var isDetailPresented = false
 
     var body: some View {
         Group {
@@ -12,6 +14,7 @@ struct FavoriteDrugListView: View {
                     ForEach(viewModel.favoriteDrugs) { favoriteDrug in
                         Button {
                             viewModel.selectFavorite(favoriteDrug)
+                            isDetailPresented = true
                         } label: {
                             FavoriteDrugRow(favoriteDrug: favoriteDrug)
                         }
@@ -39,6 +42,17 @@ struct FavoriteDrugListView: View {
         .navigationTitle("즐겨찾기")
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.loadFavorites() }
+        .navigationDestination(isPresented: $isDetailPresented) {
+            if let drug = viewModel.selectedDrug {
+                DrugDetailView(
+                    drug: drug,
+                    onAddDrug: onAddDrug,
+                    isFavorite: viewModel.favoriteItemSeqs.contains(drug.itemSeq),
+                    isLoadingDetail: viewModel.isDetailLoading,
+                    onToggleFavorite: { viewModel.toggleFavorite(viewModel.selectedDrug ?? drug) }
+                )
+            }
+        }
     }
 
     private var emptyView: some View {

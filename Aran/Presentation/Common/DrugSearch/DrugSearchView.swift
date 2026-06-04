@@ -96,12 +96,12 @@ struct DrugSearchView: View {
                         onAddDrug: onAddDrug,
                         isFavorite: viewModel.isFavorite(drug),
                         isLoadingDetail: viewModel.isDetailLoading,
-                        onToggleFavorite: { viewModel.toggleFavorite(drug) }
+                        onToggleFavorite: { viewModel.toggleFavorite(viewModel.selectedDrug ?? drug) }
                     )
                 }
             }
             .navigationDestination(isPresented: $isFavoriteListPresented) {
-                FavoriteDrugListView(viewModel: viewModel)
+                FavoriteDrugListView(viewModel: viewModel, onAddDrug: onAddDrug)
             }
         }
         .background(AranColor.background)
