@@ -31,7 +31,7 @@
 | 아키텍처 | Clean Architecture + MVVM |
 | UI | SwiftUI + Combine / UIKit + RxSwift |
 | 데이터 | SwiftData |
-| 테스트 | XCTest (UseCase TDD + ViewModel) |
+| 테스트 | UnitTest, UITest |
 
 <br>
 
