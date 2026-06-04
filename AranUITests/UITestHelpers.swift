@@ -5,11 +5,12 @@ extension XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing"]
         app.launch()
+        _ = app.wait(for: .runningForeground, timeout: 5)
         return app
     }
 
     func element(_ id: String, in app: XCUIApplication) -> XCUIElement {
-        app.descendants(matching: .any)[id]
+        app.descendants(matching: .any).matching(identifier: id).firstMatch
     }
 
     @discardableResult
@@ -96,6 +97,7 @@ extension XCTestCase {
         tapElement("medication.addButton", in: app)
         typeText("프로", into: "drugSearch.searchField", in: app)
         tapElement("drugSearch.result.0", in: app, timeout: 10)
+        waitForElement("screen.medicationForm", in: app, timeout: 12)
         waitForElement("medicationForm.drugName", in: app)
 
         if !element("medicationForm.save", in: app).isEnabled {

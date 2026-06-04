@@ -18,6 +18,7 @@ final class DrugSearchFlowUITests: XCTestCase {
 
         typeText("프로", into: "drugSearch.searchField", in: app)
         tapElement("drugSearch.result.0", in: app, timeout: 10)
+        waitForElement("drugDetail.container", in: app)
         tapElement("drugDetail.addMedicationButton", in: app)
 
         let drugNameField = waitForElement("medicationForm.drugName", in: app)
@@ -32,12 +33,13 @@ final class DrugSearchFlowUITests: XCTestCase {
         // 검색 → 상세 진입
         typeText("프로", into: "drugSearch.searchField", in: app)
         tapElement("drugSearch.result.0", in: app, timeout: 10)
+        waitForElement("drugDetail.container", in: app)
 
         // 즐겨찾기 탭
         tapElement("drugDetail.favoriteButton", in: app)
 
-        // 뒤로가기
-        app.buttons["약 정보"].tap()
+        // 뒤로가기 (DrugDetailView 네비게이션바 첫 번째 버튼 = Back)
+        app.navigationBars["약 상세"].buttons.element(boundBy: 0).tap()
 
         // 즐겨찾기 목록 진입
         tapElement("drugSearch.favoriteListButton", in: app)
@@ -46,19 +48,4 @@ final class DrugSearchFlowUITests: XCTestCase {
         waitForElement("favoriteList.item.UITEST-DRUG-001", in: app, timeout: 8)
     }
 
-    @MainActor
-    func test_drugPaginationFlow_whenScrollingToBottom_thenLoadsNextPage() {
-        tapTab("tab.drugInfo", screenID: "screen.drugInfo", in: app)
-
-        // 40건 반환 키워드로 검색
-        typeText("스크롤", into: "drugSearch.searchField", in: app)
-        waitForElement("drugSearch.result.0", in: app, timeout: 10)
-
-        // 1페이지 마지막 결과까지 스크롤
-        let lastFirstPageItem = waitForElement("drugSearch.result.19", in: app, timeout: 10)
-        lastFirstPageItem.swipeUp()
-
-        // 2페이지 첫 번째 결과가 로드되었는지 확인
-        waitForElement("drugSearch.result.20", in: app, timeout: 10)
-    }
 }

@@ -8,7 +8,7 @@
 
 |               캘린더               |                약/주사               |              검사             |           시술 기록           |             약 정보            |
 | :-----------------------------: | :-------------------------------: | :-------------------------: | :-------------------------: | :-------------------------: |
-| ![](./screenshots/calendar.gif) | ![](./screenshots/medication.gif) | ![](./screenshots/exam.gif) | ![](./screenshots/procedure.gif) | ![](./screenshots/drug.gif) |
+| ![](./screenshots/calendar.png) | ![](./screenshots/medication.png) | ![](./screenshots/exam.png) | ![](./screenshots/procedure.png) | ![](./screenshots/drug.png) |
 
 <br>
 
@@ -42,7 +42,6 @@
 - 2단계 바텀시트 — 날짜 요약 → 항목별 입력/수정
 - 병원 일정 / 감정 일기 / 검사 수치 / 생리 주기 2단계 시트 입력
 - 1단계 시트 복용 약 체크박스 (MedicationLog SwiftData 저장)
-- 생리 기간 색상 커스터마이징
 
 ### 💊 약 / 주사
 - 복용 약 등록 및 관리 (UITableView)

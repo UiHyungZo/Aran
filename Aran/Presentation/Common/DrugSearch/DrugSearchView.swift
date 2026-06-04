@@ -298,6 +298,7 @@ struct DrugSearchView: View {
             }
         }
         .scrollDismissesKeyboard(.immediately)
+        .accessibilityIdentifier("drugSearch.resultsList")
     }
     
     private var emptyView: some View {
@@ -388,37 +389,38 @@ private struct DrugResultCell: View {
     let onSelect: () -> Void
     
     var body: some View {
-        Button(action: onSelect) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(drug.itemName)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.primary)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 10) {
+            Text(drug.itemName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.primary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
 
-                let subtitle = [drug.component, drug.entpName]
-                    .compactMap { $0 }
-                    .joined(separator: " · ")
-                Text(subtitle.isEmpty ? drug.entpName : subtitle)
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color.secondary)
-                    .lineLimit(1)
+            let subtitle = [drug.component, drug.entpName]
+                .compactMap { $0 }
+                .joined(separator: " · ")
+            Text(subtitle.isEmpty ? drug.entpName : subtitle)
+                .font(.system(size: 13))
+                .foregroundStyle(Color.secondary)
+                .lineLimit(1)
 
-                HStack {
-                    Spacer()
-                    Text(actionTitle)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(accentColor)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 7)
-                        .overlay(Capsule().stroke(accentColor, lineWidth: 1))
-                }
+            HStack {
+                Spacer()
+                Text(actionTitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(accentColor)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .overlay(Capsule().stroke(accentColor, lineWidth: 1))
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onSelect)
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier(accessibilityID)
+        .accessibilityAddTraits(.isButton)
     }
 }
