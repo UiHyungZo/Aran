@@ -314,6 +314,7 @@
 				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "아란";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -353,6 +354,7 @@
 				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "아란";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
