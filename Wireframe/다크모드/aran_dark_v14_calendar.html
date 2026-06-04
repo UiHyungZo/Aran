@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아란 v14.0 — 캘린더 탭 다크모드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#1a1a1a;padding:24px}
+h1{font-size:20px;font-weight:600;color:#f0f0f0;margin-bottom:4px}
+.subtitle{font-size:13px;color:#666;margin-bottom:32px}
+.section-title{font-size:15px;font-weight:600;color:#e0e0e0;margin:32px 0 12px;padding-bottom:6px;border-bottom:1.5px solid #333}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+.col{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lbl{font-size:11px;color:#666;text-align:center;letter-spacing:.03em}
+.tag{font-size:10px;color:#555;margin-bottom:2px;text-align:center}
+
+/* ── DARK WIREFRAME ── */
+.wf .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:2px solid #555;border-radius:28px;overflow:hidden}
+.wf .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.wf .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e;background:#1c1c1e}
+.wf .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.wf .nb{width:18px;height:18px;border-radius:50%;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.wf .chd{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 8px 2px;background:#2c2c2e}
+.wf .cdl{font-size:8px;text-align:center;color:#555}
+.wf .cg{display:grid;grid-template-columns:repeat(7,1fr);padding:2px 8px 4px;gap:1px}
+.wf .cc{display:flex;flex-direction:column;align-items:center;min-height:20px}
+.wf .cn{font-size:9px;color:#e0e0e0;width:15px;height:15px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.wf .cn.t{background:#e0e0e0;color:#1c1c1e;font-weight:500}
+.wf .cn.m{color:#444}
+.wf .cn.s{border:1.5px solid #e0e0e0}
+.wf .dots{display:flex;gap:1px;margin-top:1px}
+.wf .d{width:3px;height:3px;border-radius:50%;background:#666}
+.wf .ds{width:3px;height:3px;border-radius:1px;background:#444}
+.wf .leg{display:flex;flex-wrap:wrap;gap:5px;padding:4px 8px 5px;border-top:.5px solid #2c2c2e}
+.wf .li{display:flex;align-items:center;gap:2px;font-size:7px;color:#555}
+.wf .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.wf .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.wf .ti.on{color:#e0e0e0;font-weight:500}
+.wf .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e;border:.5px solid #3c3c3e}
+.wf .tic.on{background:#e0e0e0}
+.wf .sbk{background:rgba(0,0,0,0.4);padding:3px 5px 0}
+.wf .sh{background:#2c2c2e;border-radius:8px 8px 0 0;border:.5px solid #3c3c3e}
+.wf .shdl{width:20px;height:2px;background:#444;border-radius:1px;margin:4px auto 3px}
+.wf .shd{font-size:9px;font-weight:500;padding:2px 8px 4px;border-bottom:.5px solid #3c3c3e;color:#f0f0f0}
+.wf .sr{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #3c3c3e}
+.wf .srt{font-size:9px;font-weight:500;color:#e0e0e0}
+.wf .srv{font-size:8px;color:#555;margin-top:1px}
+.wf .sra{font-size:8px;color:#888}
+.wf .sh2{background:#2c2c2e;border-radius:8px 8px 0 0;border:.5px solid #3c3c3e;margin-top:2px}
+.wf .ff{padding:4px 8px;border-bottom:.5px solid #3c3c3e}
+.wf .fl{font-size:7px;color:#555;margin-bottom:1px}
+.wf .fi{background:#3c3c3e;border-radius:3px;padding:3px 6px;font-size:8px;color:#e0e0e0}
+.wf .fi.ph{color:#555}
+.wf .savebtn{margin:5px 8px 4px;background:#e0e0e0;color:#1c1c1e;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.wf .delbtn{margin:0 8px 5px;border:1px solid #444;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#888}
+.wf .emo-row{display:flex;gap:4px;padding:4px 8px;justify-content:center}
+.wf .emo{width:20px;height:20px;border-radius:50%;background:#3c3c3e;border:.5px solid #4c4c4e;display:flex;align-items:center;justify-content:center;font-size:11px}
+.wf .emo.on{border:1.5px solid #e0e0e0}
+.wf .chips{display:flex;gap:3px;padding:4px 8px;border-bottom:.5px solid #3c3c3e;flex-wrap:wrap}
+.wf .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #444;background:#3c3c3e;color:#888}
+.wf .chip.on{background:#e0e0e0;color:#1c1c1e;border-color:#e0e0e0}
+.wf .mc{display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:.5px solid #3c3c3e}
+.wf .ck{width:13px;height:13px;border-radius:50%;border:1.5px solid #444;flex-shrink:0}
+.wf .ck.on{background:#e0e0e0;border-color:#e0e0e0}
+.wf .mn{font-size:9px;font-weight:500;color:#e0e0e0}
+.wf .ssb{width:14px;height:14px;border-radius:50%;border:.5px solid #444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+
+/* ── DARK COLOR MOCKUP ── */
+.cm .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:1.5px solid #2c2c2e;border-radius:28px;overflow:hidden}
+.cm .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.cm .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e;background:#1c1c1e}
+.cm .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.cm .nb{width:18px;height:18px;border-radius:50%;border:.5px solid #3c3c3e;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.cm .chd{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 8px 2px;background:#2c2c2e}
+.cm .cdl{font-size:8px;text-align:center;color:#555}
+.cm .cg{display:grid;grid-template-columns:repeat(7,1fr);padding:2px 8px 4px;gap:1px}
+.cm .cc{display:flex;flex-direction:column;align-items:center;min-height:20px}
+.cm .cn{font-size:9px;color:#e0e0e0;width:15px;height:15px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.cm .cn.t{background:#D4688A;color:#fff;font-weight:500}
+.cm .cn.m{color:#444}
+.cm .cn.s{border:1.5px solid #D4688A}
+.cm .dots{display:flex;gap:1px;margin-top:1px}
+.cm .d{width:3px;height:3px;border-radius:50%}
+.cm .dp{background:#D4688A}
+.cm .dv{background:#7B71E8}
+.cm .dt{background:#2EC090}
+.cm .da{background:#D4921A}
+.cm .ds{width:3px;height:3px;border-radius:1px;background:#D4688A;opacity:.4}
+.cm .leg{display:flex;flex-wrap:wrap;gap:5px;padding:4px 8px 5px;border-top:.5px solid #2c2c2e}
+.cm .li{display:flex;align-items:center;gap:2px;font-size:7px;color:#555}
+.cm .ld{width:5px;height:5px;border-radius:50%}
+.cm .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.cm .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.cm .ti.on{color:#D4688A}
+.cm .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e}
+.cm .tic.on{background:#4A1828}
+.cm .sbk{background:rgba(0,0,0,0.5);padding:3px 5px 0}
+.cm .sh{background:#2c2c2e;border-radius:8px 8px 0 0;border:.5px solid #3c3c3e}
+.cm .shdl{width:20px;height:2px;background:#444;border-radius:1px;margin:4px auto 3px}
+.cm .shd{font-size:9px;font-weight:500;padding:2px 8px 4px;border-bottom:.5px solid #3c3c3e;color:#f0f0f0}
+.cm .sr{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #3c3c3e}
+.cm .srt{font-size:9px;font-weight:500;color:#e0e0e0}
+.cm .srv{font-size:8px;color:#555;margin-top:1px}
+.cm .sh2{background:#2c2c2e;border-radius:8px 8px 0 0;border:.5px solid #3c3c3e;margin-top:2px}
+.cm .ff{padding:4px 8px;border-bottom:.5px solid #3c3c3e}
+.cm .fl{font-size:7px;color:#555;margin-bottom:1px}
+.cm .fi{background:#3c3c3e;border-radius:3px;padding:3px 6px;font-size:8px;color:#e0e0e0}
+.cm .fi.ph{color:#555}
+.cm .fi.pre{background:#4A1828;color:#F4A0BA}
+.cm .savepink{margin:5px 8px 4px;background:#D4688A;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.cm .saveblue{margin:5px 8px 4px;background:#2A7FD4;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.cm .delbtn{margin:0 8px 5px;border:1px solid #5A1A1A;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#E05555;background:#2A1010}
+.cm .emo-row{display:flex;gap:4px;padding:4px 8px;justify-content:center}
+.cm .emo{width:20px;height:20px;border-radius:50%;background:#3c3c3e;border:.5px solid #4c4c4e;display:flex;align-items:center;justify-content:center;font-size:11px}
+.cm .emo.on{border:1.5px solid #D4688A;background:#4A1828}
+.cm .chips{display:flex;gap:3px;padding:4px 8px;border-bottom:.5px solid #3c3c3e;flex-wrap:wrap}
+.cm .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #3c3c3e;background:#2c2c2e;color:#888}
+.cm .chip.on{background:#1A3A5C;color:#7BB8F0;border-color:#2A7FD4}
+.cm .mc{display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:.5px solid #3c3c3e}
+.cm .ck{width:13px;height:13px;border-radius:50%;border:1.5px solid #3c3c3e;flex-shrink:0}
+.cm .ck.on{background:#7B71E8;border-color:#7B71E8}
+.cm .ckd{width:7px;height:7px;border-radius:50%;background:#fff}
+.cm .mn{font-size:9px;font-weight:500;color:#e0e0e0}
+.cm .ms{font-size:7px;color:#555}
+.cm .pill-v{display:inline-block;font-size:7px;padding:1px 5px;border-radius:20px;background:#2A2050;color:#A89EF0;margin-right:2px}
+.cm .ssb{width:14px;height:14px;border-radius:50%;border:.5px solid #3c3c3e;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+</style>
+</head>
+<body>
+
+<h1>아란 (Aran) — 📅 캘린더 탭 다크모드</h1>
+<p class="subtitle">PRD v14.0 기준 · 다크모드 와이어프레임 + 컬러 시안</p>
+
+<!-- ── DARK WIREFRAME ── -->
+<div class="section-title">WIREFRAME — Dark</div>
+<div class="row wf">
+
+<!-- 01 캘린더 메인 -->
+<div class="col">
+<div class="tag">0단계</div>
+<div class="lbl">01 캘린더 메인</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div class="chd"><div class="cdl">일</div><div class="cdl">월</div><div class="cdl">화</div><div class="cdl">수</div><div class="cdl">목</div><div class="cdl">금</div><div class="cdl">토</div></div>
+  <div class="cg">
+    <div class="cc"><div class="cn m">26</div></div><div class="cc"><div class="cn m">27</div></div><div class="cc"><div class="cn m">28</div></div><div class="cc"><div class="cn m">29</div></div><div class="cc"><div class="cn m">30</div></div><div class="cc"><div class="cn">1</div></div><div class="cc"><div class="cn">2</div></div>
+    <div class="cc"><div class="cn">3</div></div><div class="cc"><div class="cn">4</div><div class="dots"><div class="d"></div></div></div><div class="cc"><div class="cn">5</div><div class="dots"><div class="d"></div><div class="d"></div></div></div><div class="cc"><div class="cn">6</div></div><div class="cc"><div class="cn">7</div></div><div class="cc"><div class="cn">8</div><div class="dots"><div class="d"></div></div></div><div class="cc"><div class="cn">9</div></div>
+    <div class="cc"><div class="cn">10</div></div><div class="cc"><div class="cn">11</div></div><div class="cc"><div class="cn">12</div><div class="dots"><div class="d"></div><div class="d"></div></div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn t">15</div><div class="dots"><div class="d"></div></div></div><div class="cc"><div class="cn">16</div></div>
+    <div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div><div class="dots"><div class="ds"></div><div class="ds"></div></div></div><div class="cc"><div class="cn">19</div><div class="dots"><div class="ds"></div></div></div><div class="cc"><div class="cn">20</div></div><div class="cc"><div class="cn">21</div></div><div class="cc"><div class="cn">22</div><div class="dots"><div class="d"></div></div></div><div class="cc"><div class="cn">23</div></div>
+    <div class="cc"><div class="cn">24</div></div><div class="cc"><div class="cn">25</div></div><div class="cc"><div class="cn">26</div></div><div class="cc"><div class="cn">27</div></div><div class="cc"><div class="cn">28</div></div><div class="cc"><div class="cn">29</div></div><div class="cc"><div class="cn">30</div></div>
+    <div class="cc"><div class="cn">31</div></div>
+  </div>
+  <div class="leg"><div class="li"><div class="d" style="width:5px;height:5px"></div>병원</div><div class="li"><div class="d" style="width:5px;height:5px"></div>약</div><div class="li"><div class="d" style="width:5px;height:5px"></div>이식</div><div class="li"><div class="d" style="width:5px;height:5px"></div>배란</div><div class="li"><div class="ds" style="width:5px;height:5px"></div>생리</div></div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 날짜 요약 -->
+<div class="col">
+<div class="tag">1단계 시트</div>
+<div class="lbl">02 날짜 요약</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh">
+      <div class="shdl"></div>
+      <div class="shd">5월 15일 금요일</div>
+      <div class="sr"><div><div class="srt">병원 일정</div><div class="srv">내원 · 채혈</div></div><div class="sra">편집 ›</div></div>
+      <div class="sr">
+        <div style="flex:1">
+          <div class="srt">복용 약</div>
+          <div class="mc" style="padding:3px 0 0;border:none"><div class="ck on"></div><div class="mn" style="font-size:8px">고날에프</div></div>
+          <div class="mc" style="padding:2px 0 0;border:none"><div class="ck"></div><div class="mn" style="font-size:8px">프로게스테론</div></div>
+        </div>
+      </div>
+      <div class="sr"><div><div class="srt">감정 일기</div><div class="srv">기록 없음</div></div><div class="sra">작성 ›</div></div>
+      <div class="sr"><div><div class="srt">검사 수치</div><div class="srv">E2 214 · FSH 7.2</div></div><div class="sra">추가 ›</div></div>
+      <div class="sr" style="border-bottom:none"><div><div class="srt">생리 시작일</div><div class="srv">오늘로 기록하기</div></div><div class="sra">›</div></div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 감정일기 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">03 감정 일기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.25"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr"><div class="srt">병원 일정</div></div><div class="sr" style="border-bottom:none"><div class="srt">복용 약</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd">감정 일기</div>
+      <div style="padding:3px 8px 2px;font-size:8px;color:#666">오늘 기분은?</div>
+      <div class="emo-row"><div class="emo">😊</div><div class="emo on">😢</div><div class="emo">😰</div><div class="emo">😤</div><div class="emo">🥰</div></div>
+      <div style="padding:3px 8px 2px;font-size:8px;color:#666">오늘 하루 기록</div>
+      <div style="margin:2px 8px 3px;background:#3c3c3e;border-radius:4px;padding:5px 7px;font-size:8px;min-height:30px;color:#bbb">긴장되지만 기대돼요...</div>
+      <div style="text-align:right;padding:0 8px 3px;font-size:7px;color:#555">18 / 500</div>
+      <div class="savebtn">저장</div>
+      <div class="delbtn">삭제</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 병원 일정 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">04 병원 일정</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.25"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr" style="border-bottom:none"><div class="srt">병원 일정</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd">병원 일정</div>
+      <div class="ff"><div class="fl">날짜</div><div class="fi">2026년 5월 15일</div></div>
+      <div style="padding:3px 8px 2px;font-size:7px;color:#555">일정 종류 (복수 선택)</div>
+      <div class="chips"><div class="chip on">내원</div><div class="chip on">채혈</div><div class="chip">초음파</div></div>
+      <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph">예) 오전 9시 예약</div></div>
+      <div class="savebtn">저장</div>
+      <div class="delbtn">삭제</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 생리 주기 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">05 생리 주기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.25"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr" style="border-bottom:none"><div class="srt">생리 시작일</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd">생리 주기</div>
+      <div class="ff"><div class="fl">생리 시작일</div><div class="fi">2026년 5월 15일</div></div>
+      <div class="ff">
+        <div class="fl">주기 길이</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">
+          <div class="ssb">−</div>
+          <div style="font-size:13px;font-weight:500;color:#e0e0e0">28일</div>
+          <div class="ssb">+</div>
+        </div>
+      </div>
+      <div class="ff" style="border-bottom:none"><div class="fl">배란 예정일 (자동 계산)</div><div class="fi" style="color:#888">2026년 5월 29일</div></div>
+      <div class="savebtn">저장</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ── DARK COLOR MOCKUP ── -->
+<div class="section-title">COLOR MOCKUP — Dark</div>
+<div class="row cm">
+
+<!-- 01 캘린더 메인 -->
+<div class="col">
+<div class="tag">0단계</div>
+<div class="lbl">01 캘린더 메인</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div class="chd"><div class="cdl">일</div><div class="cdl">월</div><div class="cdl">화</div><div class="cdl">수</div><div class="cdl">목</div><div class="cdl">금</div><div class="cdl">토</div></div>
+  <div class="cg">
+    <div class="cc"><div class="cn m">26</div></div><div class="cc"><div class="cn m">27</div></div><div class="cc"><div class="cn m">28</div></div><div class="cc"><div class="cn m">29</div></div><div class="cc"><div class="cn m">30</div></div><div class="cc"><div class="cn">1</div></div><div class="cc"><div class="cn">2</div></div>
+    <div class="cc"><div class="cn">3</div></div><div class="cc"><div class="cn">4</div><div class="dots"><div class="d dp"></div></div></div><div class="cc"><div class="cn">5</div><div class="dots"><div class="d dv"></div><div class="d dv"></div></div></div><div class="cc"><div class="cn">6</div></div><div class="cc"><div class="cn">7</div></div><div class="cc"><div class="cn">8</div><div class="dots"><div class="d dp"></div></div></div><div class="cc"><div class="cn">9</div></div>
+    <div class="cc"><div class="cn">10</div></div><div class="cc"><div class="cn">11</div></div><div class="cc"><div class="cn">12</div><div class="dots"><div class="d dt"></div><div class="d dv"></div></div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn t">15</div><div class="dots"><div class="d dp"></div></div></div><div class="cc"><div class="cn">16</div></div>
+    <div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div><div class="dots"><div class="ds"></div><div class="ds"></div></div></div><div class="cc"><div class="cn">19</div><div class="dots"><div class="ds"></div></div></div><div class="cc"><div class="cn">20</div><div class="dots"><div class="d da"></div></div></div><div class="cc"><div class="cn">21</div></div><div class="cc"><div class="cn">22</div><div class="dots"><div class="d dv"></div></div></div><div class="cc"><div class="cn">23</div></div>
+    <div class="cc"><div class="cn">24</div></div><div class="cc"><div class="cn">25</div></div><div class="cc"><div class="cn">26</div></div><div class="cc"><div class="cn">27</div></div><div class="cc"><div class="cn">28</div></div><div class="cc"><div class="cn">29</div></div><div class="cc"><div class="cn">30</div></div>
+    <div class="cc"><div class="cn">31</div></div>
+  </div>
+  <div class="leg"><div class="li"><div class="ld dp"></div>병원</div><div class="li"><div class="ld dv"></div>약</div><div class="li"><div class="ld dt"></div>이식</div><div class="li"><div class="ld da"></div>배란</div><div class="li"><div class="ds" style="width:5px;height:5px"></div>생리</div></div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 날짜 요약 -->
+<div class="col">
+<div class="tag">1단계 시트</div>
+<div class="lbl">02 날짜 요약</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh">
+      <div class="shdl"></div>
+      <div class="shd">5월 15일 금요일 <span style="font-size:8px;background:#1A3A28;color:#2EC090;padding:1px 5px;border-radius:20px;margin-left:4px">이식일</span></div>
+      <div class="sr"><div><div class="srt">병원 일정</div><div style="margin-top:2px;display:flex;gap:3px"><span style="font-size:7px;background:#1A3A5C;color:#7BB8F0;padding:1px 5px;border-radius:20px">내원</span><span style="font-size:7px;background:#1A3A5C;color:#7BB8F0;padding:1px 5px;border-radius:20px">채혈</span></div></div><div style="font-size:8px;color:#D4688A">편집 ›</div></div>
+      <div class="sr">
+        <div style="flex:1">
+          <div class="srt">복용 약</div>
+          <div class="mc" style="padding:3px 0 0;border:none"><div class="ck on"><div class="ckd"></div></div><div class="mn" style="font-size:8px;color:#555;text-decoration:line-through">고날에프</div></div>
+          <div class="mc" style="padding:2px 0 0;border:none"><div class="ck"></div><div class="mn" style="font-size:8px">프로게스테론</div></div>
+        </div>
+      </div>
+      <div class="sr"><div><div class="srt">감정 일기</div><div class="srv">기록 없음</div></div><div style="font-size:8px;color:#D4688A">작성 ›</div></div>
+      <div class="sr"><div><div class="srt">검사 수치</div><div class="srv">E2 214 · FSH 7.2</div></div><div style="font-size:8px;color:#4A9FE8">추가 ›</div></div>
+      <div class="sr" style="border-bottom:none"><div><div class="srt">생리 시작일</div><div class="srv">오늘로 기록하기</div></div><div style="font-size:8px;color:#D4688A">›</div></div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 감정일기 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">03 감정 일기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.2"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr"><div class="srt">병원 일정</div></div><div class="sr" style="border-bottom:none"><div class="srt">복용 약</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd" style="color:#D4688A">감정 일기</div>
+      <div style="padding:3px 8px 2px;font-size:8px;color:#666">오늘 기분은?</div>
+      <div class="emo-row"><div class="emo">😊</div><div class="emo on">😢</div><div class="emo">😰</div><div class="emo">😤</div><div class="emo">🥰</div></div>
+      <div style="padding:3px 8px 2px;font-size:8px;color:#666">오늘 하루 기록</div>
+      <div style="margin:2px 8px 3px;background:#3c3c3e;border-radius:4px;padding:5px 7px;font-size:8px;min-height:30px;color:#bbb">긴장되지만 기대돼요...</div>
+      <div style="text-align:right;padding:0 8px 3px;font-size:7px;color:#555">18 / 500</div>
+      <div class="savepink">저장</div>
+      <div class="delbtn">삭제</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 병원 일정 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">04 병원 일정</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.2"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr" style="border-bottom:none"><div class="srt">병원 일정</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd" style="color:#4A9FE8">병원 일정</div>
+      <div class="ff"><div class="fl">날짜</div><div class="fi">2026년 5월 15일</div></div>
+      <div style="padding:3px 8px 2px;font-size:7px;color:#555">일정 종류 (복수 선택)</div>
+      <div class="chips"><div class="chip on">내원</div><div class="chip on">채혈</div><div class="chip">초음파</div></div>
+      <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph">예) 오전 9시 예약</div></div>
+      <div class="saveblue">저장</div>
+      <div class="delbtn">삭제</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 생리 주기 -->
+<div class="col">
+<div class="tag">2단계 시트</div>
+<div class="lbl">05 생리 주기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">2026년 5월</div><div class="nb">›</div></div>
+  <div style="padding:2px 6px;background:#1c1c1e"><div class="cg" style="padding:2px 0"><div class="cc"><div class="cn">12</div></div><div class="cc"><div class="cn">13</div></div><div class="cc"><div class="cn">14</div></div><div class="cc"><div class="cn s">15</div></div><div class="cc"><div class="cn">16</div></div><div class="cc"><div class="cn">17</div></div><div class="cc"><div class="cn">18</div></div></div></div>
+  <div class="sbk">
+    <div class="sh" style="opacity:.2"><div class="shdl"></div><div class="shd">5월 15일</div><div class="sr" style="border-bottom:none"><div class="srt">생리 시작일</div></div></div>
+    <div class="sh2">
+      <div class="shdl"></div><div class="shd" style="color:#D4688A">생리 주기</div>
+      <div class="ff"><div class="fl">생리 시작일</div><div class="fi pre">2026년 5월 15일</div></div>
+      <div class="ff">
+        <div class="fl">주기 길이</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">
+          <div class="ssb">−</div>
+          <div style="font-size:13px;font-weight:500;color:#D4688A">28일</div>
+          <div class="ssb">+</div>
+        </div>
+      </div>
+      <div class="ff" style="border-bottom:none"><div class="fl">배란 예정일 (자동 계산)</div><div class="fi" style="color:#D4921A;background:#2A1E08">2026년 5월 29일</div></div>
+      <div class="savepink">저장</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti on"><div class="tic on"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<p style="font-size:12px;color:#555;margin-top:24px;text-align:center">아란 (Aran) · PRD v14.0 · 캘린더 탭 다크모드 · 화면 5개</p>
+</body>
+</html>

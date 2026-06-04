@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아란 v14.0 — 약 정보 탭 다크모드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#1a1a1a;padding:24px}
+h1{font-size:20px;font-weight:600;color:#f0f0f0;margin-bottom:4px}
+.subtitle{font-size:13px;color:#666;margin-bottom:32px}
+.section-title{font-size:15px;font-weight:600;color:#e0e0e0;margin:32px 0 12px;padding-bottom:6px;border-bottom:1.5px solid #333}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+.col{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lbl{font-size:11px;color:#666;text-align:center;letter-spacing:.03em}
+.tag{font-size:10px;color:#555;margin-bottom:2px;text-align:center}
+
+/* ── DARK WIREFRAME ── */
+.wf .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:2px solid #555;border-radius:28px;overflow:hidden}
+.wf .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.wf .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e}
+.wf .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.wf .nb{width:18px;height:18px;border-radius:50%;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.wf .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.wf .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.wf .ti.on{color:#e0e0e0;font-weight:500}
+.wf .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e;border:.5px solid #3c3c3e}
+.wf .tic.on{background:#e0e0e0}
+.wf .sbar{margin:6px 8px;background:#2c2c2e;border-radius:6px;padding:5px 8px;font-size:8px;color:#555;display:flex;align-items:center;gap:5px;border:.5px solid #3c3c3e}
+.wf .sci{width:10px;height:10px;border-radius:50%;border:1.5px solid #555;flex-shrink:0}
+.wf .rc{padding:6px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .rn{font-size:9px;font-weight:500;color:#e0e0e0}
+.wf .rs{font-size:7px;color:#555;margin-top:1px}
+.wf .dh{padding:6px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .dn{font-size:10px;font-weight:500;color:#e0e0e0}
+.wf .dc{font-size:7px;color:#555;margin-top:1px}
+.wf .warn{margin:4px 8px;border:1px solid #444;border-radius:4px;padding:4px 6px;font-size:7px;color:#888}
+.wf .isec{padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .it{font-size:7px;font-weight:500;color:#666;margin-bottom:1px;text-transform:uppercase}
+.wf .ib{font-size:8px;color:#e0e0e0}
+.wf .savebtn{margin:5px 8px 4px;background:#e0e0e0;color:#1c1c1e;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+
+/* ── DARK COLOR MOCKUP ── */
+.cm .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:1.5px solid #2c2c2e;border-radius:28px;overflow:hidden}
+.cm .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.cm .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e}
+.cm .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.cm .nb{width:18px;height:18px;border-radius:50%;border:.5px solid #3c3c3e;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.cm .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.cm .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.cm .ti.on{color:#5FD4A0}
+.cm .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e}
+.cm .tic.on{background:#1A3A28}
+.cm .sbar{margin:6px 8px;background:#2c2c2e;border-radius:6px;padding:5px 8px;font-size:8px;color:#555;display:flex;align-items:center;gap:5px;border:.5px solid #3c3c3e}
+.cm .sci{width:10px;height:10px;border-radius:50%;border:1.5px solid #555;flex-shrink:0}
+.cm .rc{padding:6px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .rn{font-size:9px;font-weight:500;color:#e0e0e0}
+.cm .rs{font-size:7px;color:#555;margin-top:1px}
+.cm .addbtn{font-size:7px;color:#5FD4A0;background:#1A3A28;border-radius:20px;padding:2px 7px;display:inline-block;margin-top:3px}
+.cm .dh{padding:6px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .dn{font-size:10px;font-weight:500;color:#e0e0e0}
+.cm .dc{font-size:7px;color:#555;margin-top:1px}
+.cm .warn{margin:4px 8px;background:#2A1E08;border-radius:4px;padding:4px 6px;font-size:7px;color:#D4921A}
+.cm .isec{padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .it{font-size:7px;font-weight:500;color:#5FD4A0;margin-bottom:1px;text-transform:uppercase}
+.cm .ib{font-size:8px;color:#e0e0e0}
+.cm .savegreen{margin:5px 8px 4px;background:#1D9E75;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+</style>
+</head>
+<body>
+
+<h1>아란 (Aran) — 🔍 약 정보 탭 다크모드</h1>
+<p class="subtitle">PRD v14.0 기준 · 다크모드 와이어프레임 + 컬러 시안</p>
+
+<!-- ── DARK WIREFRAME ── -->
+<div class="section-title">WIREFRAME — Dark</div>
+<div class="row wf">
+
+<!-- 01 약 검색 초기 -->
+<div class="col">
+<div class="tag">초기 화면</div>
+<div class="lbl">01 약 검색 초기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar"><div class="sci"></div><span>약 이름으로 검색</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#555">최근 검색</div>
+  <div class="rc"><div class="rn">프로게스테론</div></div>
+  <div class="rc"><div class="rn">고날에프</div></div>
+  <div class="rc"><div class="rn">세트로타이드</div></div>
+  <div class="rc" style="border-bottom:none"><div class="rn">엽산</div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 검색 결과 -->
+<div class="col">
+<div class="tag">검색 결과</div>
+<div class="lbl">02 검색 결과</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#666"><div class="sci" style="border-color:#888"></div><span style="color:#e0e0e0">프로게스테론</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#555">검색 결과 3건 · e약은요 API</div>
+  <div class="rc">
+    <div class="rn">프로게스테론 질좌약 200mg</div>
+    <div class="rs">한국유나이티드제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #444;border-radius:20px;padding:2px 6px;color:#888">상세 보기 ›</div></div>
+  </div>
+  <div class="rc">
+    <div class="rn">프로게스테론 주사액 50mg</div>
+    <div class="rs">동국제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #444;border-radius:20px;padding:2px 6px;color:#888">상세 보기 ›</div></div>
+  </div>
+  <div class="rc" style="border-bottom:none">
+    <div class="rn">프로게스테론 연질캡슐 100mg</div>
+    <div class="rs">명인제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #444;border-radius:20px;padding:2px 6px;color:#888">상세 보기 ›</div></div>
+  </div>
+  <div style="margin:5px 8px;background:#2c2c2e;border-radius:5px;padding:6px;text-align:center;font-size:8px;color:#666;border:.5px dashed #444">직접 입력하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 약 상세 -->
+<div class="col">
+<div class="tag">상세 보기</div>
+<div class="lbl">03 약 상세</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 상세</div><div style="font-size:12px;color:#888">★</div></div>
+  <div class="dh">
+    <div class="dn">프로게스테론 질좌약 200mg</div>
+    <div class="dc">한국유나이티드제약</div>
+    <div style="display:inline-block;margin-top:3px;font-size:7px;background:#3c3c3e;border-radius:20px;padding:1px 5px;color:#888">프로게스테론 200mg</div>
+  </div>
+  <div class="warn">⚠ 전문의약품입니다. 의사 처방에 따라 사용하세요.</div>
+  <div class="isec"><div class="it">효능</div><div class="ib">황체기 지지, 무월경 치료</div></div>
+  <div class="isec"><div class="it">사용법</div><div class="ib">1일 1~2회, 질 내 삽입</div></div>
+  <div class="isec"><div class="it">주의사항</div><div class="ib">혈전증, 간장애 환자 금기</div></div>
+  <div class="isec" style="border-bottom:none"><div class="it">보관법</div><div class="ib">실온 보관</div></div>
+  <div class="savebtn">이 약 추가하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 에러/폴백 -->
+<div class="col">
+<div class="tag">에러 처리</div>
+<div class="lbl">04 네트워크 에러 / 폴백</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#666"><div class="sci" style="border-color:#888"></div><span style="color:#e0e0e0">프로게스테론</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="margin:8px;background:#2c2c2e;border-radius:6px;padding:10px;text-align:center;border:.5px solid #3c3c3e">
+    <div style="font-size:18px;margin-bottom:4px">📡</div>
+    <div style="font-size:9px;font-weight:500;color:#e0e0e0;margin-bottom:2px">검색 결과를 불러올 수 없어요</div>
+    <div style="font-size:8px;color:#555;margin-bottom:8px">네트워크 연결을 확인해주세요</div>
+    <div style="font-size:8px;border:.5px solid #555;border-radius:5px;padding:4px 8px;display:inline-block;color:#888">다시 시도</div>
+  </div>
+  <div style="margin:4px 8px;background:#2c2c2e;border-radius:5px;padding:8px;text-align:center;border:.5px solid #3c3c3e">
+    <div style="font-size:8px;color:#666;margin-bottom:4px">검색이 안 되나요?</div>
+    <div style="font-size:8px;border:.5px solid #555;color:#888;border-radius:5px;padding:4px 10px;display:inline-block">직접 입력하기</div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ── DARK COLOR MOCKUP ── -->
+<div class="section-title">COLOR MOCKUP — Dark</div>
+<div class="row cm">
+
+<!-- 01 약 검색 초기 -->
+<div class="col">
+<div class="tag">초기 화면</div>
+<div class="lbl">01 약 검색 초기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar"><div class="sci"></div><span>약 이름으로 검색</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#555">최근 검색</div>
+  <div class="rc"><div class="rn">프로게스테론</div></div>
+  <div class="rc"><div class="rn">고날에프</div></div>
+  <div class="rc"><div class="rn">세트로타이드</div></div>
+  <div class="rc" style="border-bottom:none"><div class="rn">엽산</div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 검색 결과 -->
+<div class="col">
+<div class="tag">검색 결과</div>
+<div class="lbl">02 검색 결과</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#1D9E75;background:#2c2c2e"><div class="sci" style="border-color:#1D9E75"></div><span style="color:#e0e0e0">프로게스테론</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#555">검색 결과 3건 · e약은요 API</div>
+  <div class="rc">
+    <div class="rn">프로게스테론 질좌약 200mg</div>
+    <div class="rs">한국유나이티드제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">상세 보기 ›</div></div>
+  </div>
+  <div class="rc">
+    <div class="rn">프로게스테론 주사액 50mg</div>
+    <div class="rs">동국제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">상세 보기 ›</div></div>
+  </div>
+  <div class="rc" style="border-bottom:none">
+    <div class="rn">프로게스테론 연질캡슐 100mg</div>
+    <div class="rs">명인제약</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">상세 보기 ›</div></div>
+  </div>
+  <div style="margin:5px 8px;background:#2c2c2e;border-radius:5px;padding:6px;text-align:center;font-size:8px;color:#666;border:.5px dashed #444">직접 입력하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 약 상세 -->
+<div class="col">
+<div class="tag">상세 보기</div>
+<div class="lbl">03 약 상세</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 상세</div><div style="font-size:12px;color:#D4921A">★</div></div>
+  <div class="dh">
+    <div class="dn">프로게스테론 질좌약 200mg</div>
+    <div class="dc">한국유나이티드제약</div>
+    <div style="display:inline-block;margin-top:3px;font-size:7px;background:#1A3A28;color:#5FD4A0;border-radius:20px;padding:1px 5px">프로게스테론 200mg</div>
+  </div>
+  <div class="warn">⚠ 전문의약품입니다. 의사 처방에 따라 사용하세요.</div>
+  <div class="isec"><div class="it">효능</div><div class="ib">황체기 지지, 무월경 치료</div></div>
+  <div class="isec"><div class="it">사용법</div><div class="ib">1일 1~2회, 질 내 삽입</div></div>
+  <div class="isec"><div class="it">주의사항</div><div class="ib">혈전증, 간장애 환자 금기</div></div>
+  <div class="isec" style="border-bottom:none"><div class="it">보관법</div><div class="ib">실온 보관</div></div>
+  <div class="savegreen">이 약 추가하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 에러/폴백 -->
+<div class="col">
+<div class="tag">에러 처리</div>
+<div class="lbl">04 네트워크 에러 / 폴백</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 정보</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#1D9E75;background:#2c2c2e"><div class="sci" style="border-color:#1D9E75"></div><span style="color:#e0e0e0">프로게스테론</span><div style="margin-left:auto;font-size:10px;color:#555">×</div></div>
+  <div style="margin:8px;background:#2c2c2e;border-radius:6px;padding:10px;text-align:center;border:.5px solid #3c3c3e">
+    <div style="font-size:18px;margin-bottom:4px">📡</div>
+    <div style="font-size:9px;font-weight:500;color:#e0e0e0;margin-bottom:2px">검색 결과를 불러올 수 없어요</div>
+    <div style="font-size:8px;color:#555;margin-bottom:8px">네트워크 연결을 확인해주세요</div>
+    <div style="font-size:8px;background:#1A3A28;color:#5FD4A0;border-radius:5px;padding:4px 10px;display:inline-block">다시 시도</div>
+  </div>
+  <div style="margin:4px 8px;background:#2c2c2e;border-radius:5px;padding:8px;text-align:center;border:.5px solid #3c3c3e">
+    <div style="font-size:8px;color:#666;margin-bottom:4px">검색이 안 되나요?</div>
+    <div style="font-size:8px;border:.5px solid #1D9E75;color:#5FD4A0;border-radius:5px;padding:4px 10px;display:inline-block">직접 입력하기</div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti on"><div class="tic on"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<p style="font-size:12px;color:#555;margin-top:24px;text-align:center">아란 (Aran) · PRD v14.0 · 약 정보 탭 다크모드 · 화면 4개</p>
+</body>
+</html>

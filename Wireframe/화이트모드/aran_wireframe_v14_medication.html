@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아란 v14.0 — 약/주사 탭</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#f5f4f0;padding:24px}
+h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:32px}
+.section-title{font-size:15px;font-weight:600;color:#1a1a1a;margin:32px 0 12px;padding-bottom:6px;border-bottom:1.5px solid #ddd}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+.col{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lbl{font-size:11px;color:#888;text-align:center;letter-spacing:.03em}
+.tag{font-size:10px;color:#aaa;margin-bottom:2px;text-align:center}
+
+/* ── WIREFRAME ── */
+.wf .phone{width:158px;flex-shrink:0;background:#fff;border:2px solid #1a1a1a;border-radius:28px;overflow:hidden}
+.wf .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#999;border-bottom:.5px solid #eee}
+.wf .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #eee}
+.wf .nt{font-size:11px;font-weight:500;color:#1a1a1a}
+.wf .nb{width:18px;height:18px;border-radius:50%;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666}
+.wf .tbar{display:flex;border-top:.5px solid #eee}
+.wf .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#aaa;gap:1px}
+.wf .ti.on{color:#1a1a1a;font-weight:500}
+.wf .tic{width:12px;height:12px;border-radius:2px;background:#eee;border:.5px solid #ddd}
+.wf .tic.on{background:#1a1a1a}
+.wf .sec-hd{background:#f5f5f5;padding:3px 8px;font-size:8px;color:#999;font-weight:500}
+.wf .mc{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:.5px solid #eee}
+.wf .ck{width:13px;height:13px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0}
+.wf .ck.on{background:#1a1a1a;border-color:#1a1a1a}
+.wf .mn{font-size:9px;font-weight:500;color:#1a1a1a}
+.wf .ms{font-size:7px;color:#aaa}
+.wf .mt{font-size:8px;color:#888;margin-left:auto}
+.wf .sw{display:flex;border-bottom:.5px solid #eee;overflow:hidden}
+.wf .swb{width:32px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:500}
+.wf .ff{padding:4px 8px;border-bottom:.5px solid #eee}
+.wf .fl{font-size:7px;color:#aaa;margin-bottom:1px}
+.wf .fi{background:#f5f5f5;border-radius:3px;padding:3px 6px;font-size:8px;color:#1a1a1a}
+.wf .fi.ph{color:#bbb}
+.wf .savebtn{margin:5px 8px 4px;background:#1a1a1a;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.wf .delbtn{margin:0 8px 5px;border:1px solid #ccc;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#888}
+.wf .toggle{width:26px;height:14px;background:#1a1a1a;border-radius:7px;position:relative;flex-shrink:0}
+.wf .toggle-dot{width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px}
+.wf .sbar{margin:6px 8px;background:#f5f5f5;border-radius:6px;padding:5px 8px;font-size:8px;color:#aaa;display:flex;align-items:center;gap:5px;border:.5px solid #ddd}
+.wf .sci{width:10px;height:10px;border-radius:50%;border:1.5px solid #aaa}
+.wf .rc{padding:5px 8px;border-bottom:.5px solid #eee}
+.wf .rn{font-size:9px;font-weight:500;color:#1a1a1a}
+.wf .rs{font-size:7px;color:#aaa;margin-top:1px}
+.wf .noti-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #eee}
+.wf .noti-t{font-size:9px;color:#1a1a1a}
+.wf .noti-s{font-size:7px;color:#aaa}
+
+/* ── COLOR MOCKUP ── */
+.cm .phone{width:158px;flex-shrink:0;background:#fff;border:1.5px solid #e2e0d6;border-radius:28px;overflow:hidden}
+.cm .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#999;border-bottom:.5px solid #ede9e0}
+.cm .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #ede9e0}
+.cm .nt{font-size:11px;font-weight:500;color:#1a1a1a}
+.cm .nb{width:18px;height:18px;border-radius:50%;border:.5px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666}
+.cm .tbar{display:flex;border-top:.5px solid #ede9e0}
+.cm .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#aaa;gap:1px}
+.cm .ti.on{color:#534AB7}
+.cm .tic{width:12px;height:12px;border-radius:2px;background:#f0ede6}
+.cm .tic.on{background:#EEEDFE}
+.cm .sec-hd{background:#faf8f3;padding:3px 8px;font-size:8px;color:#999;font-weight:500}
+.cm .mc{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:.5px solid #ede9e0}
+.cm .ck{width:13px;height:13px;border-radius:50%;border:1.5px solid #ddd;flex-shrink:0}
+.cm .ck.on{background:#534AB7;border-color:#534AB7}
+.cm .ckd{width:7px;height:7px;border-radius:50%;background:#fff}
+.cm .mn{font-size:9px;font-weight:500;color:#1a1a1a}
+.cm .ms{font-size:7px;color:#aaa}
+.cm .mt{font-size:8px;color:#888;margin-left:auto}
+.cm .sw{display:flex;border-bottom:.5px solid #ede9e0;overflow:hidden}
+.cm .swb-del{width:32px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:500;background:#A32D2D;color:#fff}
+.cm .swb-stop{width:32px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:500;background:#888;color:#fff}
+.cm .ff{padding:4px 8px;border-bottom:.5px solid #ede9e0}
+.cm .fl{font-size:7px;color:#aaa;margin-bottom:1px}
+.cm .fi{background:#faf8f3;border-radius:3px;padding:3px 6px;font-size:8px;color:#1a1a1a}
+.cm .fi.ph{color:#ccc}
+.cm .fi.purple{background:#EEEDFE;color:#3C3489}
+.cm .savepurple{margin:5px 8px 4px;background:#534AB7;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.cm .delbtn{margin:0 8px 5px;border:1px solid #FCEBEB;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#A32D2D;background:#FCEBEB}
+.cm .toggle{width:26px;height:14px;background:#534AB7;border-radius:7px;position:relative;flex-shrink:0}
+.cm .toggle-dot{width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px}
+.cm .toggle-off{width:26px;height:14px;background:#ddd;border-radius:7px;position:relative;flex-shrink:0}
+.cm .toggle-dot-off{width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px}
+.cm .sbar{margin:6px 8px;background:#faf8f3;border-radius:6px;padding:5px 8px;font-size:8px;color:#aaa;display:flex;align-items:center;gap:5px;border:.5px solid #ede9e0}
+.cm .sci{width:10px;height:10px;border-radius:50%;border:1.5px solid #aaa}
+.cm .rc{padding:5px 8px;border-bottom:.5px solid #ede9e0}
+.cm .rn{font-size:9px;font-weight:500;color:#1a1a1a}
+.cm .rs{font-size:7px;color:#aaa;margin-top:1px}
+.cm .addbtn{font-size:7px;color:#534AB7;background:#EEEDFE;border-radius:20px;padding:2px 7px;display:inline-block;margin-top:3px}
+.cm .noti-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #ede9e0}
+.cm .noti-t{font-size:9px;color:#1a1a1a}
+.cm .noti-s{font-size:7px;color:#aaa}
+</style>
+</head>
+<body>
+
+<h1>아란 (Aran) — 💊 약/주사 탭</h1>
+<p class="subtitle">PRD v14.0 기준 · 와이어프레임 + 컬러 시안</p>
+
+<!-- ── WIREFRAME ── -->
+<div class="section-title">WIREFRAME</div>
+<div class="row wf">
+
+<!-- 01 약 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 약 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 / 주사</div><div class="nb">+</div></div>
+  <div class="sec-hd">복용 중 (3)</div>
+  <div class="mc"><div class="ck on"></div><div><div class="mn">고날에프 펜</div><div class="ms">오전 9:00 · 매일</div></div><div class="mt">›</div></div>
+  <div class="mc"><div class="ck on"></div><div><div class="mn">프로게스테론 질정 200mg</div><div class="ms">저녁 9:00 · 매일</div></div><div class="mt">›</div></div>
+  <div class="sw">
+    <div class="mc" style="flex:1;border-bottom:none;transform:translateX(-64px)">
+      <div class="ck"></div>
+      <div><div class="mn">엠파시스 100mg</div><div class="ms">오후 1:00 · 매일</div></div>
+      <div class="mt">›</div>
+    </div>
+    <div style="display:flex"><div class="swb" style="background:#888;color:#fff">중단</div><div class="swb" style="background:#1a1a1a;color:#fff">삭제</div></div>
+  </div>
+  <div class="sec-hd">중단됨 (2)</div>
+  <div class="mc" style="opacity:.4"><div class="ck"></div><div><div class="mn">세트로타이드</div><div class="ms">중단일 5/10</div></div></div>
+  <div class="mc" style="opacity:.4;border-bottom:none"><div class="ck"></div><div><div class="mn">디클로페낙정</div><div class="ms">중단일 4/20</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 약 등록 폼 -->
+<div class="col">
+<div class="tag">등록</div>
+<div class="lbl">02 약 등록 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">약 등록</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">약 이름 *</div><div class="fi ph">약 검색으로 자동 입력</div></div>
+  <div class="ff"><div class="fl">성분명 (자동 입력)</div><div class="fi ph">예) Follitropin alfa</div></div>
+  <div class="ff"><div class="fl">용량/메모</div><div class="fi ph">예) 300IU/0.5mL</div></div>
+  <div style="padding:4px 8px 2px;font-size:8px;color:#aaa;font-weight:500">복용 시간 *</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="display:flex;align-items:center;gap:4px">
+      <div class="ck on"></div>
+      <div class="fi" style="min-width:50px;padding:3px 5px">오전 9:00</div>
+      <div class="fi" style="padding:3px 5px">매일</div>
+    </div>
+    <div style="font-size:10px;color:#aaa">−</div>
+  </div>
+  <div style="padding:4px 8px;font-size:8px;color:#888;text-align:center;border-bottom:.5px solid #eee">+ 시간 추가</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #eee">
+    <div style="font-size:9px;font-weight:500">알림 설정</div>
+    <div class="toggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div class="savebtn">저장하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 약 수정 폼 -->
+<div class="col">
+<div class="tag">수정 (셀 탭)</div>
+<div class="lbl">03 약 수정 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 수정</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">약 이름</div><div class="fi">고날에프 펜</div></div>
+  <div class="ff"><div class="fl">성분명</div><div class="fi">Follitropin alfa</div></div>
+  <div class="ff"><div class="fl">용량/메모</div><div class="fi">300IU/0.5mL</div></div>
+  <div style="padding:4px 8px 2px;font-size:8px;color:#aaa;font-weight:500">복용 시간</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="display:flex;align-items:center;gap:4px">
+      <div class="ck on"></div>
+      <div class="fi" style="min-width:50px;padding:3px 5px">오전 9:00</div>
+      <div class="fi" style="padding:3px 5px">매일</div>
+    </div>
+    <div style="font-size:10px;color:#aaa">−</div>
+  </div>
+  <div style="padding:4px 8px;font-size:8px;color:#888;text-align:center;border-bottom:.5px solid #eee">+ 시간 추가</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #eee">
+    <div style="font-size:9px;font-weight:500">알림 설정</div>
+    <div class="toggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div class="savebtn">수정 저장</div>
+  <div class="delbtn">이 약 삭제</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 약 검색 -->
+<div class="col">
+<div class="tag">등록 시 약 검색</div>
+<div class="lbl">04 약 검색 (register mode)</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 검색</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#888"><div class="sci" style="border-color:#888"></div><span style="color:#1a1a1a">고날에프</span><div style="margin-left:auto;font-size:10px;color:#aaa">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#aaa">검색 결과 3건</div>
+  <div class="rc"><div class="rn">고날에프 펜</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #ccc;border-radius:20px;padding:2px 6px;color:#888">이 약 추가하기</div></div></div>
+  <div class="rc"><div class="rn">고날에프 75IU</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #ccc;border-radius:20px;padding:2px 6px;color:#888">이 약 추가하기</div></div></div>
+  <div class="rc" style="border-bottom:none"><div class="rn">고날에프 HP 75IU</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div style="font-size:7px;border:.5px solid #ccc;border-radius:20px;padding:2px 6px;color:#888">이 약 추가하기</div></div></div>
+  <div style="margin:5px 8px;background:#f5f5f5;border-radius:5px;padding:6px;text-align:center;font-size:8px;color:#888;border:.5px dashed #ddd">직접 입력하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 알림 미리보기 -->
+<div class="col">
+<div class="tag">알림</div>
+<div class="lbl">05 알림 미리보기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">알림 설정</div><div style="width:18px"></div></div>
+  <div class="noti-row"><div><div class="noti-t">고날에프 펜</div><div class="noti-s">오전 9:00 · 매일</div></div><div class="toggle"><div class="toggle-dot"></div></div></div>
+  <div class="noti-row"><div><div class="noti-t">프로게스테론 질정</div><div class="noti-s">저녁 9:00 · 매일</div></div><div class="toggle"><div class="toggle-dot"></div></div></div>
+  <div class="noti-row" style="border-bottom:none"><div><div class="noti-t">엠파시스 100mg</div><div class="noti-s">오후 1:00 · 매일</div></div><div style="width:26px;height:14px;background:#ddd;border-radius:7px;position:relative"><div style="width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px"></div></div></div>
+  <div style="margin:8px;background:#f5f5f5;border-radius:6px;padding:8px">
+    <div style="font-size:8px;color:#888;margin-bottom:4px">미리보기</div>
+    <div style="background:#fff;border-radius:5px;padding:6px 8px;border:.5px solid #ddd">
+      <div style="font-size:8px;font-weight:500;color:#1a1a1a">💊 아란</div>
+      <div style="font-size:8px;color:#555;margin-top:2px">고날에프 펜 복용 시간이에요</div>
+      <div style="font-size:7px;color:#aaa;margin-top:1px">오전 9:00</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ── COLOR MOCKUP ── -->
+<div class="section-title">COLOR MOCKUP</div>
+<div class="row cm">
+
+<!-- 01 약 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 약 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">약 / 주사</div><div class="nb" style="background:#EEEDFE;border-color:#534AB7;color:#534AB7">+</div></div>
+  <div class="sec-hd">복용 중 (3)</div>
+  <div class="mc"><div class="ck on"><div class="ckd"></div></div><div><div class="mn">고날에프 펜</div><div class="ms">오전 9:00 · 매일</div></div><div class="mt" style="color:#534AB7">›</div></div>
+  <div class="mc"><div class="ck on"><div class="ckd"></div></div><div><div class="mn">프로게스테론 질정 200mg</div><div class="ms">저녁 9:00 · 매일</div></div><div class="mt" style="color:#534AB7">›</div></div>
+  <div class="sw">
+    <div class="mc" style="flex:1;border-bottom:none;transform:translateX(-64px)">
+      <div class="ck"></div>
+      <div><div class="mn">엠파시스 100mg</div><div class="ms">오후 1:00 · 매일</div></div>
+      <div class="mt" style="color:#534AB7">›</div>
+    </div>
+    <div style="display:flex"><div class="swb-stop">중단</div><div class="swb-del">삭제</div></div>
+  </div>
+  <div class="sec-hd">중단됨 (2)</div>
+  <div class="mc" style="opacity:.4"><div class="ck"></div><div><div class="mn">세트로타이드</div><div class="ms">중단일 5/10</div></div></div>
+  <div class="mc" style="opacity:.4;border-bottom:none"><div class="ck"></div><div><div class="mn">디클로페낙정</div><div class="ms">중단일 4/20</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 약 등록 폼 -->
+<div class="col">
+<div class="tag">등록</div>
+<div class="lbl">02 약 등록 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">약 등록</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">약 이름 *</div><div class="fi ph">약 검색으로 자동 입력</div></div>
+  <div class="ff"><div class="fl">성분명 (자동 입력)</div><div class="fi ph">예) Follitropin alfa</div></div>
+  <div class="ff"><div class="fl">용량/메모</div><div class="fi ph">예) 300IU/0.5mL</div></div>
+  <div style="padding:4px 8px 2px;font-size:8px;color:#aaa;font-weight:500">복용 시간 *</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:.5px solid #ede9e0">
+    <div style="display:flex;align-items:center;gap:4px">
+      <div class="ck on"><div class="ckd"></div></div>
+      <div class="fi purple" style="min-width:50px;padding:3px 5px">오전 9:00</div>
+      <div class="fi" style="padding:3px 5px;color:#888">매일</div>
+    </div>
+    <div style="font-size:10px;color:#aaa">−</div>
+  </div>
+  <div style="padding:4px 8px;font-size:8px;color:#534AB7;text-align:center;border-bottom:.5px solid #ede9e0">+ 시간 추가</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #ede9e0">
+    <div style="font-size:9px;font-weight:500">알림 설정</div>
+    <div class="toggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div class="savepurple">저장하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 약 수정 폼 -->
+<div class="col">
+<div class="tag">수정 (셀 탭)</div>
+<div class="lbl">03 약 수정 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 수정</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">약 이름</div><div class="fi purple">고날에프 펜</div></div>
+  <div class="ff"><div class="fl">성분명</div><div class="fi purple">Follitropin alfa</div></div>
+  <div class="ff"><div class="fl">용량/메모</div><div class="fi">300IU/0.5mL</div></div>
+  <div style="padding:4px 8px 2px;font-size:8px;color:#aaa;font-weight:500">복용 시간</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:.5px solid #ede9e0">
+    <div style="display:flex;align-items:center;gap:4px">
+      <div class="ck on"><div class="ckd"></div></div>
+      <div class="fi purple" style="min-width:50px;padding:3px 5px">오전 9:00</div>
+      <div class="fi" style="padding:3px 5px;color:#888">매일</div>
+    </div>
+    <div style="font-size:10px;color:#aaa">−</div>
+  </div>
+  <div style="padding:4px 8px;font-size:8px;color:#534AB7;text-align:center;border-bottom:.5px solid #ede9e0">+ 시간 추가</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #ede9e0">
+    <div style="font-size:9px;font-weight:500">알림 설정</div>
+    <div class="toggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div class="savepurple">수정 저장</div>
+  <div class="delbtn">이 약 삭제</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 약 검색 -->
+<div class="col">
+<div class="tag">등록 시 약 검색</div>
+<div class="lbl">04 약 검색 (register mode)</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">약 검색</div><div style="width:18px"></div></div>
+  <div class="sbar" style="border-color:#534AB7;background:#fff"><div class="sci" style="border-color:#534AB7"></div><span style="color:#1a1a1a">고날에프</span><div style="margin-left:auto;font-size:10px;color:#aaa">×</div></div>
+  <div style="padding:2px 8px 3px;font-size:8px;color:#aaa">검색 결과 3건</div>
+  <div class="rc"><div class="rn">고날에프 펜</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">이 약 추가하기</div></div></div>
+  <div class="rc"><div class="rn">고날에프 75IU</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">이 약 추가하기</div></div></div>
+  <div class="rc" style="border-bottom:none"><div class="rn">고날에프 HP 75IU</div><div class="rs">Follitropin alfa · Merck</div><div style="display:flex;justify-content:flex-end;margin-top:3px"><div class="addbtn">이 약 추가하기</div></div></div>
+  <div style="margin:5px 8px;background:#faf8f3;border-radius:5px;padding:6px;text-align:center;font-size:8px;color:#888;border:.5px dashed #ddd">직접 입력하기</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 알림 미리보기 -->
+<div class="col">
+<div class="tag">알림</div>
+<div class="lbl">05 알림 미리보기</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">알림 설정</div><div style="width:18px"></div></div>
+  <div class="noti-row"><div><div class="noti-t">고날에프 펜</div><div class="noti-s">오전 9:00 · 매일</div></div><div class="toggle"><div class="toggle-dot"></div></div></div>
+  <div class="noti-row"><div><div class="noti-t">프로게스테론 질정</div><div class="noti-s">저녁 9:00 · 매일</div></div><div class="toggle"><div class="toggle-dot"></div></div></div>
+  <div class="noti-row"><div><div class="noti-t">엠파시스 100mg</div><div class="noti-s">오후 1:00 · 매일</div></div><div class="toggle-off"><div class="toggle-dot-off"></div></div></div>
+  <div style="margin:7px 8px;background:#faf8f3;border-radius:6px;padding:8px;border:.5px solid #ede9e0">
+    <div style="font-size:8px;color:#888;margin-bottom:5px;font-weight:500">미리보기</div>
+    <div style="background:#fff;border-radius:8px;padding:7px 9px;border:.5px solid #ede9e0;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+      <div style="font-size:8px;font-weight:600;color:#534AB7">💊 아란</div>
+      <div style="font-size:8px;color:#333;margin-top:2px">고날에프 펜 복용 시간이에요</div>
+      <div style="font-size:7px;color:#aaa;margin-top:1px">오전 9:00</div>
+    </div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti on"><div class="tic on"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<p style="font-size:12px;color:#555;margin-top:24px;text-align:center">아란 (Aran) · PRD v14.0 · 약/주사 탭 · 화면 5개</p>
+</body>
+</html>
