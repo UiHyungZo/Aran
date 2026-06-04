@@ -19,6 +19,7 @@ struct FavoriteDrugListView: View {
                             FavoriteDrugRow(favoriteDrug: favoriteDrug)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("favoriteList.item.\(favoriteDrug.itemSeq)")
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 viewModel.removeFavorite(favoriteDrug)

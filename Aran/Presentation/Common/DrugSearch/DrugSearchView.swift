@@ -77,6 +77,7 @@ struct DrugSearchView: View {
                                 .foregroundStyle(Color.yellow)
                         }
                         .accessibilityLabel("즐겨찾기")
+                        .accessibilityIdentifier("drugSearch.favoriteListButton")
                     }
                 }
             }

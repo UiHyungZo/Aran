@@ -38,6 +38,7 @@ struct DrugDetailView: View {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                         .foregroundStyle(isFavorite ? Color.yellow : Color.secondary)
                 }
+                .accessibilityIdentifier("drugDetail.favoriteButton")
             }
         }
         .safeAreaInset(edge: .bottom) { addButton }
