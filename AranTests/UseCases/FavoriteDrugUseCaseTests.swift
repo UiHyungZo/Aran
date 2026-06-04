@@ -46,17 +46,49 @@ final class FavoriteDrugUseCaseTests: XCTestCase {
         XCTAssertEqual(repository.deletedItemSeqs, ["A"])
         XCTAssertFalse(isFavorite)
     }
+
+    func testUpdateDetailIfFavorited_whenFavorited_savesEnrichedData() async throws {
+        // given: 효능이 없는 상태로 즐겨찾기 저장
+        let sparse = makeDrug(itemSeq: "A", efcyQesitm: nil, useMethodQesitm: nil)
+        repository.favoriteDrugs = [FavoriteDrug(drug: sparse)]
+        repository.savedDrugs = []
+
+        // when: enrich된 완전한 데이터로 갱신
+        let enriched = makeDrug(itemSeq: "A", efcyQesitm: "상세 효능", useMethodQesitm: "상세 용법")
+        try await sut.updateDetailIfFavorited(drug: enriched)
+
+        // then: 갱신된 데이터가 저장됨
+        XCTAssertEqual(repository.savedDrugs.map(\.itemSeq), ["A"])
+        XCTAssertEqual(repository.savedDrugs.first?.efcyQesitm, "상세 효능")
+        XCTAssertEqual(repository.savedDrugs.first?.useMethodQesitm, "상세 용법")
+    }
+
+    func testUpdateDetailIfFavorited_whenNotFavorited_doesNotSave() async throws {
+        // given: 즐겨찾기 없음
+        repository.favoriteDrugs = []
+        repository.savedDrugs = []
+
+        // when
+        try await sut.updateDetailIfFavorited(drug: makeDrug(itemSeq: "A"))
+
+        // then: 저장되지 않음
+        XCTAssertTrue(repository.savedDrugs.isEmpty)
+    }
 }
 
 private extension FavoriteDrugUseCaseTests {
-    func makeDrug(itemSeq: String) -> Drug {
+    func makeDrug(
+        itemSeq: String,
+        efcyQesitm: String? = "효능",
+        useMethodQesitm: String? = "사용법"
+    ) -> Drug {
         Drug(
             itemSeq: itemSeq,
             itemName: "프로게스테론",
             entpName: "제약사",
             component: "Progesterone",
-            efcyQesitm: "효능",
-            useMethodQesitm: "사용법",
+            efcyQesitm: efcyQesitm,
+            useMethodQesitm: useMethodQesitm,
             atpnWarnQesitm: nil,
             atpnQesitm: nil,
             intrcQesitm: nil,

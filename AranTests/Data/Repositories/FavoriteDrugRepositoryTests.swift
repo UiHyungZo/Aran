@@ -50,24 +50,45 @@ final class FavoriteDrugRepositoryTests: XCTestCase {
         XCTAssertTrue(result.isEmpty)
         XCTAssertFalse(exists)
     }
+
+    func testSave_whenUpdatingExistingFavorite_preservesCreatedAt() async throws {
+        // given: 특정 시점에 저장된 즐겨찾기
+        let originalDate = Date(timeIntervalSince1970: 1_000_000)
+        try await sut.save(makeFavorite(itemSeq: "A", efcyQesitm: nil, createdAt: originalDate))
+
+        // when: enrich 후 갱신 저장 (새 createdAt 포함)
+        try await sut.save(makeFavorite(itemSeq: "A", efcyQesitm: "상세 효능", createdAt: Date()))
+
+        // then: 정렬 기준인 createdAt은 원래 값 유지, 상세 내용은 갱신됨
+        let result = try await sut.fetchAll()
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result.first?.createdAt, originalDate)
+        XCTAssertEqual(result.first?.efcyQesitm, "상세 효능")
+    }
 }
 
 private extension FavoriteDrugRepositoryTests {
-    func makeFavorite(itemSeq: String, itemName: String = "프로게스테론") -> FavoriteDrug {
+    func makeFavorite(
+        itemSeq: String,
+        itemName: String = "프로게스테론",
+        efcyQesitm: String? = "효능",
+        createdAt: Date = Date()
+    ) -> FavoriteDrug {
         FavoriteDrug(
             id: UUID(),
             itemSeq: itemSeq,
             itemName: itemName,
             entpName: "제약사",
             component: "Progesterone",
-            efcyQesitm: "효능",
+            efcyQesitm: efcyQesitm,
             useMethodQesitm: nil,
             atpnWarnQesitm: nil,
             atpnQesitm: nil,
             intrcQesitm: nil,
             seQesitm: nil,
             depositMethodQesitm: nil,
-            itemImage: nil
+            itemImage: nil,
+            createdAt: createdAt
         )
     }
 }

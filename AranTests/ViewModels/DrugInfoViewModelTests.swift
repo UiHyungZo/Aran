@@ -149,6 +149,113 @@ final class DrugInfoViewModelTests: XCTestCase {
         XCTAssertEqual(recentSearchRepository.savedKeywords, ["프로게스테론"])
         XCTAssertEqual(sut.recentSearches, ["프로게스테론"])
     }
+
+    // MARK: - enrich 캐싱
+
+    func testEnrich_whenDrugIsFavorited_updatesDetailInFavorites() async {
+        // given: 효능이 없는 약을 즐겨찾기에 미리 저장
+        let drug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: nil, useMethodQesitm: nil,
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+        favoriteRepository.favoriteDrugs = [FavoriteDrug(drug: drug)]
+        searchUseCase.stubbedEnrichedDrug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: "상세 효능", useMethodQesitm: "상세 용법",
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+
+        // when: 상세 진입 → enrich 완료 대기
+        sut.selectDrug(drug)
+        await Task.yield()
+        await Task.yield()
+        await Task.yield()
+
+        // then: 즐겨찾기에 enrich된 데이터가 저장됨
+        XCTAssertEqual(favoriteRepository.savedDrugs.last?.efcyQesitm, "상세 효능")
+        XCTAssertEqual(favoriteRepository.savedDrugs.last?.useMethodQesitm, "상세 용법")
+    }
+
+    func testEnrich_whenDrugIsNotFavorited_doesNotUpdateFavorites() async {
+        // given: 즐겨찾기 없음
+        let drug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: nil, useMethodQesitm: nil,
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+        favoriteRepository.favoriteDrugs = []
+        searchUseCase.stubbedEnrichedDrug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: "상세 효능", useMethodQesitm: "상세 용법",
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+
+        // when
+        sut.selectDrug(drug)
+        await Task.yield()
+        await Task.yield()
+        await Task.yield()
+
+        // then: 즐겨찾기 저장 호출 없음
+        XCTAssertTrue(favoriteRepository.savedDrugs.isEmpty)
+    }
+
+    // MARK: - clearDetailState
+
+    func testClearDetailState_whenPendingFavoriteToggle_performsToggleImmediately() async {
+        // given: 상세 로딩 중 즐겨찾기 탭
+        let drug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: nil, useMethodQesitm: nil,
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+        sut.selectDrug(drug)        // isDetailLoading = true
+        sut.toggleFavorite(drug)    // pendingFavoriteToggle = true (loading 중이므로 defer)
+
+        // when: 뒤로가기 → clearDetailState 호출
+        sut.clearDetailState()
+        await Task.yield()
+        await Task.yield()
+
+        // then: pending toggle이 즉시 실행되어 즐겨찾기에 저장됨
+        XCTAssertEqual(favoriteRepository.savedDrugs.map(\.itemSeq), ["A"])
+    }
+
+    func testClearDetailState_whenNoPendingFavoriteToggle_doesNotToggle() async {
+        // given: 상세 로딩 중 즐겨찾기 미탭
+        let drug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: nil, useMethodQesitm: nil,
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+        sut.selectDrug(drug)    // isDetailLoading = true, 즐겨찾기 탭 없음
+
+        // when
+        sut.clearDetailState()
+        await Task.yield()
+        await Task.yield()
+
+        // then: 즐겨찾기 변경 없음
+        XCTAssertTrue(favoriteRepository.savedDrugs.isEmpty)
+    }
+
+    func testClearDetailState_resetsLoadingState() {
+        // given
+        let drug = makeDrug(
+            itemSeq: "A", itemName: "전문의약품",
+            efcyQesitm: nil, useMethodQesitm: nil,
+            approvalInfo: makeApprovalInfo(itemSeq: "A")
+        )
+        sut.selectDrug(drug)
+        XCTAssertTrue(sut.isDetailLoading)
+
+        // when
+        sut.clearDetailState()
+
+        // then
+        XCTAssertFalse(sut.isDetailLoading)
+    }
 }
 
 private extension DrugInfoViewModelTests {
