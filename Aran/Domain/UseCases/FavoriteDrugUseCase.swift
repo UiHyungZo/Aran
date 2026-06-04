@@ -4,6 +4,7 @@ protocol FavoriteDrugUseCaseProtocol {
     func fetchAll() async throws -> [FavoriteDrug]
     func isFavorite(itemSeq: String) async throws -> Bool
     func toggle(drug: Drug) async throws
+    func updateDetailIfFavorited(drug: Drug) async throws
     func delete(itemSeq: String) async throws
 }
 
@@ -28,6 +29,11 @@ final class FavoriteDrugUseCase: FavoriteDrugUseCaseProtocol {
         } else {
             try await repository.save(FavoriteDrug(drug: drug))
         }
+    }
+
+    func updateDetailIfFavorited(drug: Drug) async throws {
+        guard try await repository.exists(itemSeq: drug.itemSeq) else { return }
+        try await repository.save(FavoriteDrug(drug: drug))
     }
 
     func delete(itemSeq: String) async throws {

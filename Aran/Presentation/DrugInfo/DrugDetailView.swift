@@ -27,6 +27,7 @@ struct DrugDetailView: View {
             .padding(.vertical, 16)
             .padding(.bottom, 100)
         }
+        .accessibilityIdentifier("drugDetail.container")
         .background(AranColor.background)
         .navigationTitle("약 상세")
         .navigationBarTitleDisplayMode(.inline)
@@ -38,6 +39,7 @@ struct DrugDetailView: View {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                         .foregroundStyle(isFavorite ? Color.yellow : Color.secondary)
                 }
+                .accessibilityIdentifier("drugDetail.favoriteButton")
             }
         }
         .safeAreaInset(edge: .bottom) { addButton }
@@ -163,9 +165,9 @@ struct DrugDetailView: View {
                 .background(AranColor.accentDrug)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
         }
+        .accessibilityIdentifier("drugDetail.addMedicationButton")
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(AranColor.surface)
-        .accessibilityIdentifier("drugDetail.addMedicationButton")
     }
 }

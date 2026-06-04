@@ -32,6 +32,7 @@ final class DrugInfoViewModel: ObservableObject {
     private(set) var totalCount: Int = 0
     private var currentKeyword: String = ""
     private var loadingDetailItemSeq: String?
+    private var enrichTask: Task<Void, Never>?
 
     var hasMorePages: Bool { currentPage * 20 < totalCount }
 
@@ -105,11 +106,11 @@ final class DrugInfoViewModel: ObservableObject {
                 let combined = deduplicated(existing + result.drugs)
                 viewState = .results(combined)
             }
-            currentPage = nextPage
             totalCount = result.totalCount
         } catch {
             // 추가 로딩 실패 시 기존 결과 유지
         }
+        currentPage = nextPage
         isLoadingMore = false
     }
 
@@ -119,22 +120,44 @@ final class DrugInfoViewModel: ObservableObject {
         }
     }
 
+    private var pendingFavoriteToggle = false
+
     func selectDrug(_ drug: Drug) {
-        presentDrug(drug)
+        prepareForDetail(drug)
+        isDetailPresented = true
     }
 
-    private func presentDrug(_ drug: Drug) {
+    func selectFavorite(_ favoriteDrug: FavoriteDrug) {
+        prepareForDetail(favoriteDrug.drug)
+    }
+
+    private func prepareForDetail(_ drug: Drug) {
+        pendingFavoriteToggle = false
         let shouldLoadDetail = needsDetailEnrichment(drug)
         loadingDetailItemSeq = shouldLoadDetail ? drug.itemSeq : nil
         isDetailLoading = shouldLoadDetail
         selectedDrug = drug
-        isDetailPresented = true
         guard shouldLoadDetail else { return }
-        Task { await enrichSelectedDrug(drug) }
+        enrichTask?.cancel()
+        enrichTask = Task { await enrichSelectedDrug(drug) }
+    }
+
+    func clearDetailState() {
+        enrichTask?.cancel()
+        enrichTask = nil
+        if pendingFavoriteToggle, let drug = selectedDrug {
+            pendingFavoriteToggle = false
+            performToggle(drug)
+        }
+        pendingFavoriteToggle = false
+        isDetailLoading = false
+        loadingDetailItemSeq = nil
+        // selectedDrug은 nil로 만들지 않는다.
+        // navigationDestination의 destination이 selectedDrug에 의존하므로
+        // pop 애니메이션 도중 nil이 되면 destination이 사라져 뒤로가기가 깨진다.
     }
 
     private func needsDetailEnrichment(_ drug: Drug) -> Bool {
-        guard drug.approvalInfo != nil else { return false }
         return isBlank(drug.efcyQesitm) || isBlank(drug.useMethodQesitm)
     }
 
@@ -150,8 +173,21 @@ final class DrugInfoViewModel: ObservableObject {
             let enriched = try await searchDrugUseCase.enrich(drug)
             guard selectedDrug?.itemSeq == drug.itemSeq else { return }
             selectedDrug = enriched
+            // 이미 즐겨찾기한 약이면 enrich된 완전한 데이터로 갱신 캐싱한다.
+            // 다음에 즐겨찾기에서 열 때 enrich를 재호출하지 않도록.
+            try? await favoriteDrugUseCase.updateDetailIfFavorited(drug: enriched)
+            await loadFavorites()
+            if pendingFavoriteToggle {
+                pendingFavoriteToggle = false
+                performToggle(enriched)
+            }
+        } catch is CancellationError {
+            pendingFavoriteToggle = false
         } catch {
-            // 상세 보강 실패 시 검색 결과로 받은 기존 Drug를 유지한다.
+            if pendingFavoriteToggle {
+                pendingFavoriteToggle = false
+                performToggle(selectedDrug ?? drug)
+            }
         }
     }
 
@@ -233,6 +269,14 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     func toggleFavorite(_ drug: Drug) {
+        if isDetailLoading {
+            pendingFavoriteToggle = true
+            return
+        }
+        performToggle(drug)
+    }
+
+    private func performToggle(_ drug: Drug) {
         Task {
             do {
                 try await favoriteDrugUseCase.toggle(drug: drug)
@@ -252,10 +296,6 @@ final class DrugInfoViewModel: ObservableObject {
                 detailError = (error as? AppError)?.errorDescription ?? error.localizedDescription
             }
         }
-    }
-
-    func selectFavorite(_ favoriteDrug: FavoriteDrug) {
-        presentDrug(favoriteDrug.drug)
     }
 
     func loadFavorites() async {

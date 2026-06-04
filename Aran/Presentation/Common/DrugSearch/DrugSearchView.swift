@@ -77,6 +77,7 @@ struct DrugSearchView: View {
                                 .foregroundStyle(Color.yellow)
                         }
                         .accessibilityLabel("즐겨찾기")
+                        .accessibilityIdentifier("drugSearch.favoriteListButton")
                     }
                 }
             }
@@ -85,8 +86,7 @@ struct DrugSearchView: View {
                 set: {
                     viewModel.isDetailPresented = $0
                     if !$0 {
-                        viewModel.selectedDrug = nil
-                        viewModel.isDetailLoading = false
+                        viewModel.clearDetailState()
                     }
                 }
             )) {
@@ -96,12 +96,12 @@ struct DrugSearchView: View {
                         onAddDrug: onAddDrug,
                         isFavorite: viewModel.isFavorite(drug),
                         isLoadingDetail: viewModel.isDetailLoading,
-                        onToggleFavorite: { viewModel.toggleFavorite(drug) }
+                        onToggleFavorite: { viewModel.toggleFavorite(viewModel.selectedDrug ?? drug) }
                     )
                 }
             }
             .navigationDestination(isPresented: $isFavoriteListPresented) {
-                FavoriteDrugListView(viewModel: viewModel)
+                FavoriteDrugListView(viewModel: viewModel, onAddDrug: onAddDrug)
             }
         }
         .background(AranColor.background)
@@ -254,13 +254,13 @@ struct DrugSearchView: View {
     
     private func resultsView(drugs: [Drug]) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 Text("검색 결과 \(viewModel.totalCount)건")
                     .font(.system(size: 13))
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                
+
                 ForEach(Array(drugs.enumerated()), id: \.element.itemSeq) { index, drug in
                     DrugResultCell(
                         drug: drug,
@@ -273,13 +273,13 @@ struct DrugSearchView: View {
                     Divider()
                         .padding(.horizontal, 20)
                 }
-                
+
                 if viewModel.hasMorePages {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .onAppear {
-                            Task { await viewModel.loadMore() }
+                        .task {
+                            await viewModel.loadMore()
                         }
                 }
                 
@@ -288,7 +288,7 @@ struct DrugSearchView: View {
                 } label: {
                     Text("직접 입력하기")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(AranColor.accentMedication)
+                        .foregroundStyle(accentColor)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }
@@ -298,6 +298,7 @@ struct DrugSearchView: View {
             }
         }
         .scrollDismissesKeyboard(.immediately)
+        .accessibilityIdentifier("drugSearch.resultsList")
     }
     
     private var emptyView: some View {
@@ -388,37 +389,38 @@ private struct DrugResultCell: View {
     let onSelect: () -> Void
     
     var body: some View {
-        Button(action: onSelect) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(drug.itemName)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.primary)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 10) {
+            Text(drug.itemName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.primary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
 
-                let subtitle = [drug.component, drug.entpName]
-                    .compactMap { $0 }
-                    .joined(separator: " · ")
-                Text(subtitle.isEmpty ? drug.entpName : subtitle)
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color.secondary)
-                    .lineLimit(1)
+            let subtitle = [drug.component, drug.entpName]
+                .compactMap { $0 }
+                .joined(separator: " · ")
+            Text(subtitle.isEmpty ? drug.entpName : subtitle)
+                .font(.system(size: 13))
+                .foregroundStyle(Color.secondary)
+                .lineLimit(1)
 
-                HStack {
-                    Spacer()
-                    Text(actionTitle)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(accentColor)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 7)
-                        .overlay(Capsule().stroke(accentColor, lineWidth: 1))
-                }
+            HStack {
+                Spacer()
+                Text(actionTitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(accentColor)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .overlay(Capsule().stroke(accentColor, lineWidth: 1))
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onSelect)
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier(accessibilityID)
+        .accessibilityAddTraits(.isButton)
     }
 }

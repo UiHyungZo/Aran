@@ -43,7 +43,7 @@ final class FavoriteDrugRepository: FavoriteDrugRepositoryProtocol {
     }
 
     private func update(_ model: FavoriteDrugModel, with favoriteDrug: FavoriteDrug) {
-        model.id = favoriteDrug.id
+        // id, createdAt은 기존 레코드 값을 유지한다 (즐겨찾기 정렬 순서 보존)
         model.itemName = favoriteDrug.itemName
         model.entpName = favoriteDrug.entpName
         model.component = favoriteDrug.component
@@ -55,6 +55,5 @@ final class FavoriteDrugRepository: FavoriteDrugRepositoryProtocol {
         model.seQesitm = favoriteDrug.seQesitm
         model.depositMethodQesitm = favoriteDrug.depositMethodQesitm
         model.itemImage = favoriteDrug.itemImage
-        model.createdAt = favoriteDrug.createdAt
     }
 }

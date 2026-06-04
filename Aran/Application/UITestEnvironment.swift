@@ -45,6 +45,28 @@ private final class UITestDrugRepository: DrugRepositoryProtocol {
 
     func search(keyword: String, pageNo: Int) async throws -> DrugSearchResult {
         let normalizedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        if normalizedKeyword == "스크롤" {
+            let totalCount = 40
+            let pageSize = 20
+            let start = (pageNo - 1) * pageSize
+            let drugs = (start..<min(start + pageSize, totalCount)).map { i in
+                Drug(
+                    itemSeq: "UITEST-PAGE-\(i)",
+                    itemName: "페이지네이션약\(i)",
+                    entpName: "아란제약",
+                    component: nil,
+                    efcyQesitm: "효능\(i)",
+                    useMethodQesitm: "사용법\(i)",
+                    atpnWarnQesitm: nil,
+                    atpnQesitm: nil,
+                    intrcQesitm: nil,
+                    seQesitm: nil,
+                    depositMethodQesitm: nil,
+                    itemImage: nil
+                )
+            }
+            return DrugSearchResult(drugs: drugs, totalCount: totalCount, pageNo: pageNo)
+        }
         let drugs = normalizedKeyword.isEmpty ? [] : [testDrug]
         return DrugSearchResult(drugs: drugs, totalCount: drugs.count, pageNo: pageNo)
     }

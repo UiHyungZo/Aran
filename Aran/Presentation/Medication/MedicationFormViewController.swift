@@ -65,6 +65,7 @@ final class MedicationFormViewController: UIViewController {
     // MARK: - UI Setup
 
     private func setupUI() {
+        view.accessibilityIdentifier = "screen.medicationForm"
         view.backgroundColor = AranColor.backgroundUI
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false

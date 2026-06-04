@@ -36,7 +36,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		56BA4CD52FA78F79005D3328 /* Exceptions for "Aran" folder in "Aran" target */ = {
+		9900776B2FD16C39008CDED9 /* Exceptions for "Aran" folder in "Aran" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -49,7 +49,7 @@
 		56BA4CAF2FA78F78005D3328 /* Aran */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				56BA4CD52FA78F79005D3328 /* Exceptions for "Aran" folder in "Aran" target */,
+				9900776B2FD16C39008CDED9 /* Exceptions for "Aran" folder in "Aran" target */,
 			);
 			path = Aran;
 			sourceTree = "<group>";
@@ -304,7 +304,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9G5T5K3BP2;
 				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
 				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
@@ -314,6 +314,7 @@
 				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "아란";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -343,7 +344,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9G5T5K3BP2;
 				DRUG_API_DECODING = "hc2/uWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg+ZgutyNAP/LctOIiRedW36N+Z+sbWwsIKVLUABA==";
 				DRUG_API_ENCODING = "hc2%2FuWOhdNMJ2mPstEifEGKKlJOS1qcqMCzlDXkWlIDm3Dg%2BZgutyNAP%2FLctOIiRedW36N%2BZ%2BsbWwsIKVLUABA%3D%3D";
@@ -353,6 +354,7 @@
 				DRUG_API_PRDT_ENDPOINT = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aran/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "아란";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
