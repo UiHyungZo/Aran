@@ -15,6 +15,7 @@ struct CalendarView: View {
     @State private var isHealthRecordSheetPresented: Bool = false
     @State private var isHealthRecordListPresented: Bool = false
     @State private var editingHealthRecord: HealthRecord?
+    @State private var pendingEditingHealthRecord: HealthRecord?
     @FocusState private var isDiaryFocused: Bool
 
     init(viewModel: CalendarViewModel) {
@@ -64,7 +65,8 @@ struct CalendarView: View {
                     .onChange(of: pageIndex) { _, newValue in
                         guard newValue != 1 else { return }
                         viewModel.navigateMonth(by: newValue == 2 ? 1 : -1)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        Task { @MainActor in
+                            try? await Task.sleep(for: .seconds(0.3))
                             calendarID = UUID()
                             pageIndex = 1
                         }
@@ -96,12 +98,13 @@ struct CalendarView: View {
         .sheet(isPresented: $isHealthRecordSheetPresented) {
             CalendarHealthRecordInputSheet(viewModel: viewModel)
         }
-        .sheet(isPresented: $isHealthRecordListPresented) {
+        .sheet(isPresented: $isHealthRecordListPresented, onDismiss: {
+            editingHealthRecord = pendingEditingHealthRecord
+            pendingEditingHealthRecord = nil
+        }) {
             CalendarHealthRecordListSheet(viewModel: viewModel) { record in
+                pendingEditingHealthRecord = record
                 isHealthRecordListPresented = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    editingHealthRecord = record
-                }
             }
         }
         .sheet(item: $editingHealthRecord) { record in
