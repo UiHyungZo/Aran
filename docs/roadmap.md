@@ -379,49 +379,52 @@ MVP에서 하지 않는 것:
 * HealthKit
 * Apple Watch
 * iPad 대응
-* Swift Charts
 * OCR 약 검색
-* 생리 주기 계산
-* 배란일 자동 계산
 * 복잡한 통계 기능
 
 ---
 
 # Phase 2
 
-MVP 이후 검토 가능 기능.
+MVP 이후 검토 가능 기능. (일부는 이미 구현 완료되어 분리 표기)
+
+---
+
+## ✅ 구현 완료 (MVP 범위 외였으나 선반영됨)
+
+* Swift Charts (검사 수치 / 시술 기록 차트)
+* Trend Graph
+* PGT 기록
+* 배란일 계산
+* 생리 주기 추적
+* 최근 검색어
+* 다크모드
+* 기본 UI Test (주요 사용자 플로우)
 
 ---
 
 ## Health Features
 
-후보:
+후보(미구현):
 
 * HealthKit 연동
-* Swift Charts
-* Trend Graph
 * Medication Statistics
 
 ---
 
 ## IVF Features
 
-후보:
+후보(미구현):
 
-* PGT 기록
-* 배란일 계산
-* 생리 주기 추적
 * 난자/배아 통계
 
 ---
 
 ## UX Features
 
-후보:
+후보(미구현):
 
-* 최근 검색어
 * 검색 캐시
-* 다크모드 polish
 * Widget
 * Siri Shortcut
 
@@ -429,7 +432,7 @@ MVP 이후 검토 가능 기능.
 
 ## Technical Features
 
-후보:
+후보(미구현):
 
 * Cloud Sync
 * iPad Layout
