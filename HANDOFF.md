@@ -3,8 +3,8 @@
 ## 현재 상태
 
 - **활성 브랜치**: `develop`
-- **전체 진행도**: 전체 기능 구현 완료. 테스트 보강 및 앱 완성도(다크모드·아이콘) 작업 중.
-- **현재 작업**: 테스트 보강 → 앱 완성도 → 배포 준비
+- **전체 진행도**: 전체 기능 + 단위/UI 테스트 + 앱 완성도(다크모드·아이콘·스플래시) 완료.
+- **현재 작업**: 앱스토어 배포 준비 (개인정보처리방침, 메타데이터, 스크린샷, TestFlight)
 
 ### 레이어별 진척율
 
@@ -18,8 +18,8 @@
 | 🏥 HealthRecord 탭 UI | 100% |
 | 🔍 DrugInfo 탭 UI | 100% |
 | 🗂 ProcedureRecord 탭 UI | 100% |
-| 단위 테스트 | 100% (UseCase/ViewModel) |
-| UI 테스트 | 0% |
+| 단위 테스트 | 100% (UseCase/ViewModel/Repository/Mapper/Network) |
+| UI 테스트 | 100% (탭 네비게이션 + 5개 플로우) |
 
 ---
 
@@ -27,6 +27,11 @@
 
 | 작업 | 파일 | 상태 |
 |------|------|------|
+| Repository async/await 전환 | `Data/Repositories/` | ✅ |
+| 단위 테스트 보강 (DiaryEntry/HospitalVisit UseCase, Medication/ProcedureRecord ViewModel 등) | `AranTests/` | ✅ |
+| UI Test 작성 (탭 네비게이션 + 캘린더/약 검색/약·주사/검사/시술 기록 플로우) | `AranUITests/TabNavigationUITests.swift`, `AranUITests/Flows/` | ✅ |
+| 앱 아이콘 (single-size 1024 universal) / 스플래시 (LaunchScreen + SplashContainerView) | `Assets.xcassets/AppIcon.appiconset`, `Base.lproj/LaunchScreen.storyboard`, `Presentation/Common/SplashContainerView.swift` | ✅ |
+| 다크모드 커스텀 컬러 Light/Dark 정의 | `Assets.xcassets/*.colorset` | ✅ |
 | 전문의약품 API 추가 (e약은요 fallback) | `Data/Network/DrugApprovalAPIClient.swift`, `DrugApprovalRouter.swift`, `DTOs/DrugApprovalDTO.swift` | ✅ |
 | 즐겨찾기 기능 전체 스택 | `Domain/UseCases/FavoriteDrugUseCase.swift`, `Data/Repositories/FavoriteDrugRepository.swift`, `Presentation/DrugInfo/FavoriteDrugListView.swift` | ✅ |
 | 감정일기 전체 Sheet 완성 | `Presentation/Calendar/CalendarView.swift` | ✅ |
@@ -59,31 +64,27 @@
 ## 알려진 이슈
 
 - CalendarView.swift: SourceKit 경고 다수 — 빌드/테스트는 정상. 무시해도 됨.
-- `.scrollDismissesKeyboard(.interactively)` iOS 26 시뮬레이터에서 미작동 확인. `keyboard.md` v3 기준으로 `.immediately` 교체 필요.
+- ~~`.scrollDismissesKeyboard(.interactively)` iOS 26 시뮬레이터에서 미작동~~ → `.immediately`로 교체 완료 (해결됨).
 
 ---
 
 ## 테스트 현황
 
-**마지막 실행 기준 PASS (정확한 수는 `xcodebuild test` 실행 후 확인)**
+**마지막 실행 기준 전체 PASS (정확한 수는 `xcodebuild test` 실행 후 확인)**
 
-### 미작성 테스트
+- 단위 테스트: UseCase 13 / ViewModel 8 / Repository 12 / Mapper 13 / Network 4 테스트 파일
+- UI 테스트: `TabNavigationUITests` + `Flows/` 5개 (캘린더 / 약 검색 / 약·주사 / 검사 / 시술 기록)
 
-| 대상 | 파일 경로 |
-|------|-----------|
-| UI Test 전체 | 캘린더 / 약 등록 / 약 검색 / 채취·이식 / 검사 수치 플로우 |
-
-테스트 작성 시 `AranTests/Mocks/` 하위 Mock 파일과 `MedicationFormViewModelTests` 패턴 참조.
+미작성 테스트 없음. 테스트 추가 시 `AranTests/Mocks/` 하위 Mock 파일과 `MedicationFormViewModelTests` 패턴 참조.
 
 ---
 
 ## 다음 작업 우선순위
 
-1. **테스트** — UI Test (캘린더 / 약 등록 / 약 검색 / 채취·이식 / 검사 수치 플로우)
-2. **앱 완성도** — 다크모드 커스텀 컬러 Assets Light/Dark, Swift Charts 다크모드 색상
-3. **앱 아이콘** — 1024×1024 마스터 에셋, Xcode AppIcon 슬롯 전체
-4. **스플래시** — LaunchScreen.storyboard 앱 아이콘 중앙 배치
-5. **배포 준비** — 개인정보처리방침 URL, 앱 메타데이터, 스크린샷 5장, TestFlight 제출
+1. **개인정보처리방침 URL** — GitHub Pages 또는 Notion
+2. **앱 메타데이터** — 이름, 설명, 키워드, 카테고리 (의료/건강)
+3. **앱스토어 스크린샷** — iPhone 6.5인치 / 5.5인치 규격, 주요 화면 5장
+4. **TestFlight 내부 테스트 → 심사 제출**
 
 ---
 
