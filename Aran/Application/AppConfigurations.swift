@@ -8,12 +8,8 @@
 import Foundation
 
 final class AppConfigurations {
-    lazy var drugAPIEndpoint: String = {
-        guard let drugAPIEndpoint = Bundle.main.object(forInfoDictionaryKey: "DRUG_API_ENDPOINT") as? String else {
-            fatalError("APIKey must not be emtpy")
-        }
-        return drugAPIEndpoint
-    }()
+    let drugAPIEndpoint: String = "https://apis.data.go.kr/1471000/DrbEasyDrugInfoService"
+    let drugAPIPrdtEndpoint: String = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService07"
 
     lazy var drugAPIDecoding: String = {
         guard let drugAPIDecoding = Bundle.main.object(forInfoDictionaryKey: "DRUG_API_DECODING") as? String else {
@@ -27,13 +23,6 @@ final class AppConfigurations {
             fatalError("APIKey must not be emtpy")
         }
         return drugAPIEncoding
-    }()
-    
-    lazy var drugAPIPrdtEndpoint: String = {
-        guard let drugAPIPrdtEndpoint = Bundle.main.object(forInfoDictionaryKey: "DRUG_API_PRDT_ENDPOINT") as? String else {
-            fatalError("APIKey must not be emtpy")
-        }
-        return drugAPIPrdtEndpoint
     }()
     
     lazy var drugAPIPrdtDecoding: String = {

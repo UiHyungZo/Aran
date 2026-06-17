@@ -175,7 +175,28 @@ struct TransferInputFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            guard await saveRecords() else { return }
+                            let success: Bool
+                            switch mode {
+                            case .add:
+                                success = await viewModel.saveMultipleTransfers(
+                                    rows: rows.map { (embryoGrade: $0.embryoGrade, embryoCount: $0.embryoCount, transferType: $0.transferType, result: $0.result, memo: $0.memo) },
+                                    cycleNumber: cycleNumber,
+                                    date: date
+                                )
+                            case let .edit(record):
+                                guard let row = rows.first else { return }
+                                success = await viewModel.updateTransfer(
+                                    id: record.id,
+                                    cycleNumber: cycleNumber,
+                                    date: date,
+                                    embryoGrade: row.embryoGrade,
+                                    embryoCount: row.embryoCount,
+                                    transferType: row.transferType,
+                                    result: row.result,
+                                    memo: row.memo
+                                )
+                            }
+                            guard success else { return }
                             dismiss()
                         }
                     }
@@ -185,40 +206,6 @@ struct TransferInputFormView: View {
         }
     }
 
-    private func saveRecords() async -> Bool {
-        switch mode {
-        case .add:
-            for row in rows {
-                let trimmedGrade = row.embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
-                let trimmedMemo = row.memo.trimmingCharacters(in: .whitespacesAndNewlines)
-                let didSave = await viewModel.saveTransfer(
-                    cycleNumber: cycleNumber,
-                    date: date,
-                    embryoGrade: trimmedGrade.isEmpty ? "미입력" : trimmedGrade,
-                    embryoCount: row.embryoCount,
-                    transferType: row.transferType,
-                    result: row.result,
-                    memo: trimmedMemo.isEmpty ? nil : trimmedMemo
-                )
-                guard didSave else { return false }
-            }
-            return true
-        case let .edit(record):
-            guard let row = rows.first else { return false }
-            let trimmedGrade = row.embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
-            let trimmedMemo = row.memo.trimmingCharacters(in: .whitespacesAndNewlines)
-            return await viewModel.updateTransfer(
-                id: record.id,
-                cycleNumber: cycleNumber,
-                date: date,
-                embryoGrade: trimmedGrade.isEmpty ? "미입력" : trimmedGrade,
-                embryoCount: row.embryoCount,
-                transferType: row.transferType,
-                result: row.result,
-                memo: trimmedMemo.isEmpty ? nil : trimmedMemo
-            )
-        }
-    }
 }
 
 private extension TransferInputFormView {

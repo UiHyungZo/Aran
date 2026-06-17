@@ -172,7 +172,44 @@ struct ProcedurePGTFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
                         Task {
-                            guard await saveRecord() else { return }
+                            let success: Bool
+                            switch mode {
+                            case let .add(cycleRecordId):
+                                success = await viewModel.savePGTRecord(
+                                    cycleRecordId: cycleRecordId,
+                                    testDate: testDate,
+                                    type: selectedType,
+                                    normalCount: normalCount,
+                                    abnormalCount: abnormalCount,
+                                    mosaicCount: mosaicCount,
+                                    inconclusiveCount: inconclusiveCount,
+                                    resultStatus: resultStatus,
+                                    femaleChromosomeResult: femaleChromosomeResult,
+                                    maleChromosomeResult: maleChromosomeResult,
+                                    implantationTestType: implantationTestType,
+                                    implantationResult: implantationResult,
+                                    recommendedTransferWindow: recommendedTransferWindow,
+                                    memo: memo
+                                )
+                            case let .edit(record):
+                                success = await viewModel.updatePGTRecord(
+                                    id: record.id,
+                                    testDate: testDate,
+                                    type: selectedType,
+                                    normalCount: normalCount,
+                                    abnormalCount: abnormalCount,
+                                    mosaicCount: mosaicCount,
+                                    inconclusiveCount: inconclusiveCount,
+                                    resultStatus: resultStatus,
+                                    femaleChromosomeResult: femaleChromosomeResult,
+                                    maleChromosomeResult: maleChromosomeResult,
+                                    implantationTestType: implantationTestType,
+                                    implantationResult: implantationResult,
+                                    recommendedTransferWindow: recommendedTransferWindow,
+                                    memo: memo
+                                )
+                            }
+                            guard success else { return }
                             dismiss()
                         }
                     }
@@ -186,44 +223,6 @@ struct ProcedurePGTFormView: View {
         }
     }
 
-    private func saveRecord() async -> Bool {
-        switch mode {
-        case let .add(cycleRecordId):
-            return await viewModel.savePGTRecord(
-                cycleRecordId: cycleRecordId,
-                testDate: testDate,
-                type: selectedType,
-                normalCount: normalCount,
-                abnormalCount: abnormalCount,
-                mosaicCount: mosaicCount,
-                inconclusiveCount: inconclusiveCount,
-                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
-                femaleChromosomeResult: femaleChromosomeResult,
-                maleChromosomeResult: maleChromosomeResult,
-                implantationTestType: implantationTestType,
-                implantationResult: implantationResult,
-                recommendedTransferWindow: recommendedTransferWindow,
-                memo: memo
-            )
-        case let .edit(record):
-            return await viewModel.updatePGTRecord(
-                id: record.id,
-                testDate: testDate,
-                type: selectedType,
-                normalCount: normalCount,
-                abnormalCount: abnormalCount,
-                mosaicCount: mosaicCount,
-                inconclusiveCount: inconclusiveCount,
-                resultStatus: selectedType.showsEmbryoCounts ? nil : resultStatus,
-                femaleChromosomeResult: femaleChromosomeResult,
-                maleChromosomeResult: maleChromosomeResult,
-                implantationTestType: implantationTestType,
-                implantationResult: implantationResult,
-                recommendedTransferWindow: recommendedTransferWindow,
-                memo: memo
-            )
-        }
-    }
 }
 
 private extension ProcedurePGTFormView {

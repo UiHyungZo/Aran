@@ -189,6 +189,27 @@ final class ProcedureRecordViewModel: ObservableObject {
     }
 
     @discardableResult
+    func saveMultipleTransfers(
+        rows: [(embryoGrade: String, embryoCount: Int, transferType: TransferType, result: TransferResult, memo: String)],
+        cycleNumber: Int,
+        date: Date
+    ) async -> Bool {
+        for row in rows {
+            let didSave = await saveTransfer(
+                cycleNumber: cycleNumber,
+                date: date,
+                embryoGrade: row.embryoGrade,
+                embryoCount: row.embryoCount,
+                transferType: row.transferType,
+                result: row.result,
+                memo: row.memo
+            )
+            guard didSave else { return false }
+        }
+        return true
+    }
+
+    @discardableResult
     func saveTransfer(
         cycleNumber: Int,
         date: Date,
@@ -196,17 +217,19 @@ final class ProcedureRecordViewModel: ObservableObject {
         embryoCount: Int,
         transferType: TransferType,
         result: TransferResult = .waiting,
-        memo: String? = nil
+        memo: String = ""
     ) async -> Bool {
+        let trimmedGrade = embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedMemo = memo.trimmingCharacters(in: .whitespacesAndNewlines)
         let record = TransferRecord(
             id: UUID(),
             cycleNumber: cycleNumber,
             date: date,
-            embryoGrade: embryoGrade,
+            embryoGrade: trimmedGrade.isEmpty ? "미입력" : trimmedGrade,
             embryoCount: embryoCount,
             transferType: transferType,
             result: result,
-            memo: memo
+            memo: trimmedMemo.isEmpty ? nil : trimmedMemo
         )
         do {
             try await transferRecordUseCase.save(record)
@@ -244,8 +267,10 @@ final class ProcedureRecordViewModel: ObservableObject {
         embryoCount: Int,
         transferType: TransferType,
         result: TransferResult,
-        memo: String?
+        memo: String = ""
     ) async -> Bool {
+        let trimmedGrade = embryoGrade.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedMemo = memo.trimmingCharacters(in: .whitespacesAndNewlines)
         do {
             guard var record = try await transferRecordUseCase.fetch(id: id) else {
                 errorMessage = "수정할 이식 기록을 찾을 수 없습니다."
@@ -254,11 +279,11 @@ final class ProcedureRecordViewModel: ObservableObject {
 
             record.cycleNumber = cycleNumber
             record.date = date
-            record.embryoGrade = embryoGrade
+            record.embryoGrade = trimmedGrade.isEmpty ? "미입력" : trimmedGrade
             record.embryoCount = embryoCount
             record.transferType = transferType
             record.result = result
-            record.memo = memo
+            record.memo = trimmedMemo.isEmpty ? nil : trimmedMemo
 
             try await transferRecordUseCase.update(record)
             try await cycleRecordUseCase.removeTransferEvent(transferID: id)
@@ -297,7 +322,7 @@ final class ProcedureRecordViewModel: ObservableObject {
                 abnormalCount: abnormalCount,
                 mosaicCount: mosaicCount,
                 inconclusiveCount: inconclusiveCount,
-                resultStatus: resultStatus,
+                resultStatus: type.showsEmbryoCounts ? nil : resultStatus,
                 femaleChromosomeResult: femaleChromosomeResult,
                 maleChromosomeResult: maleChromosomeResult,
                 implantationTestType: implantationTestType,
@@ -341,7 +366,7 @@ final class ProcedureRecordViewModel: ObservableObject {
             record.abnormalCount = abnormalCount
             record.mosaicCount = mosaicCount
             record.inconclusiveCount = inconclusiveCount
-            record.resultStatus = resultStatus
+            record.resultStatus = type.showsEmbryoCounts ? nil : resultStatus
             record.femaleChromosomeResult = femaleChromosomeResult
             record.maleChromosomeResult = maleChromosomeResult
             record.implantationTestType = implantationTestType
