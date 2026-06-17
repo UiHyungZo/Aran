@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import AranDomain
 
 struct CycleRecordFormView: View {
     @ObservedObject var viewModel: ProcedureRecordViewModel

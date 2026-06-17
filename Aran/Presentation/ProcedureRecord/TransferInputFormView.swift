@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import AranDomain
 
 struct TransferInputFormView: View {
     @ObservedObject var viewModel: ProcedureRecordViewModel

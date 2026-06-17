@@ -1,5 +1,6 @@
 @testable import Aran
 import Foundation
+import AranDomain
 
 final class MockSearchDrugUseCase: SearchDrugUseCaseProtocol {
     var stubbedResult: DrugSearchResult = DrugSearchResult(drugs: [], totalCount: 0, pageNo: 1)

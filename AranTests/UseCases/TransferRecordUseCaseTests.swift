@@ -1,5 +1,6 @@
 @testable import Aran
 import XCTest
+import AranDomain
 
 final class TransferRecordUseCaseTests: XCTestCase {
     private var repo: MockTransferRecordRepository!

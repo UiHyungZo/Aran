@@ -1,4 +1,5 @@
 import UIKit
+import AranDomain
 
 struct ExamListActions {
     let showAddForm: () -> Void

@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum DiaryEntryMapper {
     static func toDomain(_ model: DiaryEntryModel) -> DiaryEntry {

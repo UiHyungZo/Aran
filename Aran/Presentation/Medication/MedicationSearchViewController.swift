@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AranDomain
 
 final class MedicationSearchViewController: UIViewController {
     private let viewModel: DrugInfoViewModel

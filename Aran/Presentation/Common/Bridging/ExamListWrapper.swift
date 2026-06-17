@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import AranDomain
 
 struct ExamListWrapper: UIViewControllerRepresentable {
     let container: HealthRecordSceneDIContainer

@@ -1,4 +1,5 @@
 import UIKit
+import AranDomain
 
 final class MedicationCell: UITableViewCell {
     static let reuseIdentifier = "MedicationCell"

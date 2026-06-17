@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 #if DEBUG
 enum UITestEnvironment {

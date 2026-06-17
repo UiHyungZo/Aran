@@ -1,4 +1,5 @@
 import SwiftUI
+import AranDomain
 
 struct DrugInfoView: View {
     @StateObject private var viewModel: DrugInfoViewModel

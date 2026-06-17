@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 final class MockURLProtocol: URLProtocol {
     static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?

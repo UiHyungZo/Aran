@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 protocol DrugApprovalAPIClientProtocol {
     /// primary 검색: 효능·용법·주의사항까지 포함한 풍부한 Drug 반환

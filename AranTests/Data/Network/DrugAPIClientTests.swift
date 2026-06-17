@@ -1,6 +1,7 @@
 @testable import Aran
 import Alamofire
 import XCTest
+import AranDomain
 
 final class DrugAPIClientTests: XCTestCase {
     private var session: Session!

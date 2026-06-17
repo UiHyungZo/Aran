@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import AranDomain
 
 @MainActor
 final class CalendarViewModel: ObservableObject {

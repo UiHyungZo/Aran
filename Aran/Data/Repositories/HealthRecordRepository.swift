@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AranDomain
 
 @MainActor
 final class HealthRecordRepository: HealthRecordRepositoryProtocol {

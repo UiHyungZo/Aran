@@ -4,6 +4,7 @@
 //
 
 import SwiftData
+import AranDomain
 
 @MainActor
 final class ProcedureRecordSceneDIContainer {

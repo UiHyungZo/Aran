@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import AranDomain
 
 final class DrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
     private let session: Session

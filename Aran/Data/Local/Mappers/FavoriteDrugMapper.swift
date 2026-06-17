@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum FavoriteDrugMapper {
     static func toDomain(_ model: FavoriteDrugModel) -> FavoriteDrug {

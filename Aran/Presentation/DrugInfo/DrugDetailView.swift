@@ -1,4 +1,5 @@
 import SwiftUI
+import AranDomain
 
 struct DrugDetailView: View {
     let drug: Drug

@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import AranDomain
 
 struct ProcedureRecordView: View {
     @StateObject private var viewModel: ProcedureRecordViewModel

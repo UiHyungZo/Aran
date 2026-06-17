@@ -5,6 +5,7 @@
 
 import Charts
 import SwiftUI
+import AranDomain
 
 struct ProcedureChartView: View {
     let entries: [ProcedureChartEntry]

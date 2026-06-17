@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 /// 의약품 허가정보 API의 `EE_DOC_DATA` / `UD_DOC_DATA` / `NB_DOC_DATA`는
 /// JSON 안에 XML 문자열로 들어온다. 이 XML에서 사람이 읽을 텍스트만 추출한다.

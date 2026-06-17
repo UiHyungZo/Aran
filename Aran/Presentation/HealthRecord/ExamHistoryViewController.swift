@@ -1,6 +1,7 @@
 import RxCocoa
 import RxSwift
 import UIKit
+import AranDomain
 
 final class ExamHistoryViewController: UIViewController {
     private let viewModel: ExamHistoryViewModel

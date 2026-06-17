@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AranDomain
 
 // SchemaV1: MedicationTimeSlotModel 없음, timeSlotID 없음
 enum AppSchemaV1: VersionedSchema {

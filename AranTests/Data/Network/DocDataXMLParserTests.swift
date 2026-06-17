@@ -1,5 +1,6 @@
 import XCTest
 @testable import Aran
+import AranDomain
 
 final class DocDataXMLParserTests: XCTestCase {
     func test_extractText_fromSelfClosingArticles_returnsTitles() {

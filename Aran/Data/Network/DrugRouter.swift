@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum DrugRouter {
     case search(keyword: String, pageNo: Int, serviceKey: String, baseURL: String)

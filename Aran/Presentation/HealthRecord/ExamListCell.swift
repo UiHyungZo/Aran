@@ -1,4 +1,5 @@
 import UIKit
+import AranDomain
 
 final class ExamListCell: UITableViewCell {
     static let reuseIdentifier = "ExamListCell"

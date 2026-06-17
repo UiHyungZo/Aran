@@ -1,5 +1,6 @@
 @testable import Aran
 import XCTest
+import AranDomain
 
 final class DrugRouterTests: XCTestCase {
     private let testServiceKey = "test-key"

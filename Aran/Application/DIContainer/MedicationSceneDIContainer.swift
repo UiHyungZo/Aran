@@ -5,6 +5,7 @@
 
 import SwiftData
 import UIKit
+import AranDomain
 
 @MainActor
 final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {

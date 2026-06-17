@@ -1,6 +1,7 @@
 import Charts
 import SwiftUI
 import UIKit
+import AranDomain
 
 struct ExamChartView: View {
     let records: [HealthRecord]

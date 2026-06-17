@@ -1,4 +1,5 @@
 import SwiftUI
+import AranDomain
 
 enum DrugSearchMode {
     case browse

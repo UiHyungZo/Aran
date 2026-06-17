@@ -1,5 +1,6 @@
 @testable import Aran
 import Foundation
+import AranDomain
 
 final class MockHealthRecordUseCase: HealthRecordUseCaseProtocol {
     var stubbedAll: [HealthRecord] = []

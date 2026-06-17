@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum TransferRecordMapper {
     static func toDomain(_ model: TransferRecordModel) -> TransferRecord {

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AranDomain
 
 final class FavoriteDrugRepository: FavoriteDrugRepositoryProtocol {
     private let context: ModelContext

@@ -1,0 +1,306 @@
+{
+  "": {
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/primary.swiftdeps"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/AppError.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/AppError~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/CycleRecord.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DiaryEntry.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Drug.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Drug~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugApprovalInfo.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugSearchResult.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/FavoriteDrug.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HealthRecord.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HospitalVisit.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Medication.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Medication~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationLog.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationTimeSlot.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MenstrualCycle.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/NotificationPermissionStatus.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/PGTRecord.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/RecentDrugSearch.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/TransferRecord.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/CycleRecordRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DiaryEntryRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DrugRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/FavoriteDrugRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HealthRecordRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HospitalVisitRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationLogRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MenstrualCycleRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/NotificationRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/PGTRecordRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/RecentDrugSearchRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/TransferRecordRepositoryProtocol.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/CycleRecordUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/DiaryEntryUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/FavoriteDrugUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HealthRecordUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HospitalVisitUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationLogUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationNotificationUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MenstrualCycleUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/PGTRecordUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/RecentDrugSearchUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/SearchDrugUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.dia"
+  },
+  "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/TransferRecordUseCase.swift": {
+    "dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.d",
+    "object": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.swift.o",
+    "swiftmodule": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase~partial.swiftmodule",
+    "swift-dependencies": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.swiftdeps",
+    "diagnostics": "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.dia"
+  }
+}

@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum PGTRecordMapper {
     static func toDomain(_ model: PGTRecordModel) -> PGTRecord {

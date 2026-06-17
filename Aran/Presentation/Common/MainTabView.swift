@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AranDomain
 
 struct MainTabView: View {
     let container: AppDIContainer

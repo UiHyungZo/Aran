@@ -7,6 +7,7 @@
 
 @testable import Aran
 import XCTest
+import AranDomain
 
 final class AranTests: XCTestCase {
     override func setUpWithError() throws {

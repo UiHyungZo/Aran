@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum MedicationLogMapper {
     static func toDomain(_ model: MedicationLogModel) -> MedicationLog {

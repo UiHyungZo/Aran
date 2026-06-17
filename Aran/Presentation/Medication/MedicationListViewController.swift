@@ -1,6 +1,7 @@
 import RxCocoa
 import RxSwift
 import UIKit
+import AranDomain
 
 final class MedicationListViewController: UIViewController {
     private let viewModel: MedicationViewModel

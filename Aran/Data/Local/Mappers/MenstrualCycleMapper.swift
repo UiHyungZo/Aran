@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum MenstrualCycleMapper {
     static func toDomain(_ model: MenstrualCycleModel) -> MenstrualCycle {

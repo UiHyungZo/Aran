@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum MedicationLegacySlotID {
     static func make(medicationID: UUID, index: Int) -> UUID {

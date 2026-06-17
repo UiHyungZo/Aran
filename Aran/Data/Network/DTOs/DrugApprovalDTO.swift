@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 nonisolated struct DrugApprovalResponseDTO: Decodable {
     let body: DrugApprovalBodyDTO

@@ -1,6 +1,7 @@
 @testable import Aran
 import SwiftData
 import XCTest
+import AranDomain
 
 @MainActor
 final class MedicationLogRepositoryTests: XCTestCase {

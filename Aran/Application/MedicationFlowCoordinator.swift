@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import AranDomain
 
 struct MedicationListActions {
     let showSearch: () -> Void

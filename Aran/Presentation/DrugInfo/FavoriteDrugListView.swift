@@ -1,4 +1,5 @@
 import SwiftUI
+import AranDomain
 
 struct FavoriteDrugListView: View {
     @ObservedObject var viewModel: DrugInfoViewModel

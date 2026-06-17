@@ -10,6 +10,8 @@
 		567DD1662FB384F3009939FD /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 567DD1652FB384F3009939FD /* RxCocoa */; };
 		567DD1682FB384F3009939FD /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 567DD1672FB384F3009939FD /* RxSwift */; };
 		567DD16B2FB3851E009939FD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 567DD16A2FB3851E009939FD /* Alamofire */; };
+		AA11BB22CC00000000000003 /* AranDomain in Frameworks */ = {isa = PBXBuildFile; productRef = AA11BB22CC00000000000002 /* AranDomain */; };
+		AA11BB22CC00000000000005 /* AranDomain in Frameworks */ = {isa = PBXBuildFile; productRef = AA11BB22CC00000000000004 /* AranDomain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +76,7 @@
 				567DD16B2FB3851E009939FD /* Alamofire in Frameworks */,
 				567DD1682FB384F3009939FD /* RxSwift in Frameworks */,
 				567DD1662FB384F3009939FD /* RxCocoa in Frameworks */,
+				AA11BB22CC00000000000003 /* AranDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA11BB22CC00000000000005 /* AranDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +141,7 @@
 				567DD1652FB384F3009939FD /* RxCocoa */,
 				567DD1672FB384F3009939FD /* RxSwift */,
 				567DD16A2FB3851E009939FD /* Alamofire */,
+				AA11BB22CC00000000000002 /* AranDomain */,
 			);
 			productName = Aran;
 			productReference = 56BA4CAD2FA78F78005D3328 /* Aran.app */;
@@ -160,6 +165,7 @@
 			);
 			name = AranTests;
 			packageProductDependencies = (
+				AA11BB22CC00000000000004 /* AranDomain */,
 			);
 			productName = AranTests;
 			productReference = 56BA4CC32FA78F79005D3328 /* AranTests.xctest */;
@@ -223,6 +229,7 @@
 			packageReferences = (
 				567DD1642FB384F3009939FD /* XCRemoteSwiftPackageReference "RxSwift" */,
 				567DD1692FB3851E009939FD /* XCRemoteSwiftPackageReference "Alamofire" */,
+				AA11BB22CC00000000000001 /* XCLocalSwiftPackageReference "Packages/AranDomain" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 56BA4CAE2FA78F78005D3328 /* Products */;
@@ -626,6 +633,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		AA11BB22CC00000000000001 /* XCLocalSwiftPackageReference "Packages/AranDomain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/AranDomain;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		567DD1642FB384F3009939FD /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -660,6 +674,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 567DD1692FB3851E009939FD /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		AA11BB22CC00000000000002 /* AranDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA11BB22CC00000000000001 /* XCLocalSwiftPackageReference "Packages/AranDomain" */;
+			productName = AranDomain;
+		};
+		AA11BB22CC00000000000004 /* AranDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA11BB22CC00000000000001 /* XCLocalSwiftPackageReference "Packages/AranDomain" */;
+			productName = AranDomain;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

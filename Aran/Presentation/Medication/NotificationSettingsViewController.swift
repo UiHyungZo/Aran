@@ -1,6 +1,7 @@
 import RxCocoa
 import RxSwift
 import UIKit
+import AranDomain
 
 final class NotificationSettingsViewController: UIViewController {
     private struct TimeSlotRow {

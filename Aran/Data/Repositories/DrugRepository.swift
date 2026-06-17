@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 final class DrugRepository: DrugRepositoryProtocol {
     private let apiClient: any DrugAPIClientProtocol

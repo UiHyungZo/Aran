@@ -1,5 +1,6 @@
 import XCTest
 @testable import Aran
+import AranDomain
 
 final class DrugApprovalMapperTests: XCTestCase {
     private func decodeItem() throws -> DrugApprovalItemDTO {

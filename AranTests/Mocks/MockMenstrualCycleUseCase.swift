@@ -1,5 +1,6 @@
 @testable import Aran
 import Foundation
+import AranDomain
 
 final class MockMenstrualCycleUseCase: MenstrualCycleUseCaseProtocol {
     var stubbedAll: [MenstrualCycle] = []

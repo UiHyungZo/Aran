@@ -2,6 +2,7 @@
 import RxCocoa
 import RxSwift
 import XCTest
+import AranDomain
 
 @MainActor
 final class HealthRecordViewModelTests: XCTestCase {

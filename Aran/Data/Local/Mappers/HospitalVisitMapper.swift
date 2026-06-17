@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum HospitalVisitMapper {
     static func toDomain(_ model: HospitalVisitModel) -> HospitalVisit {

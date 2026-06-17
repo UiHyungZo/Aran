@@ -1,5 +1,6 @@
 @testable import Aran
 import XCTest
+import AranDomain
 
 final class HealthRecordUseCaseTests: XCTestCase {
     private var repo: MockHealthRecordRepository!

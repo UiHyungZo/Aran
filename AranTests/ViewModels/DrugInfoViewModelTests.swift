@@ -1,5 +1,6 @@
 @testable import Aran
 import XCTest
+import AranDomain
 
 @MainActor
 final class DrugInfoViewModelTests: XCTestCase {
@@ -8,8 +9,8 @@ final class DrugInfoViewModelTests: XCTestCase {
     private var recentSearchRepository: MockRecentDrugSearchRepository!
     private var sut: DrugInfoViewModel!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         searchUseCase = MockSearchDrugUseCase()
         favoriteRepository = MockFavoriteDrugRepository()
         recentSearchRepository = MockRecentDrugSearchRepository()
@@ -18,14 +19,20 @@ final class DrugInfoViewModelTests: XCTestCase {
             favoriteDrugUseCase: FavoriteDrugUseCase(repository: favoriteRepository),
             recentSearchUseCase: RecentDrugSearchUseCase(repository: recentSearchRepository)
         )
+        // init에서 시작된 Task (loadRecentSearches, loadFavorites) 소진
+        await Task.yield()
+        await Task.yield()
+        await Task.yield()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         sut = nil
         recentSearchRepository = nil
         favoriteRepository = nil
         searchUseCase = nil
-        super.tearDown()
+        // 이전 테스트의 Task 잔여 실행이 다음 테스트 yield 예산을 소비하지 않도록 draining
+        for _ in 0..<10 { await Task.yield() }
+        try await super.tearDown()
     }
 
     func testSelectDrug_whenEasyDrug_setsSelectedDrugAndDoesNotEnrich() async {
@@ -69,8 +76,7 @@ final class DrugInfoViewModelTests: XCTestCase {
         )
 
         sut.selectDrug(drug)
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.sut.isDetailLoading)
 
         XCTAssertEqual(searchUseCase.enrichCallCount, 1)
         XCTAssertEqual(sut.selectedDrug?.efcyQesitm, "상세 효능")
@@ -109,8 +115,7 @@ final class DrugInfoViewModelTests: XCTestCase {
         )
 
         sut.selectDrug(drug)
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.sut.isDetailLoading)
 
         XCTAssertEqual(searchUseCase.enrichCallCount, 1)
         XCTAssertFalse(sut.isDetailLoading)
@@ -128,8 +133,7 @@ final class DrugInfoViewModelTests: XCTestCase {
         searchUseCase.shouldThrow = AppError.networkError(URLError(.timedOut))
 
         sut.selectDrug(drug)
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.sut.isDetailLoading)
 
         XCTAssertEqual(searchUseCase.enrichCallCount, 1)
         XCTAssertEqual(sut.selectedDrug?.itemSeq, "D")
@@ -168,9 +172,7 @@ final class DrugInfoViewModelTests: XCTestCase {
 
         // when: 상세 진입 → enrich 완료 대기
         sut.selectDrug(drug)
-        await Task.yield()
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.sut.isDetailLoading)
 
         // then: 즐겨찾기에 enrich된 데이터가 저장됨
         XCTAssertEqual(favoriteRepository.savedDrugs.last?.efcyQesitm, "상세 효능")
@@ -193,9 +195,7 @@ final class DrugInfoViewModelTests: XCTestCase {
 
         // when
         sut.selectDrug(drug)
-        await Task.yield()
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.sut.isDetailLoading)
 
         // then: 즐겨찾기 저장 호출 없음
         XCTAssertTrue(favoriteRepository.savedDrugs.isEmpty)
@@ -215,8 +215,7 @@ final class DrugInfoViewModelTests: XCTestCase {
 
         // when: 뒤로가기 → clearDetailState 호출
         sut.clearDetailState()
-        await Task.yield()
-        await Task.yield()
+        await waitUntil(!self.favoriteRepository.savedDrugs.isEmpty)
 
         // then: pending toggle이 즉시 실행되어 즐겨찾기에 저장됨
         XCTAssertEqual(favoriteRepository.savedDrugs.map(\.itemSeq), ["A"])
@@ -255,6 +254,16 @@ final class DrugInfoViewModelTests: XCTestCase {
 
         // then
         XCTAssertFalse(sut.isDetailLoading)
+    }
+
+    // MARK: - Async helpers
+
+    /// 조건이 참이 될 때까지 MainActor를 최대 50회 양보한다.
+    func waitUntil(_ condition: @autoclosure @escaping () -> Bool) async {
+        for _ in 0..<50 {
+            await Task.yield()
+            if condition() { return }
+        }
     }
 }
 

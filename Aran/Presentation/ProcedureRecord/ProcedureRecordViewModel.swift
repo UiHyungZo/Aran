@@ -5,6 +5,7 @@
 
 import Combine
 import Foundation
+import AranDomain
 
 struct ProcedureCycleSummary: Identifiable {
     var id: Int { cycleNumber }

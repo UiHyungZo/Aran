@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import AranDomain
 
 @MainActor
 final class DrugInfoViewModel: ObservableObject {
@@ -121,6 +122,10 @@ final class DrugInfoViewModel: ObservableObject {
     }
 
     private var pendingFavoriteToggle = false
+
+    deinit {
+        enrichTask?.cancel()
+    }
 
     func selectDrug(_ drug: Drug) {
         prepareForDetail(drug)

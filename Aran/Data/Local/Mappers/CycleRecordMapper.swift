@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 private struct EmbryoRecordDTO: Codable {
     let id: UUID

@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AranDomain
 
 struct MedicationListWrapper: UIViewControllerRepresentable {
     let container: MedicationSceneDIContainer

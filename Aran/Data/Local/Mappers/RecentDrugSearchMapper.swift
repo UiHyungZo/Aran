@@ -1,4 +1,5 @@
 import Foundation
+import AranDomain
 
 enum RecentDrugSearchMapper {
     static func toDomain(_ model: RecentDrugSearchModel) -> RecentDrugSearch {
