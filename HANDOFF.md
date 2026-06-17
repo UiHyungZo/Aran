@@ -23,7 +23,7 @@
 
 ---
 
-## 최근 완료 작업 (develop 기준)
+## 최근 완료 작업 (main 기준)
 
 | 작업 | 파일 | 상태 |
 |------|------|------|
@@ -96,5 +96,5 @@ bash scripts/build-debug.sh
 
 # 테스트
 xcodebuild test -scheme Aran \
-  -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
+  -destination 'platform=iOS Simulator,OS=26.4.1,name=iPhone 17'
 ```

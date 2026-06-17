@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아란 v14.0 — 시술 기록 탭 다크모드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#1a1a1a;padding:24px}
+h1{font-size:20px;font-weight:600;color:#f0f0f0;margin-bottom:4px}
+.subtitle{font-size:13px;color:#666;margin-bottom:32px}
+.section-title{font-size:15px;font-weight:600;color:#e0e0e0;margin:32px 0 12px;padding-bottom:6px;border-bottom:1.5px solid #333}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+.col{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lbl{font-size:11px;color:#666;text-align:center;letter-spacing:.03em}
+.tag{font-size:10px;color:#555;margin-bottom:2px;text-align:center}
+
+/* ── DARK WIREFRAME ── */
+.wf .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:2px solid #555;border-radius:28px;overflow:hidden}
+.wf .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.wf .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e}
+.wf .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.wf .nb{width:18px;height:18px;border-radius:50%;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.wf .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.wf .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.wf .ti.on{color:#e0e0e0;font-weight:500}
+.wf .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e;border:.5px solid #3c3c3e}
+.wf .tic.on{background:#e0e0e0}
+.wf .card{margin:5px 8px;border:.5px solid #3c3c3e;border-radius:6px;padding:6px;background:#2c2c2e}
+.wf .ct{font-size:9px;font-weight:500;color:#e0e0e0}
+.wf .cs{font-size:8px;color:#555;margin-top:2px}
+.wf .step{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .slbl{font-size:9px;color:#e0e0e0}
+.wf .sctl{display:flex;align-items:center;gap:5px}
+.wf .ssb{width:15px;height:15px;border-radius:50%;border:.5px solid #444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.wf .ssv{font-size:10px;font-weight:500;min-width:16px;text-align:center;color:#e0e0e0}
+.wf .grd{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .gc{font-size:8px;text-align:center;padding:3px 0;border-radius:3px;border:.5px solid #3c3c3e;background:#2c2c2e;color:#666}
+.wf .gc.on{background:#e0e0e0;color:#1c1c1e;border-color:#e0e0e0}
+.wf .ff{padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .fl{font-size:7px;color:#555;margin-bottom:1px}
+.wf .fi{background:#3c3c3e;border-radius:3px;padding:3px 6px;font-size:8px;color:#e0e0e0}
+.wf .fi.ph{color:#555}
+.wf .savebtn{margin:5px 8px 4px;background:#e0e0e0;color:#1c1c1e;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.wf .chips{display:flex;gap:3px;padding:4px 8px;border-bottom:.5px solid #2c2c2e;flex-wrap:wrap}
+.wf .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #3c3c3e;background:#2c2c2e;color:#666}
+.wf .chip.on{background:#e0e0e0;color:#1c1c1e;border-color:#e0e0e0}
+.wf .row-item{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.wf .ri-l{font-size:8px;color:#666}
+.wf .ri-r{font-size:9px;font-weight:500;color:#e0e0e0}
+
+/* ── DARK COLOR MOCKUP ── */
+.cm .phone{width:158px;flex-shrink:0;background:#1c1c1e;border:1.5px solid #2c2c2e;border-radius:28px;overflow:hidden}
+.cm .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#555;border-bottom:.5px solid #2c2c2e}
+.cm .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #2c2c2e}
+.cm .nt{font-size:11px;font-weight:500;color:#f0f0f0}
+.cm .nb{width:18px;height:18px;border-radius:50%;border:.5px solid #3c3c3e;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.cm .tbar{display:flex;border-top:.5px solid #2c2c2e;background:#1c1c1e}
+.cm .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#555;gap:1px}
+.cm .ti.on{color:#2EC090}
+.cm .tic{width:12px;height:12px;border-radius:2px;background:#2c2c2e}
+.cm .tic.on{background:#1A3A28}
+.cm .card{margin:5px 8px;border:.5px solid #2c2c2e;border-radius:6px;padding:6px;background:#2c2c2e}
+.cm .step{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .slbl{font-size:9px;color:#e0e0e0}
+.cm .sctl{display:flex;align-items:center;gap:5px}
+.cm .ssb{width:15px;height:15px;border-radius:50%;border:.5px solid #3c3c3e;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.cm .ssv{font-size:10px;font-weight:500;min-width:16px;text-align:center;color:#2EC090}
+.cm .grd{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .gc{font-size:8px;text-align:center;padding:3px 0;border-radius:3px;border:.5px solid #3c3c3e;background:#2c2c2e;color:#666}
+.cm .gc.on{background:#1A3A28;color:#5FD4A0;border-color:#2EC090}
+.cm .ff{padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .fl{font-size:7px;color:#555;margin-bottom:1px}
+.cm .fi{background:#2c2c2e;border-radius:3px;padding:3px 6px;font-size:8px;color:#e0e0e0}
+.cm .fi.ph{color:#555}
+.cm .saveteal{margin:5px 8px 4px;background:#1D9E75;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.cm .chips{display:flex;gap:3px;padding:4px 8px;border-bottom:.5px solid #2c2c2e;flex-wrap:wrap}
+.cm .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #3c3c3e;background:#2c2c2e;color:#666}
+.cm .chip.on{background:#1A3A28;color:#5FD4A0;border-color:#2EC090}
+.cm .row-item{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-bottom:.5px solid #2c2c2e}
+.cm .ri-l{font-size:8px;color:#666}
+.cm .ri-r{font-size:9px;font-weight:500;color:#e0e0e0}
+.cm .badge-ing{font-size:7px;padding:2px 6px;border-radius:20px;background:#2A1E08;color:#D4921A}
+.cm .badge-ok{font-size:7px;padding:2px 6px;border-radius:20px;background:#1A3A28;color:#5FD4A0}
+.cm .badge-fail{font-size:7px;padding:2px 6px;border-radius:20px;background:#3A1A1A;color:#FF8080}
+.cm .sec-hd{background:#2c2c2e;padding:3px 8px;font-size:8px;color:#2EC090;font-weight:500}
+</style>
+</head>
+<body>
+
+<h1>아란 (Aran) — 🗂 시술 기록 탭 다크모드</h1>
+<p class="subtitle">PRD v14.0 기준 · 다크모드 와이어프레임 + 컬러 시안</p>
+
+<!-- ── DARK WIREFRAME ── -->
+<div class="section-title">WIREFRAME — Dark</div>
+<div class="row wf">
+
+<!-- 01 차수 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 차수 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">시술 기록</div><div class="nb">+</div></div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between"><div class="ct">5차 시술</div><span style="font-size:7px;border:.5px solid #555;border-radius:20px;padding:1px 5px;color:#666">진행중</span></div>
+    <div class="cs">채취 15 · 수정 12 · 동결 8개</div>
+    <div class="cs">이식 1회 ›</div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between"><div class="ct">4차 시술</div><span style="font-size:7px;border:.5px solid #555;border-radius:20px;padding:1px 5px;color:#666">실패</span></div>
+    <div class="cs">채취 10 · 수정 7 · 동결 5개</div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div style="display:flex;justify-content:space-between"><div class="ct">3차 시술</div><span style="font-size:7px;border:.5px solid #555;border-radius:20px;padding:1px 5px;color:#666">성공</span></div>
+    <div class="cs">채취 8 · 수정 6 · 동결 4개</div>
+  </div>
+  <div style="margin:4px 8px 0;background:#2c2c2e;border-radius:5px;padding:6px;height:44px;display:flex;align-items:flex-end;gap:2px">
+    <div style="flex:1;background:#444;height:55%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#555;height:75%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#444;height:45%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#333;height:30%;border-radius:2px 2px 0 0"></div>
+    <div style="font-size:7px;color:#555;align-self:center;margin-left:3px">Bar</div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 차수 상세 -->
+<div class="col">
+<div class="tag">차수 카드 탭</div>
+<div class="lbl">02 차수 상세</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">5차 시술</div><div style="font-size:8px;color:#888">편집</div></div>
+  <div class="row-item"><div class="ri-l">채취일</div><div class="ri-r">2026-05-10</div></div>
+  <div class="row-item"><div class="ri-l">채취 개수</div><div class="ri-r">15개</div></div>
+  <div class="row-item"><div class="ri-l">수정 개수</div><div class="ri-r">12개</div></div>
+  <div class="row-item"><div class="ri-l">동결 개수</div><div class="ri-r">8개</div></div>
+  <div class="row-item"><div class="ri-l">배아 등급</div><div class="ri-r">A등급</div></div>
+  <div style="padding:3px 8px;font-size:8px;color:#666;font-weight:500;background:#2c2c2e">이식 기록</div>
+  <div class="row-item"><div class="ri-l">이식일</div><div class="ri-r">2026-05-15</div></div>
+  <div class="row-item"><div class="ri-l">이식 개수</div><div class="ri-r">동결배아 1개</div></div>
+  <div class="row-item"><div class="ri-l">결과</div><span style="font-size:7px;border:.5px solid #555;border-radius:20px;padding:1px 6px;color:#666">진행중</span></div>
+  <div style="padding:3px 8px;font-size:8px;color:#666;font-weight:500;background:#2c2c2e">PGT 기록</div>
+  <div class="row-item" style="border-bottom:none"><div class="ri-l">PGT-A</div><div class="ri-r">정상 4 · 이상 2</div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 채취/이식 입력 -->
+<div class="col">
+<div class="tag">입력</div>
+<div class="lbl">03 채취/이식 입력</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">채취/이식 기록</div><div style="width:18px"></div></div>
+  <div class="step"><span class="slbl">차수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">5차</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">채취 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">15</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">수정 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">12</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">동결 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">8</div><div class="ssb">+</div></div></div>
+  <div style="padding:3px 8px 2px;font-size:7px;color:#555">배아 등급</div>
+  <div class="grd"><div class="gc on">A</div><div class="gc">B</div><div class="gc">C</div><div class="gc">D</div></div>
+  <div class="step"><span class="slbl">이식 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">1</div><div class="ssb">+</div></div></div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #2c2c2e">
+    <div style="flex:1;border-radius:4px;padding:4px;text-align:center;font-size:8px;background:#e0e0e0;color:#1c1c1e">동결배아</div>
+    <div style="flex:1;border-radius:4px;padding:4px;text-align:center;font-size:8px;border:.5px solid #3c3c3e;color:#555">신선배아</div>
+  </div>
+  <div class="savebtn">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 이식 결과 -->
+<div class="col">
+<div class="tag">이식 결과 (별도)</div>
+<div class="lbl">04 이식 결과 입력</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">이식 결과 입력</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">차수</div><div class="fi">5차 시술</div></div>
+  <div class="ff"><div class="fl">이식일</div><div class="fi">2026년 5월 15일</div></div>
+  <div style="padding:3px 8px 2px;font-size:7px;color:#555">결과</div>
+  <div class="chips"><div class="chip">성공</div><div class="chip">실패</div><div class="chip on">진행중</div></div>
+  <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph" style="min-height:24px">메모 입력</div></div>
+  <div class="savebtn">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 PGT -->
+<div class="col">
+<div class="tag">PGT</div>
+<div class="lbl">05 PGT / 염색체 기록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">PGT / 염색체 기록</div><div style="width:18px"></div></div>
+  <div class="chips" style="flex-wrap:wrap"><div class="chip on">PGT-A</div><div class="chip">PGT-M</div><div class="chip">부부 염색체</div><div class="chip">반착검사</div></div>
+  <div class="step"><span class="slbl">정상</span><div class="sctl"><div class="ssb">−</div><div class="ssv">4</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">이상</span><div class="sctl"><div class="ssb">−</div><div class="ssv">2</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">모자이크</span><div class="sctl"><div class="ssb">−</div><div class="ssv">0</div><div class="ssb">+</div></div></div>
+  <div class="ff"><div class="fl">검사일</div><div class="fi">2026년 5월 12일</div></div>
+  <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph">추가 메모</div></div>
+  <div class="savebtn">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ── DARK COLOR MOCKUP ── -->
+<div class="section-title">COLOR MOCKUP — Dark</div>
+<div class="row cm">
+
+<!-- 01 차수 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 차수 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">시술 기록</div><div class="nb" style="background:#1A3A28;border-color:#2EC090;color:#2EC090">+</div></div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:500;color:#2EC090">5차 시술</div><span class="badge-ing">진행중</span></div>
+    <div style="font-size:8px;color:#555;margin-top:2px">채취 15 · 수정 12 · 동결 8개</div>
+    <div style="font-size:8px;color:#2EC090;margin-top:2px">이식 1회 ›</div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:500;color:#888">4차 시술</div><span class="badge-fail">실패</span></div>
+    <div style="font-size:8px;color:#555;margin-top:2px">채취 10 · 수정 7 · 동결 5개</div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:500;color:#888">3차 시술</div><span class="badge-ok">성공</span></div>
+    <div style="font-size:8px;color:#555;margin-top:2px">채취 8 · 수정 6 · 동결 4개</div>
+  </div>
+  <div style="margin:4px 8px 0;background:#2c2c2e;border-radius:5px;padding:6px;height:44px;display:flex;align-items:flex-end;gap:2px">
+    <div style="flex:1;background:#1A4A32;height:55%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#236647;height:75%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#1D9E75;height:45%;border-radius:2px 2px 0 0"></div>
+    <div style="flex:1;background:#2EC090;height:30%;border-radius:2px 2px 0 0"></div>
+    <div style="font-size:7px;color:#555;align-self:center;margin-left:3px">Swift<br>Charts</div>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 차수 상세 -->
+<div class="col">
+<div class="tag">차수 카드 탭</div>
+<div class="lbl">02 차수 상세</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">5차 시술</div><div style="font-size:8px;color:#2EC090">편집</div></div>
+  <div class="row-item"><div class="ri-l">채취일</div><div class="ri-r">2026-05-10</div></div>
+  <div class="row-item"><div class="ri-l">채취 개수</div><div class="ri-r">15개</div></div>
+  <div class="row-item"><div class="ri-l">수정 개수</div><div class="ri-r">12개</div></div>
+  <div class="row-item"><div class="ri-l">동결 개수</div><div class="ri-r">8개</div></div>
+  <div class="row-item"><div class="ri-l">배아 등급</div><div style="font-size:8px;background:#1A3A28;color:#5FD4A0;padding:1px 6px;border-radius:20px">A등급</div></div>
+  <div class="sec-hd">이식 기록</div>
+  <div class="row-item"><div class="ri-l">이식일</div><div class="ri-r">2026-05-15</div></div>
+  <div class="row-item"><div class="ri-l">이식 개수</div><div class="ri-r">동결배아 1개</div></div>
+  <div class="row-item"><div class="ri-l">결과</div><span class="badge-ing">진행중</span></div>
+  <div class="sec-hd">PGT 기록</div>
+  <div class="row-item" style="border-bottom:none"><div class="ri-l">PGT-A</div><div style="font-size:8px;color:#e0e0e0">정상 <span style="color:#5FD4A0;font-weight:500">4</span> · 이상 <span style="color:#FF8080;font-weight:500">2</span></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 채취/이식 입력 -->
+<div class="col">
+<div class="tag">입력</div>
+<div class="lbl">03 채취/이식 입력</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">채취/이식 기록</div><div style="width:18px"></div></div>
+  <div class="step"><span class="slbl">차수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">5차</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">채취 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">15</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">수정 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">12</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">동결 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">8</div><div class="ssb">+</div></div></div>
+  <div style="padding:3px 8px 2px;font-size:7px;color:#555">배아 등급</div>
+  <div class="grd"><div class="gc on">A</div><div class="gc">B</div><div class="gc">C</div><div class="gc">D</div></div>
+  <div class="step"><span class="slbl">이식 개수</span><div class="sctl"><div class="ssb">−</div><div class="ssv">1</div><div class="ssb">+</div></div></div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #2c2c2e">
+    <div style="flex:1;border-radius:4px;padding:4px;text-align:center;font-size:8px;background:#1A3A28;color:#5FD4A0;border:.5px solid #2EC090">동결배아</div>
+    <div style="flex:1;border-radius:4px;padding:4px;text-align:center;font-size:8px;background:#2c2c2e;color:#555;border:.5px solid #3c3c3e">신선배아</div>
+  </div>
+  <div class="saveteal">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 이식 결과 -->
+<div class="col">
+<div class="tag">이식 결과 (별도)</div>
+<div class="lbl">04 이식 결과 입력</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">이식 결과 입력</div><div style="width:18px"></div></div>
+  <div class="ff"><div class="fl">차수</div><div class="fi">5차 시술</div></div>
+  <div class="ff"><div class="fl">이식일</div><div class="fi">2026년 5월 15일</div></div>
+  <div style="padding:3px 8px 2px;font-size:7px;color:#555">결과</div>
+  <div class="chips">
+    <div class="chip">성공</div>
+    <div class="chip">실패</div>
+    <div class="chip on">진행중</div>
+  </div>
+  <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph" style="min-height:24px">메모 입력</div></div>
+  <div class="saveteal">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 05 PGT -->
+<div class="col">
+<div class="tag">PGT</div>
+<div class="lbl">05 PGT / 염색체 기록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">PGT / 염색체 기록</div><div style="width:18px"></div></div>
+  <div class="chips" style="flex-wrap:wrap"><div class="chip on">PGT-A</div><div class="chip">PGT-M</div><div class="chip">부부 염색체</div><div class="chip">반착검사</div></div>
+  <div class="step"><span class="slbl">정상</span><div class="sctl"><div class="ssb">−</div><div class="ssv" style="color:#5FD4A0">4</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">이상</span><div class="sctl"><div class="ssb">−</div><div class="ssv" style="color:#FF8080">2</div><div class="ssb">+</div></div></div>
+  <div class="step"><span class="slbl">모자이크</span><div class="sctl"><div class="ssb">−</div><div class="ssv" style="color:#D4921A">0</div><div class="ssb">+</div></div></div>
+  <div class="ff"><div class="fl">검사일</div><div class="fi">2026년 5월 12일</div></div>
+  <div class="ff" style="border-bottom:none"><div class="fl">메모</div><div class="fi ph">추가 메모</div></div>
+  <div class="saveteal">저장</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti"><div class="tic"></div>검사</div><div class="ti on"><div class="tic on"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<p style="font-size:12px;color:#555;margin-top:24px;text-align:center">아란 (Aran) · PRD v14.0 · 시술 기록 탭 다크모드 · 화면 5개</p>
+</body>
+</html>

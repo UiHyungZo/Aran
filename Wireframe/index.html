@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아란 (Aran) — Wireframe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #888;
+    }
+
+    /* 모드 토글 */
+    .mode-toggle {
+      display: flex;
+      background: #e8e6e0;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: #888;
+    }
+
+    .mode-btn.active {
+      background: #fff;
+      color: #1a1a1a;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    /* 탭 목록 */
+    .tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tab-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: #fff;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #1a1a1a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .tab-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .tab-icon {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+    }
+
+    .tab-info { flex: 1; }
+
+    .tab-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .tab-desc {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .arrow {
+      color: #ccc;
+      font-size: 18px;
+    }
+
+    /* 탭별 컬러 */
+    .icon-calendar  { background: #fdeef3; }
+    .icon-medication { background: #eeedfe; }
+    .icon-exam      { background: #e6f1fb; }
+    .icon-cycle     { background: #e1f5ee; }
+    .icon-drug      { background: #eaf3de; }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌸 아란 (Aran)</h1>
+      <p>IVF 통합 관리 iOS 앱 · Wireframe v14</p>
+    </header>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('light')">☀️ 라이트 모드</button>
+      <button class="mode-btn" onclick="setMode('dark')">🌙 다크 모드</button>
+    </div>
+
+    <div class="tab-list" id="tabList"></div>
+
+    <footer>아란 Wireframe · 2026</footer>
+  </div>
+
+  <script>
+    const tabs = [
+      { id: 'calendar',   icon: '📅', name: '캘린더',    desc: '날짜 기반 메인 허브 · 2단계 바텀시트' },
+      { id: 'medication', icon: '💊', name: '약 / 주사', desc: '복용 약 관리 · 알림 설정' },
+      { id: 'exam',       icon: '🏥', name: '검사',      desc: '검사 수치 기록 · 트렌드 차트' },
+      { id: 'cycle',      icon: '🗂', name: '시술 기록', desc: '차수별 채취 / 이식 / PGT 기록' },
+      { id: 'druginfo',   icon: '🔍', name: '약 정보',   desc: '식약처 API 약 검색 · 상세 조회' },
+    ];
+
+    const iconClass = {
+      calendar: 'icon-calendar',
+      medication: 'icon-medication',
+      exam: 'icon-exam',
+      cycle: 'icon-cycle',
+      druginfo: 'icon-drug',
+    };
+
+    let currentMode = 'light';
+
+    function getFileName(tabId, mode) {
+      const prefix = mode === 'dark' ? 'aran_dark' : 'aran_wireframe';
+      return `${mode === 'dark' ? '다크모드' : '화이트모드'}/${prefix}_v14_${tabId}.html`;
+    }
+
+    function render() {
+      const list = document.getElementById('tabList');
+      list.innerHTML = tabs.map(tab => `
+        <a class="tab-link" href="${getFileName(tab.id, currentMode)}" target="_blank">
+          <div class="tab-icon ${iconClass[tab.id]}">${tab.icon}</div>
+          <div class="tab-info">
+            <div class="tab-name">${tab.name}</div>
+            <div class="tab-desc">${tab.desc}</div>
+          </div>
+          <span class="arrow">›</span>
+        </a>
+      `).join('');
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (mode === 'light' && i === 0) || (mode === 'dark' && i === 1));
+      });
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

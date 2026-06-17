@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아란 v14.0 — 검사 탭</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#f5f4f0;padding:24px}
+h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:32px}
+.section-title{font-size:15px;font-weight:600;color:#1a1a1a;margin:32px 0 12px;padding-bottom:6px;border-bottom:1.5px solid #ddd}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+.col{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lbl{font-size:11px;color:#888;text-align:center;letter-spacing:.03em}
+.tag{font-size:10px;color:#aaa;margin-bottom:2px;text-align:center}
+
+/* ── WIREFRAME ── */
+.wf .phone{width:158px;flex-shrink:0;background:#fff;border:2px solid #1a1a1a;border-radius:28px;overflow:hidden}
+.wf .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#999;border-bottom:.5px solid #eee}
+.wf .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #eee}
+.wf .nt{font-size:11px;font-weight:500;color:#1a1a1a}
+.wf .nb{width:18px;height:18px;border-radius:50%;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666}
+.wf .tbar{display:flex;border-top:.5px solid #eee}
+.wf .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#aaa;gap:1px}
+.wf .ti.on{color:#1a1a1a;font-weight:500}
+.wf .tic{width:12px;height:12px;border-radius:2px;background:#eee;border:.5px solid #ddd}
+.wf .tic.on{background:#1a1a1a}
+.wf .sec-hd{background:#f5f5f5;padding:3px 8px;font-size:8px;color:#999;font-weight:500}
+.wf .ec{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #eee}
+.wf .en{font-size:9px;font-weight:500;color:#1a1a1a}
+.wf .ed{font-size:7px;color:#aaa;margin-top:1px}
+.wf .ev{font-size:11px;font-weight:500;color:#1a1a1a;text-align:right}
+.wf .eu{font-size:7px;color:#aaa}
+.wf .trend{font-size:7px;background:#eee;border-radius:20px;padding:1px 4px;margin-top:2px;display:inline-block}
+.wf .ff{padding:4px 8px;border-bottom:.5px solid #eee}
+.wf .fl{font-size:7px;color:#aaa;margin-bottom:1px}
+.wf .fi{background:#f5f5f5;border-radius:3px;padding:3px 6px;font-size:8px;color:#1a1a1a}
+.wf .fi.ph{color:#bbb}
+.wf .savebtn{margin:5px 8px 4px;background:#1a1a1a;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.wf .delbtn{margin:0 8px 5px;border:1px solid #ccc;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#888}
+.wf .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #ddd;background:#f5f5f5;color:#888;display:inline-block;margin-right:3px;margin-top:3px}
+.wf .chip.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+
+/* ── COLOR MOCKUP ── */
+.cm .phone{width:158px;flex-shrink:0;background:#fff;border:1.5px solid #e2e0d6;border-radius:28px;overflow:hidden}
+.cm .sb{padding:7px 12px 3px;display:flex;justify-content:space-between;font-size:9px;color:#999;border-bottom:.5px solid #ede9e0}
+.cm .nav{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 6px;border-bottom:.5px solid #ede9e0}
+.cm .nt{font-size:11px;font-weight:500;color:#1a1a1a}
+.cm .nb{width:18px;height:18px;border-radius:50%;border:.5px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666}
+.cm .tbar{display:flex;border-top:.5px solid #ede9e0}
+.cm .ti{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px;font-size:7px;color:#aaa;gap:1px}
+.cm .ti.on{color:#185FA5}
+.cm .tic{width:12px;height:12px;border-radius:2px;background:#f0ede6}
+.cm .tic.on{background:#E6F1FB}
+.cm .sec-hd{background:#faf8f3;padding:3px 8px;font-size:8px;color:#999;font-weight:500}
+.cm .ec{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:.5px solid #ede9e0}
+.cm .en{font-size:9px;font-weight:500;color:#1a1a1a}
+.cm .ed{font-size:7px;color:#aaa;margin-top:1px}
+.cm .ev{font-size:11px;font-weight:500;color:#185FA5;text-align:right}
+.cm .eu{font-size:7px;color:#aaa}
+.cm .tup{font-size:7px;background:#FCEBEB;color:#A32D2D;border-radius:20px;padding:1px 4px;margin-top:2px;display:inline-block}
+.cm .tdn{font-size:7px;background:#E1F5EE;color:#085041;border-radius:20px;padding:1px 4px;margin-top:2px;display:inline-block}
+.cm .ff{padding:4px 8px;border-bottom:.5px solid #ede9e0}
+.cm .fl{font-size:7px;color:#aaa;margin-bottom:1px}
+.cm .fi{background:#faf8f3;border-radius:3px;padding:3px 6px;font-size:8px;color:#1a1a1a}
+.cm .fi.ph{color:#ccc}
+.cm .fi.blue{background:#E6F1FB;color:#0C447C}
+.cm .saveblue{margin:5px 8px 4px;background:#185FA5;color:#fff;border-radius:5px;padding:5px;text-align:center;font-size:8px;font-weight:500}
+.cm .delbtn{margin:0 8px 5px;border:1px solid #FCEBEB;border-radius:5px;padding:4px;text-align:center;font-size:8px;color:#A32D2D;background:#FCEBEB}
+.cm .chip{font-size:7px;padding:2px 6px;border-radius:20px;border:.5px solid #ddd;background:#faf8f3;color:#888;display:inline-block;margin-right:3px;margin-top:3px}
+.cm .chip.on{background:#E6F1FB;color:#0C447C;border-color:#185FA5}
+.cm .frow{display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #ede9e0}
+.cm .fhalf{flex:1}
+</style>
+</head>
+<body>
+
+<h1>아란 (Aran) — 🧪 검사 탭</h1>
+<p class="subtitle">PRD v14.0 기준 · 와이어프레임 + 컬러 시안</p>
+
+<!-- ── WIREFRAME ── -->
+<div class="section-title">WIREFRAME</div>
+<div class="row wf">
+
+<!-- 01 수치 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 검사 수치 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">검사 기록</div><div class="nb">+</div></div>
+  <div class="sec-hd">난소 기능 검사</div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">7.2</div><div class="eu">mIU/mL</div><div class="trend">↓ 0.8</div></div></div>
+  <div class="ec"><div><div class="en">AMH</div><div class="ed">2026-05-10</div></div><div style="text-align:right"><div class="ev">2.35</div><div class="eu">ng/mL</div><div class="trend">↑ 0.15</div></div></div>
+  <div class="ec"><div><div class="en">AFC</div><div class="ed">2026-04-20</div></div><div style="text-align:right"><div class="ev">14</div><div class="eu">개</div></div></div>
+  <div class="sec-hd">호르몬 검사</div>
+  <div class="ec"><div><div class="en">E2</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">214</div><div class="eu">pg/mL</div><div class="trend">↑ 26</div></div></div>
+  <div class="ec"><div><div class="en">P4</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">0.8</div><div class="eu">ng/mL</div></div></div>
+  <div class="ec"><div><div class="en">LH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">5.1</div><div class="eu">mIU/mL</div></div></div>
+  <div class="ec" style="border-bottom:none"><div><div class="en">β-hCG</div><div class="ed">2026-05-20</div></div><div style="text-align:right"><div class="ev">312</div><div class="eu">mIU/mL</div><div class="trend">↑ 180</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 수치 입력 -->
+<div class="col">
+<div class="tag">입력</div>
+<div class="lbl">02 수치 입력 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">검사 수치 추가</div><div style="width:18px"></div></div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="flex:1"><div class="fl">검사 항목</div><div class="fi" style="display:flex;justify-content:space-between;color:#888">선택 <span>∨</span></div></div>
+    <div style="flex:1"><div class="fl">수치</div><div class="fi ph">0.0</div></div>
+  </div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="flex:1"><div class="fl">측정일</div><div class="fi">2026-05-15</div></div>
+    <div style="flex:1"><div class="fl">단위</div><div class="fi ph">자동</div></div>
+  </div>
+  <div class="ff" style="border-bottom:.5px solid #eee"><div class="fl">메모 (선택)</div><div class="fi ph" style="min-height:26px">메모 입력</div></div>
+  <div class="savebtn">+ 추가하기</div>
+  <div style="padding:4px 8px;font-size:8px;color:#888;border-bottom:.5px solid #eee">항목 선택</div>
+  <div style="padding:5px 8px;display:flex;flex-wrap:wrap">
+    <span class="chip on">FSH</span><span class="chip">AMH</span><span class="chip">AFC</span><span class="chip">E2</span>
+    <span class="chip">P4</span><span class="chip">LH</span><span class="chip">β-hCG</span>
+    <span class="chip">+ 직접 추가</span>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 수치 수정 -->
+<div class="col">
+<div class="tag">수정 (셀 탭)</div>
+<div class="lbl">03 수치 수정 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">검사 수치 수정</div><div style="width:18px"></div></div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="flex:1"><div class="fl">검사 항목</div><div class="fi">FSH</div></div>
+    <div style="flex:1"><div class="fl">수치</div><div class="fi">7.2</div></div>
+  </div>
+  <div style="display:flex;gap:5px;padding:4px 8px;border-bottom:.5px solid #eee">
+    <div style="flex:1"><div class="fl">측정일</div><div class="fi">2026-05-15</div></div>
+    <div style="flex:1"><div class="fl">단위</div><div class="fi">mIU/mL</div></div>
+  </div>
+  <div class="ff" style="border-bottom:.5px solid #eee"><div class="fl">메모 (선택)</div><div class="fi ph" style="min-height:26px">메모 입력</div></div>
+  <div class="savebtn">수정 저장</div>
+  <div class="delbtn">이 기록 삭제</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 히스토리 -->
+<div class="col">
+<div class="tag">히스토리</div>
+<div class="lbl">04 항목별 히스토리</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">FSH 기록</div><div style="width:18px"></div></div>
+  <div style="margin:6px 8px;background:#f5f5f5;border-radius:5px;padding:6px;height:52px;display:flex;align-items:flex-end;gap:3px">
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:70%;background:#bbb;border-radius:1px 1px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:85%;background:#999;border-radius:1px 1px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:60%;background:#bbb;border-radius:1px 1px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:50%;background:#aaa;border-radius:1px 1px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:40%;background:#888;border-radius:1px 1px 0 0"></div></div>
+    <div style="font-size:7px;color:#aaa;align-self:center;margin-left:3px">Line</div>
+  </div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">7.2</div><div class="eu">mIU/mL</div><div class="trend">↓ 0.8</div></div></div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-04-20</div></div><div style="text-align:right"><div class="ev">8.0</div><div class="eu">mIU/mL</div><div class="trend">↑ 1.2</div></div></div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-03-15</div></div><div style="text-align:right"><div class="ev">6.8</div><div class="eu">mIU/mL</div></div></div>
+  <div class="ec" style="border-bottom:none"><div><div class="en">FSH</div><div class="ed">2026-02-10</div></div><div style="text-align:right"><div class="ev">7.5</div><div class="eu">mIU/mL</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ── COLOR MOCKUP ── -->
+<div class="section-title">COLOR MOCKUP</div>
+<div class="row cm">
+
+<!-- 01 수치 목록 -->
+<div class="col">
+<div class="tag">메인</div>
+<div class="lbl">01 검사 수치 목록</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nt">검사 기록</div><div class="nb" style="background:#E6F1FB;border-color:#185FA5;color:#185FA5">+</div></div>
+  <div class="sec-hd">난소 기능 검사</div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">7.2</div><div class="eu">mIU/mL</div><div class="tdn">↓ 0.8</div></div></div>
+  <div class="ec"><div><div class="en">AMH</div><div class="ed">2026-05-10</div></div><div style="text-align:right"><div class="ev">2.35</div><div class="eu">ng/mL</div><div class="tup">↑ 0.15</div></div></div>
+  <div class="ec"><div><div class="en">AFC</div><div class="ed">2026-04-20</div></div><div style="text-align:right"><div class="ev">14</div><div class="eu">개</div></div></div>
+  <div class="sec-hd">호르몬 검사</div>
+  <div class="ec"><div><div class="en">E2</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">214</div><div class="eu">pg/mL</div><div class="tup">↑ 26</div></div></div>
+  <div class="ec"><div><div class="en">P4</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">0.8</div><div class="eu">ng/mL</div></div></div>
+  <div class="ec"><div><div class="en">LH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">5.1</div><div class="eu">mIU/mL</div></div></div>
+  <div class="ec" style="border-bottom:none"><div><div class="en">β-hCG</div><div class="ed">2026-05-20</div></div><div style="text-align:right"><div class="ev">312</div><div class="eu">mIU/mL</div><div class="tup">↑ 180</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 02 수치 입력 -->
+<div class="col">
+<div class="tag">입력</div>
+<div class="lbl">02 수치 입력 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">✕</div><div class="nt">검사 수치 추가</div><div style="width:18px"></div></div>
+  <div class="frow">
+    <div class="fhalf"><div class="fl">검사 항목</div><div class="fi blue" style="display:flex;justify-content:space-between">FSH <span>∨</span></div></div>
+    <div class="fhalf"><div class="fl">수치</div><div class="fi blue">7.2</div></div>
+  </div>
+  <div class="frow">
+    <div class="fhalf"><div class="fl">측정일</div><div class="fi">2026-05-15</div></div>
+    <div class="fhalf"><div class="fl">단위</div><div class="fi">mIU/mL</div></div>
+  </div>
+  <div class="ff"><div class="fl">메모 (선택)</div><div class="fi ph" style="min-height:26px">메모 입력</div></div>
+  <div class="saveblue">+ 추가하기</div>
+  <div style="padding:4px 8px;font-size:8px;color:#185FA5;font-weight:500;border-bottom:.5px solid #ede9e0">항목 선택</div>
+  <div style="padding:5px 8px;display:flex;flex-wrap:wrap">
+    <span class="chip on">FSH</span><span class="chip">AMH</span><span class="chip">AFC</span><span class="chip">E2</span>
+    <span class="chip">P4</span><span class="chip">LH</span><span class="chip">β-hCG</span>
+    <span class="chip" style="background:#faf8f3;color:#185FA5;border-color:#185FA5">+ 직접 추가</span>
+  </div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 03 수치 수정 -->
+<div class="col">
+<div class="tag">수정 (셀 탭)</div>
+<div class="lbl">03 수치 수정 폼</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">검사 수치 수정</div><div style="width:18px"></div></div>
+  <div class="frow">
+    <div class="fhalf"><div class="fl">검사 항목</div><div class="fi blue">FSH</div></div>
+    <div class="fhalf"><div class="fl">수치</div><div class="fi blue">7.2</div></div>
+  </div>
+  <div class="frow">
+    <div class="fhalf"><div class="fl">측정일</div><div class="fi">2026-05-15</div></div>
+    <div class="fhalf"><div class="fl">단위</div><div class="fi">mIU/mL</div></div>
+  </div>
+  <div class="ff"><div class="fl">메모 (선택)</div><div class="fi ph" style="min-height:26px">메모 입력</div></div>
+  <div class="saveblue">수정 저장</div>
+  <div class="delbtn">이 기록 삭제</div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+<!-- 04 히스토리 -->
+<div class="col">
+<div class="tag">히스토리</div>
+<div class="lbl">04 항목별 히스토리 + 차트</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><div class="nb">‹</div><div class="nt">FSH 기록</div><div style="width:18px"></div></div>
+  <div style="margin:6px 8px;background:#faf8f3;border-radius:5px;padding:6px;height:54px;display:flex;align-items:flex-end;gap:3px;position:relative">
+    <div style="position:absolute;top:8px;left:8px;right:8px;border-top:1px dashed #ddd"></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:70%;background:#B5D4F4;border-radius:2px 2px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:85%;background:#378ADD;border-radius:2px 2px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:60%;background:#B5D4F4;border-radius:2px 2px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:50%;background:#185FA5;border-radius:2px 2px 0 0"></div></div>
+    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:40%;background:#378ADD;border-radius:2px 2px 0 0"></div></div>
+    <div style="font-size:7px;color:#aaa;align-self:center;margin-left:2px">Swift<br>Charts</div>
+  </div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-05-15</div></div><div style="text-align:right"><div class="ev">7.2</div><div class="eu">mIU/mL</div><div class="tdn">↓ 0.8</div></div></div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-04-20</div></div><div style="text-align:right"><div class="ev">8.0</div><div class="eu">mIU/mL</div><div class="tup">↑ 1.2</div></div></div>
+  <div class="ec"><div><div class="en">FSH</div><div class="ed">2026-03-15</div></div><div style="text-align:right"><div class="ev">6.8</div><div class="eu">mIU/mL</div></div></div>
+  <div class="ec" style="border-bottom:none"><div><div class="en">FSH</div><div class="ed">2026-02-10</div></div><div style="text-align:right"><div class="ev">7.5</div><div class="eu">mIU/mL</div></div></div>
+  <div class="tbar"><div class="ti"><div class="tic"></div>캘린더</div><div class="ti"><div class="tic"></div>약/주사</div><div class="ti on"><div class="tic on"></div>검사</div><div class="ti"><div class="tic"></div>시술</div><div class="ti"><div class="tic"></div>약정보</div></div>
+</div>
+</div>
+
+</div>
+
+<p style="font-size:12px;color:#555;margin-top:24px;text-align:center">아란 (Aran) · PRD v14.0 · 검사 탭 · 화면 4개</p>
+</body>
+</html>

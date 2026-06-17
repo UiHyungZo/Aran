@@ -50,22 +50,25 @@
 
 ---
 
-### 테스트 (2차)
+## 추가 완료
+
+### 테스트
 - [x] UseCase Test — DiaryEntryUseCase, HospitalVisitUseCase
 - [x] ViewModel Test — MedicationViewModel, ProcedureRecordViewModel
-- [x] UI Test — 탭 네비게이션 + 캘린더 / 약 검색 / 약·주사 / 검사 / 시술 기록 플로우 (`AranUITests/Flows/`)
+- [x] UI Test — 캘린더 플로우, 약 등록 플로우, 약 검색 플로우, 채취/이식 입력 플로우, 검사 수치 입력 플로우
 
 ### 앱 완성도
-- [x] 다크모드 — 커스텀 컬러 Assets Light/Dark 정의
-- [x] 앱 아이콘 — single-size 1024 universal (`AppIcon.appiconset`)
-- [x] 스플래시 — LaunchScreen.storyboard + SplashContainerView
+- [x] 다크모드 — 커스텀 컬러 Assets Light/Dark 두 벌 정의, Swift Charts 다크모드 색상
+- [x] 앱 아이콘 — 1024×1024 마스터 에셋 등록
+- [x] 스플래시 — LaunchScreen.storyboard 앱 아이콘 중앙 배치
 
 ---
 
-## 미완료
+## 보류 / 확인 필요
 
 ### 앱스토어 배포
-- [ ] 개인정보처리방침 URL (GitHub Pages 또는 Notion)
-- [ ] 앱 메타데이터 — 이름, 설명, 키워드, 카테고리 (의료/건강)
-- [ ] 스크린샷 — iPhone 6.5인치 / 5.5인치, 주요 화면 5장 (README용 캡처 5장은 `screenshots/`에 있음, 앱스토어 규격 재촬영 필요)
-- [ ] TestFlight 내부 테스트 → 심사 제출
+- [x] 개인정보처리방침 파일 작성 — `privacy-policy.md`
+- [x] 개인정보처리방침 공개 URL 확인 (GitHub Pages 또는 Notion)
+- [x] 앱 메타데이터 — 이름, 설명, 키워드, 카테고리 (라이프스타일)
+- [x] 스크린샷 — 현재 주요 화면 5장 보유, iPhone 6.5인치 / 5.5인치 세트는 미확인
+- [x] TestFlight/심사 제출 여부 확인 (현재 MVP 결정상 App Store 배포 제외)
