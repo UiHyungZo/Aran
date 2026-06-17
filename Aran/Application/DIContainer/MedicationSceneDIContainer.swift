@@ -31,6 +31,9 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
             notificationRepository: notificationRepository
         )
 
+    private lazy var notificationUseCase: MedicationNotificationUseCaseProtocol =
+        MedicationNotificationUseCase(notificationRepository: notificationRepository)
+
     private lazy var drugRepository: DrugRepositoryProtocol = {
         if let drugRepositoryOverride = dependencies.drugRepositoryOverride {
             return drugRepositoryOverride
@@ -88,7 +91,10 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         actions: MedicationFormActions
     ) -> MedicationFormViewController {
         MedicationFormViewController(
-            viewModel: MedicationFormViewModel(medicationUseCase: medicationUseCase),
+            viewModel: MedicationFormViewModel(
+                medicationUseCase: medicationUseCase,
+                notificationUseCase: notificationUseCase
+            ),
             actions: actions,
             initialDrugName: drugName,
             initialComponent: component,
@@ -100,6 +106,7 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         MedicationFormViewController(
             viewModel: MedicationFormViewModel(
                 medicationUseCase: medicationUseCase,
+                notificationUseCase: notificationUseCase,
                 initialMedication: medication
             ),
             actions: actions,

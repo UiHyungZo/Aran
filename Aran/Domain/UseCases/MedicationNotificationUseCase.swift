@@ -6,6 +6,7 @@ protocol MedicationNotificationUseCaseProtocol {
     func enable(_ medication: Medication) async throws -> Medication
     func disable(_ medication: Medication) async throws -> Medication
     func cancel(for medication: Medication) async throws
+    func permissionStatus() async -> NotificationPermissionStatus
 }
 
 final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol {
@@ -78,5 +79,9 @@ final class MedicationNotificationUseCase: MedicationNotificationUseCaseProtocol
     func cancel(for medication: Medication) async throws {
         guard !medication.notificationIDs.isEmpty else { return }
         try await notificationRepository.cancel(notificationIDs: medication.notificationIDs)
+    }
+
+    func permissionStatus() async -> NotificationPermissionStatus {
+        await notificationRepository.permissionStatus()
     }
 }

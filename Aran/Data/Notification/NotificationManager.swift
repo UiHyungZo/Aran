@@ -33,6 +33,18 @@ final class NotificationManager: NotificationRepositoryProtocol {
     func cancelAll() async throws {
         center.removeAllPendingNotificationRequests()
     }
+
+    func permissionStatus() async -> NotificationPermissionStatus {
+        let settings = await center.notificationSettings()
+        switch settings.authorizationStatus {
+        case .notDetermined: return .notDetermined
+        case .authorized:    return .authorized
+        case .denied:        return .denied
+        case .provisional:   return .provisional
+        case .ephemeral:     return .ephemeral
+        @unknown default:    return .notDetermined
+        }
+    }
 }
 
 private enum NotificationError: Error {

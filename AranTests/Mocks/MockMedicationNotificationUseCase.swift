@@ -31,4 +31,8 @@ final class MockMedicationNotificationUseCase: MedicationNotificationUseCaseProt
     func cancel(for medication: Medication) async throws {
         if let error = shouldThrow { throw error }
     }
+
+    func permissionStatus() async -> NotificationPermissionStatus {
+        .authorized
+    }
 }

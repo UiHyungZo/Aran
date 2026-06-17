@@ -23,4 +23,8 @@ final class MockNotificationRepository: NotificationRepositoryProtocol {
         if let error = shouldThrow { throw error }
         cancelAllCalled = true
     }
+
+    func permissionStatus() async -> NotificationPermissionStatus {
+        .authorized
+    }
 }

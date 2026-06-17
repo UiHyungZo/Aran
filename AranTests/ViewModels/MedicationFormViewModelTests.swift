@@ -9,10 +9,16 @@ final class MedicationFormViewModelTests: XCTestCase {
     private var sut: MedicationFormViewModel!
     private var disposeBag: DisposeBag!
 
+    private var mockNotificationUseCase: MockMedicationNotificationUseCase!
+
     override func setUp() {
         super.setUp()
         mockUseCase = MockMedicationUseCase()
-        sut = MedicationFormViewModel(medicationUseCase: mockUseCase)
+        mockNotificationUseCase = MockMedicationNotificationUseCase()
+        sut = MedicationFormViewModel(
+            medicationUseCase: mockUseCase,
+            notificationUseCase: mockNotificationUseCase
+        )
         disposeBag = DisposeBag()
     }
 
@@ -20,6 +26,7 @@ final class MedicationFormViewModelTests: XCTestCase {
         sut = nil
         disposeBag = nil
         mockUseCase = nil
+        mockNotificationUseCase = nil
         super.tearDown()
     }
 
@@ -134,6 +141,7 @@ final class MedicationFormViewModelTests: XCTestCase {
         let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
         sut = MedicationFormViewModel(
             medicationUseCase: mockUseCase,
+            notificationUseCase: mockNotificationUseCase,
             initialMedication: initialMedication
         )
 
@@ -185,6 +193,7 @@ final class MedicationFormViewModelTests: XCTestCase {
         )
         sut = MedicationFormViewModel(
             medicationUseCase: mockUseCase,
+            notificationUseCase: mockNotificationUseCase,
             initialMedication: initialMedication
         )
 

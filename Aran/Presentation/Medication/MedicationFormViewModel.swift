@@ -1,7 +1,6 @@
 import Foundation
 @preconcurrency import RxCocoa
 @preconcurrency import RxSwift
-import UserNotifications
 
 @MainActor
 final class MedicationFormViewModel {
@@ -25,11 +24,17 @@ final class MedicationFormViewModel {
     }
 
     private let medicationUseCase: MedicationUseCaseProtocol
+    private let notificationUseCase: MedicationNotificationUseCaseProtocol
     private let initialMedication: Medication?
     private let disposeBag = DisposeBag()
 
-    init(medicationUseCase: MedicationUseCaseProtocol, initialMedication: Medication? = nil) {
+    init(
+        medicationUseCase: MedicationUseCaseProtocol,
+        notificationUseCase: MedicationNotificationUseCaseProtocol,
+        initialMedication: Medication? = nil
+    ) {
         self.medicationUseCase = medicationUseCase
+        self.notificationUseCase = notificationUseCase
         self.initialMedication = initialMedication
     }
 
@@ -41,11 +46,12 @@ final class MedicationFormViewModel {
         input.isNotificationEnabled
             .skip(1)
             .filter { $0 }
-            .flatMapLatest { _ -> Observable<Bool> in
-                Observable.create { observer in
+            .flatMapLatest { [weak self] _ -> Observable<Bool> in
+                guard let self else { return .empty() }
+                return Observable.create { observer in
                     Task {
-                        let settings = await UNUserNotificationCenter.current().notificationSettings()
-                        observer.onNext(settings.authorizationStatus == .denied)
+                        let status = await self.notificationUseCase.permissionStatus()
+                        observer.onNext(status == .denied)
                         observer.onCompleted()
                     }
                     return Disposables.create()
