@@ -1,6 +1,7 @@
 import Foundation
 @testable import Aran
 import AranDomain
+import AranData
 
 final class MockDrugApprovalAPIClient: DrugApprovalAPIClientProtocol {
     var searchResult: DrugSearchResult?

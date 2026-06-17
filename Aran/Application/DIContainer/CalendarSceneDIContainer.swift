@@ -5,6 +5,7 @@
 
 import SwiftData
 import AranDomain
+import AranData
 
 @MainActor
 final class CalendarSceneDIContainer {

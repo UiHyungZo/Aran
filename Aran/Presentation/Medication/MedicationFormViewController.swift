@@ -35,6 +35,7 @@ final class MedicationFormViewController: UIViewController {
     private let saveButton = UIButton(type: .system)
     private let deleteButton = UIButton(type: .system)
     private let saveTappedRelay = PublishRelay<Void>()
+    private let deleteTappedRelay = PublishRelay<Void>()
 
     init(viewModel: MedicationFormViewModel,
          actions: MedicationFormActions,
@@ -415,7 +416,8 @@ final class MedicationFormViewController: UIViewController {
             startDateChanged: startDateRelay.asObservable(),
             endDateChanged: endDateRelay.asObservable(),
             isNotificationEnabled: notificationSwitch.rx.isOn.asObservable(),
-            saveTapped: saveTappedRelay.asObservable()
+            saveTapped: saveTappedRelay.asObservable(),
+            deleteTapped: deleteTappedRelay.asObservable()
         )
 
         let output = viewModel.transform(input: input)
@@ -432,6 +434,12 @@ final class MedicationFormViewController: UIViewController {
         output.saveCompleted
             .drive(onNext: { [weak self] in
                 self?.actions.onSaveCompleted()
+            })
+            .disposed(by: disposeBag)
+
+        output.deleteCompleted
+            .drive(onNext: { [weak self] in
+                self?.actions.onDeleteCompleted()
             })
             .disposed(by: disposeBag)
 
@@ -457,7 +465,7 @@ final class MedicationFormViewController: UIViewController {
 
         deleteButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.deleteTapped()
+                self?.showDeleteConfirmation()
             })
             .disposed(by: disposeBag)
     }
@@ -470,8 +478,7 @@ final class MedicationFormViewController: UIViewController {
         view.endEditing(true)
     }
 
-    private func deleteTapped() {
-        guard let initialMedication else { return }
+    private func showDeleteConfirmation() {
         let alert = UIAlertController(
             title: "이 약을 삭제할까요?",
             message: "삭제한 약 정보는 복구할 수 없습니다.",
@@ -479,7 +486,7 @@ final class MedicationFormViewController: UIViewController {
         )
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
-            self?.actions.onDelete(initialMedication)
+            self?.deleteTappedRelay.accept(())
         })
         present(alert, animated: true)
     }

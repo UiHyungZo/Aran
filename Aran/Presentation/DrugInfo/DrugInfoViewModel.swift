@@ -176,6 +176,7 @@ final class DrugInfoViewModel: ObservableObject {
 
         do {
             let enriched = try await searchDrugUseCase.enrich(drug)
+            try Task.checkCancellation()
             guard selectedDrug?.itemSeq == drug.itemSeq else { return }
             selectedDrug = enriched
             // 이미 즐겨찾기한 약이면 enrich된 완전한 데이터로 갱신 캐싱한다.

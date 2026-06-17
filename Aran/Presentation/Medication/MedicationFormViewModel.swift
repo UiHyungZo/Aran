@@ -15,11 +15,13 @@ final class MedicationFormViewModel {
         let endDateChanged: Observable<Date?>
         let isNotificationEnabled: Observable<Bool>
         let saveTapped: Observable<Void>
+        let deleteTapped: Observable<Void>
     }
 
     struct Output {
         let isSaveEnabled: Driver<Bool>
         let saveCompleted: Driver<Void>
+        let deleteCompleted: Driver<Void>
         let error: Driver<String>
         let notificationPermissionDenied: Driver<Void>
     }
@@ -41,6 +43,7 @@ final class MedicationFormViewModel {
 
     func transform(input: Input) -> Output {
         let saveCompletedRelay = PublishRelay<Void>()
+        let deleteCompletedRelay = PublishRelay<Void>()
         let errorRelay = PublishRelay<String>()
         let notificationPermissionDeniedRelay = PublishRelay<Void>()
 
@@ -138,9 +141,33 @@ final class MedicationFormViewModel {
             .bind(to: saveCompletedRelay)
             .disposed(by: disposeBag)
 
+        input.deleteTapped
+            .flatMapLatest { [weak self] _ -> Observable<Void> in
+                guard let self, let medication = self.initialMedication else { return .empty() }
+                return Observable.create { observer in
+                    let task = Task {
+                        do {
+                            try await self.medicationUseCase.delete(medication: medication)
+                            observer.onNext(())
+                            observer.onCompleted()
+                        } catch {
+                            observer.onError(error)
+                        }
+                    }
+                    return Disposables.create { task.cancel() }
+                }
+            }
+            .catch { error in
+                errorRelay.accept((error as? AppError)?.errorDescription ?? error.localizedDescription)
+                return .empty()
+            }
+            .bind(to: deleteCompletedRelay)
+            .disposed(by: disposeBag)
+
         return Output(
             isSaveEnabled: isSaveEnabled,
             saveCompleted: saveCompletedRelay.asDriver(onErrorJustReturn: ()),
+            deleteCompleted: deleteCompletedRelay.asDriver(onErrorJustReturn: ()),
             error: errorRelay.asDriver(onErrorJustReturn: ""),
             notificationPermissionDenied: notificationPermissionDeniedRelay.asDriver(onErrorJustReturn: ())
         )

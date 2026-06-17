@@ -1,6 +1,7 @@
 @testable import Aran
 import Foundation
 import AranDomain
+import AranData
 
 final class MockDrugAPIClient: DrugAPIClientProtocol {
     var searchResult: Result<DrugSearchResult, Error> = .success(DrugSearchResult(drugs: [], totalCount: 0, pageNo: 1))

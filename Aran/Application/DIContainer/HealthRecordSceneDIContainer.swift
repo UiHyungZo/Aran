@@ -6,6 +6,7 @@
 import SwiftData
 import UIKit
 import AranDomain
+import AranData
 
 @MainActor
 final class HealthRecordSceneDIContainer: HealthRecordFlowCoordinatorDependencies {

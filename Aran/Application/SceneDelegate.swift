@@ -8,6 +8,7 @@
 import SwiftData
 import SwiftUI
 import UIKit
+import AranData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?

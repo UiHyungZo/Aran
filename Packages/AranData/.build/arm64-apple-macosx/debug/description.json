@@ -1,0 +1,2746 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire_Alamofire.bundle/PrivacyInfo.xcprivacy" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/PrivacyInfo.xcprivacy"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire_Alamofire.bundle/PrivacyInfo.xcprivacy"
+        }
+      ]
+    }
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.Alamofire-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/sources",
+      "importPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/AFError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataStreamRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DownloadRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPHeaders.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPMethod.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Notifications.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoding.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Protected.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Request.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/RequestTaskMap.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Response.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Session.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/SessionDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/URLConvertible+URLRequestConvertible.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/UploadRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/WebSocketRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/DispatchQueue+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/OperationQueue+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/Result+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/StringEncoding+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLRequest+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLSessionConfiguration+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AlamofireExtended.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AuthenticationInterceptor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/CachedResponseHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Combine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Concurrency.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/EventMonitor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartFormData.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartUpload.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/NetworkReachabilityManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/OfflineRetrier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RedirectHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestCompression.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestInterceptor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ResponseSerialization.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RetryPolicy.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ServerTrustEvaluation.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/URLEncodedFormEncoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Validation.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DerivedSources/resource_bundle_accessor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/swift-version--32010AED7ABC631F.txt"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<Alamofire-arm64-apple-macosx-debug.module-resources>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "Alamofire",
+      "moduleOutputPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/Alamofire.swiftmodule",
+      "objects" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AFError.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataRequest.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataStreamRequest.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DownloadRequest.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPHeaders.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPMethod.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Notifications.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoder.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoding.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Protected.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Request.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestTaskMap.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Response.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Session.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/SessionDelegate.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLConvertible+URLRequestConvertible.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/UploadRequest.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/WebSocketRequest.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DispatchQueue+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OperationQueue+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Result+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/StringEncoding+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLRequest+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLSessionConfiguration+Alamofire.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AlamofireExtended.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AuthenticationInterceptor.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/CachedResponseHandler.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Combine.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Concurrency.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/EventMonitor.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartFormData.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartUpload.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/NetworkReachabilityManager.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OfflineRetrier.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RedirectHandler.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestCompression.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestInterceptor.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ResponseSerialization.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RetryPolicy.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ServerTrustEvaluation.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLEncodedFormEncoder.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Validation.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/resource_bundle_accessor.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx10.13",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+        "-module-cache-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/include/Alamofire-Swift.h",
+        "-swift-version",
+        "5",
+        "-enable-upcoming-feature",
+        "ExistentialAny",
+        "-plugin-path",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-F",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-suppress-warnings",
+        "-user-module-version",
+        "5.12.0",
+        "-package-name",
+        "alamofire"
+      ],
+      "outputFileMapPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AFError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataStreamRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DownloadRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPHeaders.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPMethod.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Notifications.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoding.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Protected.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Request.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestTaskMap.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Response.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Session.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/SessionDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLConvertible+URLRequestConvertible.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/UploadRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/WebSocketRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DispatchQueue+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OperationQueue+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Result+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/StringEncoding+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLRequest+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLSessionConfiguration+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AlamofireExtended.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AuthenticationInterceptor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/CachedResponseHandler.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Combine.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Concurrency.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/EventMonitor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartFormData.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartUpload.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/NetworkReachabilityManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OfflineRetrier.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RedirectHandler.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestCompression.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestInterceptor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ResponseSerialization.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RetryPolicy.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ServerTrustEvaluation.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLEncodedFormEncoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Validation.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/resource_bundle_accessor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/Alamofire.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/AFError.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataRequest.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataStreamRequest.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DownloadRequest.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPHeaders.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPMethod.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Notifications.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoder.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoding.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Protected.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Request.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/RequestTaskMap.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Response.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Session.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/SessionDelegate.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/URLConvertible+URLRequestConvertible.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/UploadRequest.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/WebSocketRequest.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/DispatchQueue+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/OperationQueue+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/Result+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/StringEncoding+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLRequest+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLSessionConfiguration+Alamofire.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AlamofireExtended.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AuthenticationInterceptor.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/CachedResponseHandler.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Combine.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Concurrency.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/EventMonitor.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartFormData.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartUpload.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/NetworkReachabilityManager.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/OfflineRetrier.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RedirectHandler.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestCompression.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestInterceptor.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ResponseSerialization.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RetryPolicy.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ServerTrustEvaluation.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/URLEncodedFormEncoder.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Validation.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DerivedSources/resource_bundle_accessor.swift"
+      ],
+      "tempsPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.AranData-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/sources",
+      "importPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/CycleRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/DiaryEntryModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/FavoriteDrugModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HealthRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HospitalVisitModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/CycleRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/DiaryEntryMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/FavoriteDrugMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HealthRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HospitalVisitMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLegacySlotID.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLogMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MenstrualCycleMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/PGTRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/RecentDrugSearchMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/TransferRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationLogModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationMigrationPlan.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationTimeSlotModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MenstrualCycleModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/PGTRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/RecentDrugSearchModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/TransferRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugApprovalDTO.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugListDTO.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DocDataXMLParser.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClientProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClientProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalRouter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugRouter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Notification/NotificationManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/CycleRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DiaryEntryRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DrugRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/FavoriteDrugRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HealthRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HospitalVisitRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationLogRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MenstrualCycleRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/PGTRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/RecentDrugSearchRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/TransferRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/swift-version--32010AED7ABC631F.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/AranDomain.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/Alamofire.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "AranData",
+      "moduleOutputPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/AranData.swiftmodule",
+      "objects" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLegacySlotID.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordMapper.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationMigrationPlan.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationTimeSlotModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordModel.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalDTO.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugListDTO.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DocDataXMLParser.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugAPIClient.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugAPIClientProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalAPIClient.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalAPIClientProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalRouter.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugRouter.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/NotificationManager.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchRepository.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordRepository.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx10.13",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/include/AranData-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-F",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "arandata"
+      ],
+      "outputFileMapPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLegacySlotID.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordMapper.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationMigrationPlan.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationTimeSlotModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalDTO.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugListDTO.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DocDataXMLParser.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugAPIClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugAPIClientProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalAPIClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalAPIClientProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugApprovalRouter.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugRouter.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/NotificationManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/CycleRecordRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DiaryEntryRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/DrugRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/FavoriteDrugRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HealthRecordRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/HospitalVisitRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationLogRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MedicationRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/MenstrualCycleRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/PGTRecordRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/RecentDrugSearchRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/TransferRecordRepository.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/AranData.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/CycleRecordModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/DiaryEntryModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/FavoriteDrugModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HealthRecordModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HospitalVisitModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/CycleRecordMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/DiaryEntryMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/FavoriteDrugMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HealthRecordMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HospitalVisitMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLegacySlotID.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLogMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MenstrualCycleMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/PGTRecordMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/RecentDrugSearchMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/TransferRecordMapper.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationLogModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationMigrationPlan.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationTimeSlotModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MenstrualCycleModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/PGTRecordModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/RecentDrugSearchModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/TransferRecordModel.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugApprovalDTO.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugListDTO.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DocDataXMLParser.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClient.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClientProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClient.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClientProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalRouter.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugRouter.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Notification/NotificationManager.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/CycleRecordRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DiaryEntryRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DrugRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/FavoriteDrugRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HealthRecordRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HospitalVisitRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationLogRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MenstrualCycleRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/PGTRecordRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/RecentDrugSearchRepository.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/TransferRecordRepository.swift"
+      ],
+      "tempsPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.AranDomain-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/sources",
+      "importPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/AppError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/CycleRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DiaryEntry.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Drug.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugApprovalInfo.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugSearchResult.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/FavoriteDrug.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HealthRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HospitalVisit.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Medication.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationLog.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationTimeSlot.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MenstrualCycle.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/NotificationPermissionStatus.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/PGTRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/RecentDrugSearch.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/TransferRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/CycleRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DiaryEntryRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DrugRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/FavoriteDrugRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HealthRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HospitalVisitRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationLogRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MenstrualCycleRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/NotificationRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/PGTRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/RecentDrugSearchRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/TransferRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/CycleRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/DiaryEntryUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/FavoriteDrugUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HealthRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HospitalVisitUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationLogUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationNotificationUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MenstrualCycleUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/PGTRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/RecentDrugSearchUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/SearchDrugUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/TransferRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/swift-version--32010AED7ABC631F.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "AranDomain",
+      "moduleOutputPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/AranDomain.swiftmodule",
+      "objects" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.swift.o",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx10.13",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/include/AranDomain-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-F",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "arandomain"
+      ],
+      "outputFileMapPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/AppError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecord.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntry.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/Drug.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugApprovalInfo.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugSearchResult.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrug.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecord.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisit.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/Medication.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLog.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationTimeSlot.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycle.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationPermissionStatus.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecord.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearch.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecord.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DrugRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/NotificationRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordRepositoryProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/CycleRecordUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/DiaryEntryUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/FavoriteDrugUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HealthRecordUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/HospitalVisitUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationLogUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationNotificationUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MedicationUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/MenstrualCycleUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/PGTRecordUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/RecentDrugSearchUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/SearchDrugUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/TransferRecordUseCase.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules/AranDomain.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/AppError.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/CycleRecord.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DiaryEntry.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Drug.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugApprovalInfo.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugSearchResult.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/FavoriteDrug.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HealthRecord.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HospitalVisit.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Medication.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationLog.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationTimeSlot.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MenstrualCycle.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/NotificationPermissionStatus.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/PGTRecord.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/RecentDrugSearch.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/TransferRecord.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/CycleRecordRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DiaryEntryRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DrugRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/FavoriteDrugRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HealthRecordRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HospitalVisitRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationLogRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MenstrualCycleRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/NotificationRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/PGTRecordRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/RecentDrugSearchRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/TransferRecordRepositoryProtocol.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/CycleRecordUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/DiaryEntryUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/FavoriteDrugUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HealthRecordUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HospitalVisitUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationLogUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationNotificationUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MenstrualCycleUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/PGTRecordUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/RecentDrugSearchUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/SearchDrugUseCase.swift",
+        "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/TransferRecordUseCase.swift"
+      ],
+      "tempsPath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "Alamofire" : [
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "Alamofire",
+      "-package-name",
+      "alamofire",
+      "-c",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/AFError.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataRequest.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataStreamRequest.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DownloadRequest.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPHeaders.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPMethod.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Notifications.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoder.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoding.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Protected.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Request.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/RequestTaskMap.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Response.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Session.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/SessionDelegate.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/URLConvertible+URLRequestConvertible.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/UploadRequest.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/WebSocketRequest.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/DispatchQueue+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/OperationQueue+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/Result+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/StringEncoding+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLRequest+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLSessionConfiguration+Alamofire.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AlamofireExtended.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AuthenticationInterceptor.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/CachedResponseHandler.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Combine.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Concurrency.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/EventMonitor.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartFormData.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartUpload.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/NetworkReachabilityManager.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/OfflineRetrier.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RedirectHandler.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestCompression.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestInterceptor.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ResponseSerialization.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RetryPolicy.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ServerTrustEvaluation.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/URLEncodedFormEncoder.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Validation.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DerivedSources/resource_bundle_accessor.swift",
+      "-I",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx10.13",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+      "-module-cache-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/include/Alamofire-Swift.h",
+      "-swift-version",
+      "5",
+      "-enable-upcoming-feature",
+      "ExistentialAny",
+      "-plugin-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-F",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-suppress-warnings",
+      "-user-module-version",
+      "5.12.0",
+      "-package-name",
+      "alamofire",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "AranData" : [
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "AranData",
+      "-package-name",
+      "arandata",
+      "-c",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/CycleRecordModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/DiaryEntryModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/FavoriteDrugModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HealthRecordModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HospitalVisitModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/CycleRecordMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/DiaryEntryMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/FavoriteDrugMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HealthRecordMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HospitalVisitMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLegacySlotID.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLogMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MenstrualCycleMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/PGTRecordMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/RecentDrugSearchMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/TransferRecordMapper.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationLogModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationMigrationPlan.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationTimeSlotModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MenstrualCycleModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/PGTRecordModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/RecentDrugSearchModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/TransferRecordModel.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugApprovalDTO.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugListDTO.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DocDataXMLParser.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClient.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClientProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClient.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClientProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalRouter.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugRouter.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Notification/NotificationManager.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/CycleRecordRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DiaryEntryRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DrugRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/FavoriteDrugRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HealthRecordRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HospitalVisitRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationLogRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MenstrualCycleRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/PGTRecordRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/RecentDrugSearchRepository.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/TransferRecordRepository.swift",
+      "-I",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx10.13",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/include/AranData-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-F",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "arandata",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "AranDomain" : [
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "AranDomain",
+      "-package-name",
+      "arandomain",
+      "-c",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/AppError.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/CycleRecord.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DiaryEntry.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Drug.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugApprovalInfo.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugSearchResult.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/FavoriteDrug.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HealthRecord.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HospitalVisit.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Medication.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationLog.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationTimeSlot.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MenstrualCycle.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/NotificationPermissionStatus.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/PGTRecord.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/RecentDrugSearch.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/TransferRecord.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/CycleRecordRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DiaryEntryRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DrugRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/FavoriteDrugRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HealthRecordRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HospitalVisitRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationLogRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MenstrualCycleRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/NotificationRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/PGTRecordRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/RecentDrugSearchRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/TransferRecordRepositoryProtocol.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/CycleRecordUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/DiaryEntryUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/FavoriteDrugUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HealthRecordUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HospitalVisitUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationLogUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationNotificationUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MenstrualCycleUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/PGTRecordUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/RecentDrugSearchUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/SearchDrugUseCase.swift",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/TransferRecordUseCase.swift",
+      "-I",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx10.13",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/include/AranDomain-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-F",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "arandomain",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "Alamofire" : [
+
+    ],
+    "AranData" : [
+      "Alamofire",
+      "AranDomain"
+    ],
+    "AranDomain" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/AFError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DataStreamRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/DownloadRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPHeaders.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/HTTPMethod.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Notifications.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/ParameterEncoding.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Protected.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Request.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/RequestTaskMap.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Response.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/Session.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/SessionDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/URLConvertible+URLRequestConvertible.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/UploadRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Core/WebSocketRequest.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/DispatchQueue+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/OperationQueue+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/Result+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/StringEncoding+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLRequest+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Extensions/URLSessionConfiguration+Alamofire.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AlamofireExtended.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/AuthenticationInterceptor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/CachedResponseHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Combine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Concurrency.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/EventMonitor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartFormData.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/MultipartUpload.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/NetworkReachabilityManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/OfflineRetrier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RedirectHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestCompression.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RequestInterceptor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ResponseSerialization.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/RetryPolicy.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/ServerTrustEvaluation.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/URLEncodedFormEncoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/checkouts/Alamofire/Source/Features/Validation.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DerivedSources/resource_bundle_accessor.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/sources"
+    },
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AlamofireDynamic.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AFError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AlamofireExtended.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/AuthenticationInterceptor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/CachedResponseHandler.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Combine.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Concurrency.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DataStreamRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DispatchQueue+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/DownloadRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/EventMonitor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPHeaders.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/HTTPMethod.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartFormData.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/MultipartUpload.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/NetworkReachabilityManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Notifications.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OfflineRetrier.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/OperationQueue+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ParameterEncoding.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Protected.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RedirectHandler.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Request.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestCompression.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestInterceptor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RequestTaskMap.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Response.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ResponseSerialization.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Result+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/RetryPolicy.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/ServerTrustEvaluation.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Session.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/SessionDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/StringEncoding+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLConvertible+URLRequestConvertible.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLEncodedFormEncoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLRequest+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/URLSessionConfiguration+Alamofire.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/UploadRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/Validation.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/WebSocketRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/Alamofire.build/resource_bundle_accessor.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AlamofireDynamic.product/Objects.LinkFileList"
+    },
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/CycleRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/DiaryEntryModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/FavoriteDrugModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HealthRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/HospitalVisitModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/CycleRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/DiaryEntryMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/FavoriteDrugMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HealthRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/HospitalVisitMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLegacySlotID.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationLogMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MedicationMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/MenstrualCycleMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/PGTRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/RecentDrugSearchMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/Mappers/TransferRecordMapper.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationLogModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationMigrationPlan.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MedicationTimeSlotModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/MenstrualCycleModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/PGTRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/RecentDrugSearchModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Local/TransferRecordModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugApprovalDTO.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DTOs/DrugListDTO.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DocDataXMLParser.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugAPIClientProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalAPIClientProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugApprovalRouter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Network/DrugRouter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Notification/NotificationManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/CycleRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DiaryEntryRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/DrugRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/FavoriteDrugRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HealthRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/HospitalVisitRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationLogRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MedicationRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/MenstrualCycleRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/PGTRecordRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/RecentDrugSearchRepository.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/Sources/AranData/Repositories/TransferRecordRepository.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranData.build/sources"
+    },
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/AppError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/CycleRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DiaryEntry.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Drug.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugApprovalInfo.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/DrugSearchResult.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/FavoriteDrug.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HealthRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/HospitalVisit.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/Medication.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationLog.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MedicationTimeSlot.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/MenstrualCycle.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/NotificationPermissionStatus.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/PGTRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/RecentDrugSearch.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Entities/TransferRecord.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/CycleRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DiaryEntryRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/DrugRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/FavoriteDrugRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HealthRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/HospitalVisitRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationLogRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MedicationRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/MenstrualCycleRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/NotificationRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/PGTRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/RecentDrugSearchRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/Repositories/TransferRecordRepositoryProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/CycleRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/DiaryEntryUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/FavoriteDrugUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HealthRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/HospitalVisitUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationLogUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationNotificationUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MedicationUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/MenstrualCycleUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/PGTRecordUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/RecentDrugSearchUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/SearchDrugUseCase.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranDomain/Sources/AranDomain/UseCases/TransferRecordUseCase.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/AranDomain.build/sources"
+    },
+    "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/swift-version--32010AED7ABC631F.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode-26.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/mirismacbook/Desktop/Delete/Aran/Packages/AranData/.build/arm64-apple-macosx/debug/swift-version--32010AED7ABC631F.txt"
+    }
+  }
+}

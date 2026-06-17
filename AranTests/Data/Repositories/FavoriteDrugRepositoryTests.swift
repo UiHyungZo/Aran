@@ -2,6 +2,7 @@
 import SwiftData
 import XCTest
 import AranDomain
+import AranData
 
 final class FavoriteDrugRepositoryTests: XCTestCase {
     private var container: ModelContainer!

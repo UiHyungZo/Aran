@@ -1,6 +1,7 @@
 import XCTest
 @testable import Aran
 import AranDomain
+import AranData
 
 final class DrugApprovalRouterTests: XCTestCase {
     func test_search_buildsExpectedURLRequest() {

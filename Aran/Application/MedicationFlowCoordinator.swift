@@ -20,7 +20,7 @@ struct MedicationSearchActions {
 struct MedicationFormActions {
     let onCancel: () -> Void
     let onSaveCompleted: () -> Void
-    let onDelete: (Medication) -> Void
+    let onDeleteCompleted: () -> Void
 }
 
 protocol MedicationFlowCoordinatorDependencies {
@@ -29,7 +29,6 @@ protocol MedicationFlowCoordinatorDependencies {
     func makeMedicationFormViewController(drugName: String, component: String, dosage: String, actions: MedicationFormActions) -> MedicationFormViewController
     func makeEditMedicationFormViewController(medication: Medication, actions: MedicationFormActions) -> MedicationFormViewController
     func makeNotificationSettingsViewController() -> NotificationSettingsViewController
-    func deleteMedication(_ medication: Medication) async throws
 }
 
 final class MedicationFlowCoordinator {
@@ -72,8 +71,7 @@ final class MedicationFlowCoordinator {
             onSaveCompleted: { [weak self] in
                 self?.navigationController?.popToRootViewController(animated: true)
             },
-            onDelete: { _ in
-            }
+            onDeleteCompleted: {}
         )
         let vc = dependencies.makeMedicationFormViewController(
             drugName: drugName,
@@ -92,8 +90,8 @@ final class MedicationFlowCoordinator {
             onSaveCompleted: { [weak self] in
                 self?.navigationController?.popToRootViewController(animated: true)
             },
-            onDelete: { [weak self] medication in
-                self?.delete(medication: medication)
+            onDeleteCompleted: { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
             }
         )
         let vc = dependencies.makeEditMedicationFormViewController(medication: medication, actions: actions)
@@ -103,27 +101,5 @@ final class MedicationFlowCoordinator {
     private func showNotificationSettings() {
         let vc = dependencies.makeNotificationSettingsViewController()
         navigationController?.pushViewController(vc, animated: true)
-    }
-
-    private func delete(medication: Medication) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                try await dependencies.deleteMedication(medication)
-                await MainActor.run {
-                    self.navigationController?.popToRootViewController(animated: true)
-                }
-            } catch {
-                await MainActor.run {
-                    let alert = UIAlertController(
-                        title: "삭제 실패",
-                        message: (error as? AppError)?.errorDescription ?? error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "확인", style: .default))
-                    self.navigationController?.topViewController?.present(alert, animated: true)
-                }
-            }
-        }
     }
 }

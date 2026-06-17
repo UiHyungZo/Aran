@@ -1,6 +1,7 @@
 import XCTest
 @testable import Aran
 import AranDomain
+import AranData
 
 final class DrugRepositoryTests: XCTestCase {
     private func makeDrug(

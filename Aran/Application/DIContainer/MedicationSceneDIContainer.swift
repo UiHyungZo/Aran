@@ -6,6 +6,7 @@
 import SwiftData
 import UIKit
 import AranDomain
+import AranData
 
 @MainActor
 final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
@@ -127,7 +128,4 @@ final class MedicationSceneDIContainer: MedicationFlowCoordinatorDependencies {
         MedicationFlowCoordinator(navigationController: navigationController, dependencies: self)
     }
 
-    func deleteMedication(_ medication: Medication) async throws {
-        try await medicationUseCase.delete(medication: medication)
-    }
 }

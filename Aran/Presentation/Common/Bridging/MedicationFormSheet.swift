@@ -22,7 +22,7 @@ struct MedicationFormSheet: UIViewControllerRepresentable {
         let actions = MedicationFormActions(
             onCancel: { context.coordinator.dismiss() },
             onSaveCompleted: { context.coordinator.dismiss() },
-            onDelete: { _ in context.coordinator.dismiss() }
+            onDeleteCompleted: { context.coordinator.dismiss() }
         )
         let vc = container.makeMedicationFormViewController(drugName: drugName, component: "", dosage: "", actions: actions)
         return UINavigationController(rootViewController: vc)

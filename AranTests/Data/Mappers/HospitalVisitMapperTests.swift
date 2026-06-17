@@ -1,6 +1,7 @@
 @testable import Aran
 import XCTest
 import AranDomain
+import AranData
 
 final class HospitalVisitMapperTests: XCTestCase {
 

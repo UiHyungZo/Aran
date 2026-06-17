@@ -2,6 +2,7 @@
 import SwiftData
 import XCTest
 import AranDomain
+import AranData
 
 @MainActor
 final class CycleRecordRepositoryTests: XCTestCase {

@@ -4,6 +4,7 @@
 //
 
 import SwiftData
+import AranData
 
 @MainActor
 final class AppDIContainer {

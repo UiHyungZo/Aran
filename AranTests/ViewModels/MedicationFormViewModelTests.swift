@@ -220,6 +220,58 @@ final class MedicationFormViewModelTests: XCTestCase {
         XCTAssertEqual(mockUseCase.updatedMedications.first?.schedule.timeSlots.first?.id, slotID)
     }
 
+    func testDelete_onSuccess_emitsDeleteCompleted() async {
+        // given
+        let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
+        sut = MedicationFormViewModel(
+            medicationUseCase: mockUseCase,
+            notificationUseCase: mockNotificationUseCase,
+            initialMedication: initialMedication
+        )
+        let deleteTapped = PublishSubject<Void>()
+        let input = makeInput(drugName: "기존약", deleteTapped: deleteTapped.asObservable())
+        let output = sut.transform(input: input)
+
+        let expectation = XCTestExpectation(description: "deleteCompleted emit")
+        output.deleteCompleted
+            .drive(onNext: { expectation.fulfill() })
+            .disposed(by: disposeBag)
+
+        // when
+        deleteTapped.onNext(())
+
+        // then
+        await fulfillment(of: [expectation], timeout: 2.0)
+        XCTAssertEqual(mockUseCase.deletedMedications.first?.id, initialMedication.id)
+    }
+
+    func testDelete_onFailure_emitsError() async {
+        // given
+        let initialMedication = makeMedication(name: "기존약", dosage: "100mg")
+        mockUseCase.shouldThrow = AppError.storageError(NSError(domain: "test", code: -1))
+        sut = MedicationFormViewModel(
+            medicationUseCase: mockUseCase,
+            notificationUseCase: mockNotificationUseCase,
+            initialMedication: initialMedication
+        )
+        let deleteTapped = PublishSubject<Void>()
+        let input = makeInput(drugName: "기존약", deleteTapped: deleteTapped.asObservable())
+        let output = sut.transform(input: input)
+
+        let expectation = XCTestExpectation(description: "error emit on delete failure")
+        output.error
+            .filter { !$0.isEmpty }
+            .drive(onNext: { _ in expectation.fulfill() })
+            .disposed(by: disposeBag)
+
+        // when
+        deleteTapped.onNext(())
+
+        // then
+        await fulfillment(of: [expectation], timeout: 2.0)
+        XCTAssertTrue(mockUseCase.deletedMedications.isEmpty)
+    }
+
     func testSave_whenComponentFilled_savesComponent() async {
         // given
         let saveTapped = PublishSubject<Void>()
@@ -253,7 +305,8 @@ private extension MedicationFormViewModelTests {
         component: String = "",
         dosage: String = "",
         times: [Date] = [Date()],
-        saveTapped: Observable<Void> = .empty()
+        saveTapped: Observable<Void> = .empty(),
+        deleteTapped: Observable<Void> = .empty()
     ) -> MedicationFormViewModel.Input {
         MedicationFormViewModel.Input(
             drugNameChanged: .just(drugName),
@@ -264,7 +317,8 @@ private extension MedicationFormViewModelTests {
             startDateChanged: .just(Date()),
             endDateChanged: .just(nil),
             isNotificationEnabled: .just(false),
-            saveTapped: saveTapped
+            saveTapped: saveTapped,
+            deleteTapped: deleteTapped
         )
     }
 
