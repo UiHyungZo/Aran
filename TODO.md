@@ -82,6 +82,13 @@
 ### 버그 수정
 - [x] DrugInfoViewModelTests:220 플레이키 — `enrichSelectedDrug`에 `Task.checkCancellation()` 추가
 
+### Phase 3: 테스트 분리 + CI (2026-06-17, spm 브랜치)
+- [x] AranDomain `Package.swift` — `.macOS(.v14)` 플랫폼 추가 + `testTarget("AranDomainTests")` 추가
+- [x] UseCase 테스트 → `Packages/AranDomain/Tests/AranDomainTests/` 이동 (UseCase 13개 + Mock 23개, `@testable import Aran` 제거)
+- [x] `AranTests/UseCases/` 전체 삭제, 관련 Mock 23개 삭제 (AranData 의존 3개는 유지)
+- [x] `swift test --package-path Packages/AranDomain` → 96개 PASS (simulator 없이 macOS에서 실행)
+- [x] GitHub Actions CI — `.github/workflows/ci.yml` (domain-test + unit-test 두 Job)
+
 ---
 
 ## 보류 / 확인 필요

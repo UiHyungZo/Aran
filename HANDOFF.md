@@ -23,7 +23,7 @@
 
 ---
 
-## 최근 완료 작업 (develop 기준, 2026-06-17)
+## 최근 완료 작업 (spm 브랜치, 2026-06-17)
 
 | 작업 | 파일 | 상태 |
 |------|------|------|
@@ -48,6 +48,8 @@
 | HealthRecordFormViewModelTests / HealthRecordViewModelTests | `AranTests/ViewModels/` | ✅ |
 | AranDomain SPM 로컬 패키지 분리 (Phase 1) | `Packages/AranDomain/` | ✅ |
 | AranData SPM 로컬 패키지 분리 (Phase 2) | `Packages/AranData/` | ✅ |
+| AranDomain testTarget 추가 + UseCase 테스트 이동 (Phase 3) | `Packages/AranDomain/Package.swift`, `Packages/AranDomain/Tests/AranDomainTests/` | ✅ |
+| GitHub Actions CI | `.github/workflows/ci.yml` | ✅ |
 | MedicationFlowCoordinator delete 아키텍처 수정 | `Application/MedicationFlowCoordinator.swift`, `Presentation/Medication/MedicationFormViewModel.swift` | ✅ |
 | DrugInfoViewModelTests:220 플레이키 수정 | `Presentation/DrugInfo/DrugInfoViewModel.swift` | ✅ |
 | View save 로직 → ViewModel 이동 | `Presentation/ProcedureRecord/ProcedureRecordViewModel.swift`, `TransferInputFormView.swift`, `ProcedurePGTFormView.swift` | ✅ |
@@ -72,10 +74,16 @@
 ### SPM 패키지 구조
 ```
 Packages/
-├── AranDomain/   — Domain Entity, UseCase Protocol, Repository Protocol (외부 프레임워크 의존 없음)
+├── AranDomain/   — Domain Entity, UseCase 구현체, Repository Protocol (외부 프레임워크 의존 없음)
+│   └── Tests/AranDomainTests/  — UseCase 13개 + Mock 23개 (swift test로 단독 실행 가능)
 └── AranData/     — Repository 구현체, Network, SwiftData @Model, Mapper (Alamofire 의존)
 ```
 `Presentation` 레이어가 Repository 구현체를 직접 import하면 컴파일 에러 발생 → 아키텍처 경계 컴파일러 강제.
+
+### CI (GitHub Actions)
+`.github/workflows/ci.yml` — push/PR 시 자동 실행:
+- `domain-test`: `swift test --package-path Packages/AranDomain` (UseCase 96개, simulator 불필요)
+- `unit-test`: `xcodebuild test -scheme AranTests` (Data + ViewModel 테스트)
 
 ### API Key 온보딩
 새 맥북/클론 시 1회 필요:
@@ -97,12 +105,16 @@ cp Aran/Configuration/Secrets.xcconfig.example Aran/Configuration/Secrets.xcconf
 
 ## 테스트 현황
 
-**마지막 실행 기준 전체 PASS (정확한 수는 `xcodebuild test` 실행 후 확인)**
+**마지막 실행 기준 전체 PASS**
 
-- 단위 테스트: UseCase 13 / ViewModel 8 / Repository 12 / Mapper 13 / Network 4 테스트 파일
-- UI 테스트: `TabNavigationUITests` + `Flows/` 5개 (캘린더 / 약 검색 / 약·주사 / 검사 / 시술 기록)
+| 위치 | 실행 방법 | 포함 범위 | 결과 |
+|------|-----------|-----------|------|
+| `Packages/AranDomain/Tests/` | `swift test --package-path Packages/AranDomain` | UseCase 13개 (96 테스트) | ✅ PASS |
+| `AranTests/` | `xcodebuild test -scheme AranTests` | Data Mapper/Repository/Network + ViewModel | ✅ PASS |
+| `AranUITests/` | `xcodebuild test -scheme Aran` | 탭 네비게이션 + 5개 Flow | ✅ PASS |
 
-미작성 테스트 없음. 테스트 추가 시 `AranTests/Mocks/` 하위 Mock 파일과 `MedicationFormViewModelTests` 패턴 참조.
+**UseCase 테스트 위치 주의**: `AranTests/UseCases/`는 비어있음. UseCase 테스트는 `Packages/AranDomain/Tests/AranDomainTests/` 에 있음.
+Mock 추가 시 `Packages/AranDomain/Tests/AranDomainTests/Mocks/` 참조.
 
 ---
 
@@ -122,7 +134,17 @@ cp Aran/Configuration/Secrets.xcconfig.example Aran/Configuration/Secrets.xcconf
 # 빌드
 bash scripts/build-debug.sh
 
-# 테스트
+# Domain 테스트 (simulator 없이, 빠름)
+DEVELOPER_DIR=/Applications/Xcode-26.4.1.app/Contents/Developer \
+  swift test --package-path Packages/AranDomain
+
+# Unit 테스트 (AranTests scheme)
+xcodebuild test -scheme AranTests \
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=latest'
+
+# 전체 테스트 (Unit + UI)
 xcodebuild test -scheme Aran \
   -destination 'platform=iOS Simulator,OS=26.4.1,name=iPhone 17'
 ```
+
+> **주의**: `xcode-select -p`가 CommandLineTools를 가리키면 `DEVELOPER_DIR` 설정 필요.
