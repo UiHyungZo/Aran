@@ -3,27 +3,27 @@
 ## 현재 상태
 
 - **활성 브랜치**: `develop`
-- **전체 진행도**: 전체 기능 + 단위/UI 테스트 + 앱 완성도(다크모드·아이콘·스플래시) 완료.
-- **현재 작업**: 앱스토어 배포 준비 (개인정보처리방침, 메타데이터, 스크린샷, TestFlight)
+- **전체 진행도**: 전체 기능 + 단위/UI 테스트 + 앱 완성도 + 아키텍처 개선 완료.
+- **현재 작업**: 없음 (앱스토어 배포는 MVP 결정상 제외)
 
 ### 레이어별 진척율
 
-| 계층 / 탭 | 진척율 |
-|-----------|--------|
-| Domain 계층 | 100% |
-| Data 계층 | 100% |
-| Application 계층 | 100% |
-| 📅 Calendar 탭 UI | 100% |
-| 💊 Medication 탭 UI | 100% |
-| 🏥 HealthRecord 탭 UI | 100% |
-| 🔍 DrugInfo 탭 UI | 100% |
-| 🗂 ProcedureRecord 탭 UI | 100% |
-| 단위 테스트 | 100% (UseCase/ViewModel/Repository/Mapper/Network) |
-| UI 테스트 | 100% (탭 네비게이션 + 5개 플로우) |
+| 계층 / 탭 | 진척율 | 비고 |
+|-----------|--------|------|
+| Domain 계층 | 100% | `Packages/AranDomain/` SPM 패키지 |
+| Data 계층 | 100% | `Packages/AranData/` SPM 패키지 |
+| Application 계층 | 100% | |
+| 📅 Calendar 탭 UI | 100% | |
+| 💊 Medication 탭 UI | 100% | |
+| 🏥 HealthRecord 탭 UI | 100% | |
+| 🔍 DrugInfo 탭 UI | 100% | |
+| 🗂 ProcedureRecord 탭 UI | 100% | |
+| 단위 테스트 | 100% | UseCase/ViewModel/Repository/Mapper/Network |
+| UI 테스트 | 100% | 탭 네비게이션 + 5개 플로우 |
 
 ---
 
-## 최근 완료 작업 (main 기준)
+## 최근 완료 작업 (develop 기준, 2026-06-17)
 
 | 작업 | 파일 | 상태 |
 |------|------|------|
@@ -46,6 +46,12 @@
 | CalendarViewModelTests | `AranTests/ViewModels/CalendarViewModelTests.swift` | ✅ |
 | DrugInfoViewModelTests / ExamHistoryViewModelTests | `AranTests/ViewModels/` | ✅ |
 | HealthRecordFormViewModelTests / HealthRecordViewModelTests | `AranTests/ViewModels/` | ✅ |
+| AranDomain SPM 로컬 패키지 분리 (Phase 1) | `Packages/AranDomain/` | ✅ |
+| AranData SPM 로컬 패키지 분리 (Phase 2) | `Packages/AranData/` | ✅ |
+| MedicationFlowCoordinator delete 아키텍처 수정 | `Application/MedicationFlowCoordinator.swift`, `Presentation/Medication/MedicationFormViewModel.swift` | ✅ |
+| DrugInfoViewModelTests:220 플레이키 수정 | `Presentation/DrugInfo/DrugInfoViewModel.swift` | ✅ |
+| View save 로직 → ViewModel 이동 | `Presentation/ProcedureRecord/ProcedureRecordViewModel.swift`, `TransferInputFormView.swift`, `ProcedurePGTFormView.swift` | ✅ |
+| API Key 보안 (Secrets.xcconfig 분리) | `Aran/Configuration/Secrets.xcconfig`, `.gitignore`, `project.pbxproj` | ✅ |
 
 ---
 
@@ -58,6 +64,27 @@
 | Health Record | UIKit + RxSwift + Swift Charts | ✅ 완료 (차트 + 히스토리 포함) |
 | Procedure Record | SwiftUI + Combine + Swift Charts | ✅ 완료 |
 | Drug Info | SwiftUI + Combine | ✅ 완료 (즐겨찾기 + 전문의약품 API + 최근 검색어 포함) |
+
+---
+
+## 아키텍처 메모
+
+### SPM 패키지 구조
+```
+Packages/
+├── AranDomain/   — Domain Entity, UseCase Protocol, Repository Protocol (외부 프레임워크 의존 없음)
+└── AranData/     — Repository 구현체, Network, SwiftData @Model, Mapper (Alamofire 의존)
+```
+`Presentation` 레이어가 Repository 구현체를 직접 import하면 컴파일 에러 발생 → 아키텍처 경계 컴파일러 강제.
+
+### API Key 온보딩
+새 맥북/클론 시 1회 필요:
+```bash
+cp Aran/Configuration/Secrets.xcconfig.example Aran/Configuration/Secrets.xcconfig
+# DRUG_API_DECODING / ENCODING / PRDT_DECODING / PRDT_ENCODING 4개 키 입력
+# 키 발급: 공공데이터포털(data.go.kr)
+```
+이후 git pull 시 재작업 불필요 (gitignore 처리됨).
 
 ---
 
@@ -81,10 +108,11 @@
 
 ## 다음 작업 우선순위
 
-1. **개인정보처리방침 URL** — GitHub Pages 또는 Notion
-2. **앱 메타데이터** — 이름, 설명, 키워드, 카테고리 (의료/건강)
-3. **앱스토어 스크린샷** — iPhone 6.5인치 / 5.5인치 규격, 주요 화면 5장
-4. **TestFlight 내부 테스트 → 심사 제출**
+현재 추가 작업 없음. 프로젝트 완성 상태.
+
+가능한 선택지:
+- Phase 3: AranPresentation SPM 분리 (고난이도 — Coordinator/DI 경계 정리 필요)
+- README 온보딩 절차 업데이트 (Secrets.xcconfig 설정 방법 추가)
 
 ---
 

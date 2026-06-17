@@ -64,6 +64,26 @@
 
 ---
 
+## 아키텍처 개선 (2026-06-17)
+
+### SPM 로컬 패키지 분리
+- [x] Phase 1: AranDomain — `Packages/AranDomain/` 로컬 SPM 패키지 분리 (Domain 43개 파일)
+- [x] Phase 2: AranData — `Packages/AranData/` 로컬 SPM 패키지 분리 (Data ~50개 파일, Alamofire 포함)
+
+### 아키텍처 위반 수정
+- [x] MedicationFlowCoordinator — `delete()` 메서드 제거 (UseCase 직접 호출 위반), ViewModel로 이관
+- [x] MedicationFormViewModel — `deleteTapped` Input / `deleteCompleted` Output 추가 + 테스트
+- [x] View save 로직 → ViewModel 이동 — `TransferInputFormView.saveRecords()`, `ProcedurePGTFormView.saveRecord()` 제거, trimming/정규화 ViewModel 내부화
+
+### 보안
+- [x] API Key 보안 — `project.pbxproj` 하드코딩 제거 → `Secrets.xcconfig` (gitignore) 분리
+- [x] xcconfig `://` 주석 버그 수정 — 엔드포인트 URL을 `AppConfigurations.swift` 상수로 이동
+
+### 버그 수정
+- [x] DrugInfoViewModelTests:220 플레이키 — `enrichSelectedDrug`에 `Task.checkCancellation()` 추가
+
+---
+
 ## 보류 / 확인 필요
 
 ### 앱스토어 배포
