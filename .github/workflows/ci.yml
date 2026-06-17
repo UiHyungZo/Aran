@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [spm, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  domain-test:
+    name: Domain Unit Tests (swift test)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
+
+      - name: Cache SPM (AranDomain)
+        uses: actions/cache@v4
+        with:
+          path: Packages/AranDomain/.build
+          key: ${{ runner.os }}-spm-domain-${{ hashFiles('Packages/AranDomain/Package.swift') }}
+          restore-keys: ${{ runner.os }}-spm-domain-
+
+      - name: swift test (AranDomain)
+        run: swift test --package-path Packages/AranDomain
+
+  unit-test:
+    name: Unit Tests (xcodebuild)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
+
+      - name: Cache SPM (Xcode DerivedData)
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-deriveddata-${{ hashFiles('Packages/AranDomain/Package.swift', 'Packages/AranData/Package.swift') }}
+          restore-keys: ${{ runner.os }}-deriveddata-
+
+      - name: xcodebuild test (AranTests)
+        run: |
+          set -o pipefail && xcodebuild test \
+            -project Aran.xcodeproj \
+            -scheme AranTests \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=latest' \
+            -resultBundlePath TestResults.xcresult \
+            | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
