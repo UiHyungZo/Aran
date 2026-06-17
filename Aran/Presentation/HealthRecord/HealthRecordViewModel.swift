@@ -42,7 +42,7 @@ final class HealthRecordViewModel {
             .flatMapLatest { [weak self] _ -> Observable<[ExamSection]> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             let grouped = try await self.useCase.fetchLatestPerItem()
                             let sections = self.buildSections(from: grouped)
@@ -52,7 +52,7 @@ final class HealthRecordViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .do(onNext: { _ in isLoadingRelay.accept(false) })
@@ -68,7 +68,7 @@ final class HealthRecordViewModel {
             .flatMapLatest { [weak self] record -> Observable<Void> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             try await self.useCase.delete(id: record.id)
                             observer.onNext(())
@@ -77,7 +77,7 @@ final class HealthRecordViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in

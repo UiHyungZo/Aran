@@ -36,7 +36,7 @@ final class ExamHistoryViewModel {
             .flatMapLatest { [weak self] _ -> Observable<[HealthRecord]> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             let result = try await self.useCase.fetch(type: self.type)
                             observer.onNext(result)
@@ -45,7 +45,7 @@ final class ExamHistoryViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .do(onNext: { _ in isLoadingRelay.accept(false) })

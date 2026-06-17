@@ -49,12 +49,12 @@ final class MedicationFormViewModel {
             .flatMapLatest { [weak self] _ -> Observable<Bool> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         let status = await self.notificationUseCase.permissionStatus()
                         observer.onNext(status == .denied)
                         observer.onCompleted()
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .filter { $0 }
@@ -114,7 +114,7 @@ final class MedicationFormViewModel {
                     createdAt: self.initialMedication?.createdAt ?? Date()
                 )
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             if self.initialMedication == nil {
                                 try await self.medicationUseCase.save(medication)
@@ -127,7 +127,7 @@ final class MedicationFormViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in

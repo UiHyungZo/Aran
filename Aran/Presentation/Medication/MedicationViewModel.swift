@@ -41,7 +41,7 @@ final class MedicationViewModel {
             .flatMapLatest { [weak self] _ -> Observable<[Medication]> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             let result = try await self.medicationUseCase.fetchAll()
                             observer.onNext(result)
@@ -50,7 +50,7 @@ final class MedicationViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .do(onNext: { _ in isLoadingRelay.accept(false) })
@@ -66,7 +66,7 @@ final class MedicationViewModel {
             .flatMapLatest { [weak self] medication -> Observable<Void> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             try await self.medicationUseCase.toggle(medication: medication)
                             observer.onNext(())
@@ -75,7 +75,7 @@ final class MedicationViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in
@@ -90,7 +90,7 @@ final class MedicationViewModel {
             .flatMapLatest { [weak self] request -> Observable<Void> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             try await self.medicationUseCase.toggleTimeSlot(
                                 medication: request.medication,
@@ -102,7 +102,7 @@ final class MedicationViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in
@@ -117,7 +117,7 @@ final class MedicationViewModel {
             .flatMapLatest { [weak self] medication -> Observable<Void> in
                 guard let self else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             try await self.medicationUseCase.delete(medication: medication)
                             observer.onNext(())
@@ -126,7 +126,7 @@ final class MedicationViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in

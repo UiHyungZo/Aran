@@ -100,7 +100,7 @@ final class HealthRecordFormViewModel {
         if case let .addLocked(type) = mode {
             let fallbackUnit = HealthRecordType.defaultUnits[type] ?? ""
             initialUnitText = Observable<String>.create { [weak self] observer in
-                Task {
+                let task = Task {
                     do {
                         let records = try await self?.useCase.fetch(type: type) ?? []
                         observer.onNext(records.first?.unit ?? fallbackUnit)
@@ -110,7 +110,7 @@ final class HealthRecordFormViewModel {
                         observer.onCompleted()
                     }
                 }
-                return Disposables.create()
+                return Disposables.create { task.cancel() }
             }
             .asDriver(onErrorJustReturn: fallbackUnit)
         } else {
@@ -130,7 +130,7 @@ final class HealthRecordFormViewModel {
             .flatMapLatest { [weak self] type, value, unit, date, memo -> Observable<Void> in
                 guard let self, let value else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             switch self.mode {
                             case .add, .addLocked(_):
@@ -158,7 +158,7 @@ final class HealthRecordFormViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in
@@ -173,7 +173,7 @@ final class HealthRecordFormViewModel {
                 guard let self else { return .empty() }
                 guard case let .edit(record) = self.mode else { return .empty() }
                 return Observable.create { observer in
-                    Task {
+                    let task = Task {
                         do {
                             try await self.useCase.delete(id: record.id)
                             observer.onNext(())
@@ -182,7 +182,7 @@ final class HealthRecordFormViewModel {
                             observer.onError(error)
                         }
                     }
-                    return Disposables.create()
+                    return Disposables.create { task.cancel() }
                 }
             }
             .catch { error in
