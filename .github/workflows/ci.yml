@@ -41,12 +41,12 @@ jobs:
 
       - name: xcodebuild test (AranTests)
         run: |
-          xcodebuild test \
+          set -o pipefail && xcodebuild test \
             -project Aran.xcodeproj \
             -scheme AranTests \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
             -resultBundlePath TestResults.xcresult \
-            2>&1 | grep -E "(error:|\.swift:[0-9]|Test Suite|Executed|FAILED)" || true
+            | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
       - name: Upload test results
         if: always()
