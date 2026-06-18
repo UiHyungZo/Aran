@@ -168,7 +168,7 @@ final class ProcedureRecordViewModelTests: XCTestCase {
 
         // then
         XCTAssertFalse(entries.isEmpty)
-        XCTAssertTrue(entries.allSatisfy { !$0.isEmpty })
+        XCTAssertTrue(entries.allSatisfy { $0.count > 0 })
         let categories = Set(entries.map(\.category))
         XCTAssertTrue(categories.contains("채취"))
         XCTAssertTrue(categories.contains("이식"))

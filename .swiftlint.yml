@@ -27,6 +27,5 @@ disabled_rules:
   - large_tuple
 
 opt_in_rules:
-  - empty_count
   - closure_spacing
   - explicit_init
