@@ -104,7 +104,10 @@ func test_searchDrug_whenKeywordIsEmpty_thenThrowsError() async {
 | Repository | CycleRecord, DiaryEntry, Drug, FavoriteDrug, HealthRecord, HospitalVisit, MedicationLog, Medication, MenstrualCycle, PGTRecord, RecentDrugSearch, TransferRecord (12개) | ✅ |
 | Network | DrugAPIClient, DrugRouter, DrugApprovalRouter, DocDataXMLParser (4개) | ✅ |
 | ViewModel | CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel, MedicationFormViewModel, MedicationViewModel, ProcedureRecordViewModel (8개) | ✅ |
-| UITest | CalendarFlow, DrugSearchFlow, HealthRecordFlow, MedicationFlow, ProcedureRecordFlow (5개) | ✅ |
+
+### AranUITests
+
+현재 CI 검증 범위에는 포함하지 않는다. 핵심 UI 플로우 테스트는 Phase 2 또는 별도 실행 대상으로 관리한다.
 
 ---
 
@@ -393,9 +396,9 @@ AranTests/Presentation/ViewModels/
 
 ---
 
-## UI Tests
+## UI Tests (Phase 2)
 
-### 테스트 시나리오 (AranUITests/Flows/)
+현재 CI 검증 범위에는 포함하지 않는다. 아래 시나리오는 Phase 2에서 `AranUITests/Flows/`로 추가할 후보다.
 
 | 플로우 | 시나리오 |
 |--------|---------|
@@ -464,7 +467,7 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
 | Data / Network (Router) | 70%+ |
 | Data / Network (APIClient) | 60%+ |
 | Presentation / ViewModels | 50%+ |
-| UI Tests | 핵심 플로우 6개 |
+| UI Tests | Phase 2 / 별도 실행 대상 |
 
 숫자보다 중요한 것은 **핵심 비즈니스 로직이 독립적으로 테스트 가능한 구조**인지다.
 
@@ -477,7 +480,8 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
 swift test --package-path Packages/AranDomain
 
 # 전체 단위 테스트
-xcodebuild test -scheme AranTests \
+xcodebuild test -project Aran.xcodeproj \
+  -scheme AranTests \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 ```
 
