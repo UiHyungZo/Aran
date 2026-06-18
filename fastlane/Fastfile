@@ -11,12 +11,12 @@ platform :ios do
 
   desc "Run SwiftLint"
   lane :lint do
-    sh("swiftlint lint --reporter github-actions-logging")
+    sh("swiftlint lint --reporter github-actions-logging ..")
   end
 
   desc "Run Domain package tests"
   lane :domain_tests do
-    sh("swift test --package-path Packages/AranDomain")
+    sh("swift test --package-path ../Packages/AranDomain")
   end
 
   desc "Run Xcode unit tests"
