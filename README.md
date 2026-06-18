@@ -1,7 +1,6 @@
 # 🌸 아란 (Aran)
 
 [![CI](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml/badge.svg)](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/UiHyungZo/Aran/branch/main/graph/badge.svg)](https://codecov.io/gh/UiHyungZo/Aran)
 
 > 시험관 시술(IVF)을 진행 중인 여성을 위한 통합 관리 iOS 앱
 

@@ -38,15 +38,7 @@ jobs:
           restore-keys: ${{ runner.os }}-spm-domain-
 
       - name: swift test (AranDomain)
-        run: swift test --package-path Packages/AranDomain --enable-code-coverage
-
-      - name: Upload coverage (AranDomain)
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          working-directory: Packages/AranDomain
-          flags: domain
-          fail_ci_if_error: false
+        run: swift test --package-path Packages/AranDomain
 
   unit-test:
     name: Unit Tests (xcodebuild)
@@ -76,7 +68,6 @@ jobs:
             -project Aran.xcodeproj \
             -scheme AranTests \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-            -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
@@ -87,11 +78,3 @@ jobs:
           name: TestResults
           path: TestResults.xcresult
 
-      - name: Upload coverage (AranTests)
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          xcode: true
-          xcode_archive_path: TestResults.xcresult
-          flags: unit
-          fail_ci_if_error: false
