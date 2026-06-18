@@ -29,6 +29,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Select latest Xcode
+        run: |
+          LATEST=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$LATEST/Contents/Developer"
+          xcodebuild -version
+
       - name: Cache SPM (Xcode DerivedData)
         uses: actions/cache@v4
         with:
