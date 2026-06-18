@@ -52,6 +52,9 @@ jobs:
             -scheme AranTests \
             -destination 'platform=macOS,variant=Mac Catalyst' \
             -resultBundlePath TestResults.xcresult \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
             | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
       - name: Upload test results
