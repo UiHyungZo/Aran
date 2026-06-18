@@ -40,7 +40,7 @@
 ## ✨ 주요 기능
 
 ### 📅 캘린더
-- 월간 캘린더 기반 날짜별 도트 표시 (병원 일정 · 약 복용 · 이식일 · 생리 기간)
+- 월간 캘린더 기반 날짜별 도트 표시 (병원 · 이식일 · 약 알림 · 검사 · 생리 · 배란 · 일기)
 - 2단계 바텀시트 — 날짜 요약 → 항목별 입력/수정
 - 병원 일정 / 감정 일기 / 검사 수치 / 생리 주기 2단계 시트 입력
 - 1단계 시트 복용 약 체크박스 (MedicationLog SwiftData 저장)
@@ -228,8 +228,8 @@ Aran/
 │       └── Bridging/                 ← UIKit ↔ SwiftUI 브릿지
 │
 ├── Domain/
-│   ├── Entities/                     ← 순수 Swift 타입 (12개)
-│   ├── UseCases/                     ← 비즈니스 로직 (12개)
+│   ├── Entities/                     ← 순수 Swift 타입 (16개)
+│   ├── UseCases/                     ← 비즈니스 로직 (13개)
 │   └── Repositories/                 ← Protocol 정의 (13개)
 │
 └── Data/
@@ -238,10 +238,17 @@ Aran/
     ├── Repositories/                 ← Protocol 구현체
     └── Notification/                 ← NotificationManager
 
+Packages/AranDomain/Tests/AranDomainTests/
+├── UseCases/                         ← UseCase 단위 테스트 (13개)
+└── Mocks/                            ← Mock Repository
+
 AranTests/
-├── UseCases/                         ← UseCase 단위 테스트
+├── Data/
+│   ├── Mappers/                      ← Mapper 단위 테스트
+│   ├── Network/                      ← Network 단위 테스트
+│   └── Repositories/                 ← Repository 단위 테스트
 ├── ViewModels/                       ← ViewModel 단위 테스트
-└── Mocks/                            ← Mock Repository / UseCase
+└── Mocks/                            ← Mock UseCase
 ```
 
 <br>
