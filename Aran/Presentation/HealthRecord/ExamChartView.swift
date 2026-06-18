@@ -51,22 +51,30 @@ struct ExamChartView: View {
         }
     }
 
+    private var referenceItems: [(range: ClosedRange<Double>, xStart: String, xEnd: String)] {
+        guard let r = referenceRange,
+              !indexedPoints.isEmpty,
+              let first = indexedPoints.first?.sortKey,
+              let last = indexedPoints.last?.sortKey else { return [] }
+        return [(r, first, last)]
+    }
+
     var body: some View {
         Chart {
-            if let referenceRange, !indexedPoints.isEmpty {
+            ForEach(referenceItems, id: \.range.lowerBound) { item in
                 RectangleMark(
-                    xStart: .value("시작", indexedPoints.first?.sortKey ?? "00"),
-                    xEnd: .value("종료", indexedPoints.last?.sortKey ?? "00"),
-                    yStart: .value("정상 하한", referenceRange.lowerBound),
-                    yEnd: .value("정상 상한", referenceRange.upperBound)
+                    xStart: .value("시작", item.xStart),
+                    xEnd: .value("종료", item.xEnd),
+                    yStart: .value("정상 하한", item.range.lowerBound),
+                    yEnd: .value("정상 상한", item.range.upperBound)
                 )
                 .foregroundStyle(AranColor.accentHealth.opacity(0.12))
 
-                RuleMark(y: .value("정상 하한", referenceRange.lowerBound))
+                RuleMark(y: .value("정상 하한", item.range.lowerBound))
                     .foregroundStyle(AranColor.accentHealth.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
 
-                RuleMark(y: .value("정상 상한", referenceRange.upperBound))
+                RuleMark(y: .value("정상 상한", item.range.upperBound))
                     .foregroundStyle(AranColor.accentHealth.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
             }
