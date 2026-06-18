@@ -76,34 +76,35 @@ func test_searchDrug_whenKeywordIsEmpty_thenThrowsError() async {
 
 ## 현재 테스트 현황
 
-| 파일 | 테스트 수 | 상태 |
-|------|----------|------|
-| MedicationUseCaseTests | 8개 | ✅ 완료 |
-| MedicationFormViewModelTests | 6개 | ✅ 완료 |
-| CycleRecordUseCaseTests | 10개 | ✅ 완료 |
-| SearchDrugUseCaseTests | 4개 | ✅ 완료 |
-| HealthRecordUseCaseTests | 12개 | ✅ 완료 |
-| MedicationNotificationUseCaseTests | 6개 | ✅ 완료 |
-| DrugRepositoryTests | 3개 | ✅ 완료 |
-| MedicationRepositoryTests | 3개 | ✅ 완료 |
-| HealthRecordRepositoryTests | 4개 | ✅ 완료 |
-| DrugMapperTests | 3개 | ✅ 완료 |
-| MedicationMapperTests | 4개 | ✅ 완료 |
-| DrugRouterTests | 4개 | ✅ 완료 |
-| DrugAPIClientTests | 4개 | ✅ 완료 |
-| MedicationLogUseCaseTests | — | ❌ 미구현 |
-| MenstrualCycleUseCaseTests | — | ❌ 미구현 |
-| TransferRecordUseCaseTests | — | ❌ 미구현 |
-| CycleRecordRepositoryTests | — | ❌ 미구현 |
-| TransferRecordRepositoryTests | — | ❌ 미구현 |
-| HospitalVisitRepositoryTests | — | ❌ 미구현 |
-| MedicationLogRepositoryTests | — | ❌ 미구현 |
-| CalendarViewModelTests | — | ❌ 미구현 |
-| DrugInfoViewModelTests | — | ❌ 미구현 |
-| ExamHistoryViewModelTests | — | ❌ 미구현 |
-| HealthRecordFormViewModelTests | — | ❌ 미구현 |
-| HealthRecordViewModelTests | — | ❌ 미구현 |
-| PGTFormViewModelTests | — | ❌ 미구현 |
+### AranDomain (swift test — 시뮬레이터 불필요)
+
+`Packages/AranDomain/Tests/AranDomainTests/UseCases/`
+
+| 파일 | 상태 |
+|------|------|
+| MedicationUseCaseTests | ✅ |
+| MedicationLogUseCaseTests | ✅ |
+| MedicationNotificationUseCaseTests | ✅ |
+| HealthRecordUseCaseTests | ✅ |
+| CycleRecordUseCaseTests | ✅ |
+| TransferRecordUseCaseTests | ✅ |
+| SearchDrugUseCaseTests | ✅ |
+| FavoriteDrugUseCaseTests | ✅ |
+| RecentDrugSearchUseCaseTests | ✅ |
+| DiaryEntryUseCaseTests | ✅ |
+| HospitalVisitUseCaseTests | ✅ |
+| MenstrualCycleUseCaseTests | ✅ |
+| PGTRecordUseCaseTests | ✅ |
+
+### AranTests (xcodebuild test)
+
+| 분류 | 파일 | 상태 |
+|------|------|------|
+| Mapper | DrugMapper, MedicationMapper, CycleRecordMapper, DiaryEntryMapper, DrugApprovalMapper, FavoriteDrugMapper, HealthRecordMapper, HospitalVisitMapper, MedicationLogMapper, MenstrualCycleMapper, PGTRecordMapper, RecentDrugSearchMapper, TransferRecordMapper (13개) | ✅ |
+| Repository | CycleRecord, DiaryEntry, Drug, FavoriteDrug, HealthRecord, HospitalVisit, MedicationLog, Medication, MenstrualCycle, PGTRecord, RecentDrugSearch, TransferRecord (12개) | ✅ |
+| Network | DrugAPIClient, DrugRouter, DrugApprovalRouter, DocDataXMLParser (4개) | ✅ |
+| ViewModel | CalendarViewModel, DrugInfoViewModel, ExamHistoryViewModel, HealthRecordFormViewModel, HealthRecordViewModel, MedicationFormViewModel, MedicationViewModel, ProcedureRecordViewModel (8개) | ✅ |
+| UITest | CalendarFlow, DrugSearchFlow, HealthRecordFlow, MedicationFlow, ProcedureRecordFlow (5개) | ✅ |
 
 ---
 
@@ -472,9 +473,12 @@ final class MockMedicationLogRepository: MedicationLogRepositoryProtocol {
 ## 빌드 / 테스트 명령어
 
 ```bash
-# 전체 테스트
-xcodebuild test -scheme Aran \
-  -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
+# UseCase 단위 테스트 (시뮬레이터 불필요)
+swift test --package-path Packages/AranDomain
+
+# 전체 단위 테스트
+xcodebuild test -scheme AranTests \
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 ```
 
 ---

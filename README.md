@@ -1,5 +1,7 @@
 # 🌸 아란 (Aran)
 
+[![CI](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml/badge.svg)](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml)
+
 > 시험관 시술(IVF)을 진행 중인 여성을 위한 통합 관리 iOS 앱
 
 <br>
@@ -248,12 +250,16 @@ AranTests/
 
 ```bash
 git clone https://github.com/UiHyungZo/Aran.git
+cp Aran/Configuration/Secrets.xcconfig.example Aran/Configuration/Secrets.xcconfig
 ```
 
-`Aran/Aran/Application/AppConfigurations.swift`에 API 키를 설정합니다:
+`Aran/Configuration/Secrets.xcconfig`에 API 키 입력:
 
-```swift
-API_KEY = "YOUR_API_KEY"
+```
+DRUG_API_DECODING = 실제_디코딩_키
+DRUG_API_ENCODING = 실제_인코딩_키
+DRUG_API_PRDT_DECODING = 실제_디코딩_키
+DRUG_API_PRDT_ENCODING = 실제_인코딩_키
 ```
 
 ```bash
@@ -262,6 +268,17 @@ open Aran.xcodeproj
 
 > 식품의약품안전처 e약은요 OpenAPI 키가 필요합니다.  
 > https://www.data.go.kr 에서 무료 발급 가능합니다.
+
+### 테스트 실행
+
+```bash
+# UseCase 단위 테스트 (시뮬레이터 불필요)
+swift test --package-path Packages/AranDomain
+
+# 전체 단위 테스트
+xcodebuild test -scheme AranTests \
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+```
 
 <br>
 
