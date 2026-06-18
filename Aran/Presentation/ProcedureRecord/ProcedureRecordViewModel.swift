@@ -431,6 +431,6 @@ final class ProcedureRecordViewModel: ObservableObject {
                 ProcedureChartEntry(cycleNumber: summary.cycleNumber, category: "이식", count: summary.transferredCount)
             ]
         }
-        .filter { $0.count > 0 }
+        .filter { !$0.isEmpty }
     }
 }
