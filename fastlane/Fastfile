@@ -54,8 +54,6 @@ platform :ios do
   end
 
   private_lane :build_app_store_archive do
-    provisioning_profile_name = ENV.fetch("PROVISIONING_PROFILE_SPECIFIER")
-
     gym(
       project: "Aran.xcodeproj",
       scheme: "Aran",
@@ -63,18 +61,7 @@ platform :ios do
       export_method: "app-store",
       output_directory: "fastlane/build",
       output_name: "Aran.ipa",
-      export_options: {
-        provisioningProfiles: {
-          "com.www.Aran" => provisioning_profile_name
-        }
-      },
-      xcargs: [
-        "DEVELOPMENT_TEAM=9G5T5K3BP2",
-        "CODE_SIGN_STYLE=Manual",
-        "CODE_SIGNING_REQUIRED=YES",
-        "CODE_SIGN_IDENTITY='Apple Distribution'",
-        "PROVISIONING_PROFILE_SPECIFIER='#{provisioning_profile_name}'"
-      ].join(" ")
+      xcargs: "-allowProvisioningUpdates"
     )
   end
 
