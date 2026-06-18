@@ -21,13 +21,10 @@ platform :ios do
 
   desc "Run Xcode unit tests"
   lane :unit_tests do
-    scan(
-      project: "Aran.xcodeproj",
-      scheme: "AranTests",
-      device: "iPhone 16 Pro",
-      result_bundle: true,
-      output_directory: "fastlane/test_output"
-    )
+    sh("cd .. && set -o pipefail && xcodebuild test " \
+       "-project Aran.xcodeproj " \
+       "-scheme AranTests " \
+       "-destination 'platform=iOS Simulator,name=iPhone 16 Pro'")
   end
 
   desc "Archive and upload a build to TestFlight"
