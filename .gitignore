@@ -1,6 +1,7 @@
 *.xcuserstate
 .DS_Store
 *.log
+Packages/**/.build/
 
 # API Keys — 실제 값이 담긴 파일. 절대 커밋하지 않는다.
 Aran/Configuration/Secrets.xcconfig

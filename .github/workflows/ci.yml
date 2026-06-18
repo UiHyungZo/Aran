@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [spm, main]
+    branches: [spm, main, ci]
   pull_request:
     branches: [main]
 
@@ -42,12 +42,15 @@ jobs:
           key: ${{ runner.os }}-deriveddata-${{ hashFiles('Packages/AranDomain/Package.swift', 'Packages/AranData/Package.swift') }}
           restore-keys: ${{ runner.os }}-deriveddata-
 
+      - name: Create Secrets.xcconfig
+        run: cp Aran/Configuration/Secrets.xcconfig.example Aran/Configuration/Secrets.xcconfig
+
       - name: xcodebuild test (AranTests)
         run: |
           set -o pipefail && xcodebuild test \
             -project Aran.xcodeproj \
             -scheme AranTests \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4' \
             -resultBundlePath TestResults.xcresult \
             | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
