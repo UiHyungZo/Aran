@@ -125,6 +125,173 @@ final class CycleRecordUseCaseTests: XCTestCase {
         XCTAssertEqual(repo.savedRecords.first?.diary?.text, "첫 기록")
     }
 
+    // MARK: - save
+
+    func testSave_withValidInput_savesRecord() async throws {
+        // when
+        try await sut.save(cycleNumber: 1, startDate: Date(), retrievalCount: 5, fertilizedCount: 3, frozenCount: 2, embryoRecords: [])
+
+        // then
+        XCTAssertEqual(repo.savedRecords.count, 1)
+        XCTAssertEqual(repo.savedRecords.first?.cycleNumber, 1)
+    }
+
+    func testSave_withRetrievalCount_addsEmbryoRetrievalEvent() async throws {
+        // when
+        try await sut.save(cycleNumber: 1, startDate: Date(), retrievalCount: 4, fertilizedCount: 2, frozenCount: 1, embryoRecords: [])
+
+        // then
+        let events = repo.savedRecords.first?.events ?? []
+        guard case .embryoRetrieval(let count) = events.first else {
+            return XCTFail("embryoRetrieval 이벤트 없음")
+        }
+        XCTAssertEqual(count, 4)
+    }
+
+    func testSave_withZeroCycleNumber_throws() async {
+        // when / then
+        await XCTAssertThrowsErrorAsync(
+            try await sut.save(cycleNumber: 0, startDate: Date(), retrievalCount: 0, fertilizedCount: 0, frozenCount: 0, embryoRecords: [])
+        )
+    }
+
+    func testSave_whenFertilizedExceedsRetrieval_throws() async {
+        // when / then
+        await XCTAssertThrowsErrorAsync(
+            try await sut.save(cycleNumber: 1, startDate: Date(), retrievalCount: 3, fertilizedCount: 5, frozenCount: 0, embryoRecords: [])
+        )
+    }
+
+    func testSave_whenFrozenExceedsFertilized_throws() async {
+        // when / then
+        await XCTAssertThrowsErrorAsync(
+            try await sut.save(cycleNumber: 1, startDate: Date(), retrievalCount: 5, fertilizedCount: 3, frozenCount: 4, embryoRecords: [])
+        )
+    }
+
+    // MARK: - update
+
+    func testUpdate_whenRecordExists_updatesRecord() async throws {
+        // given
+        let record = makeCycleRecord(cycleNumber: 2)
+        repo.fetchAllResult = [record]
+
+        // when
+        try await sut.update(cycleNumber: 2, startDate: Date(), retrievalCount: 6, fertilizedCount: 4, frozenCount: 2, embryoRecords: [])
+
+        // then
+        XCTAssertEqual(repo.updatedRecords.count, 1)
+        XCTAssertEqual(repo.updatedRecords.first?.fertilizedCount, 4)
+    }
+
+    func testUpdate_whenRecordNotFound_throws() async {
+        // given
+        repo.fetchAllResult = []
+
+        // when / then
+        await XCTAssertThrowsErrorAsync(
+            try await sut.update(cycleNumber: 99, startDate: Date(), retrievalCount: 0, fertilizedCount: 0, frozenCount: 0, embryoRecords: [])
+        )
+    }
+
+    func testUpdate_updatesEmbryoRetrievalEventCount() async throws {
+        // given
+        let record = makeCycleRecord(cycleNumber: 1, events: [.embryoRetrieval(count: 3)])
+        repo.fetchAllResult = [record]
+
+        // when
+        try await sut.update(cycleNumber: 1, startDate: Date(), retrievalCount: 7, fertilizedCount: 4, frozenCount: 2, embryoRecords: [])
+
+        // then
+        let events = repo.updatedRecords.first?.events ?? []
+        guard case .embryoRetrieval(let count) = events.first else {
+            return XCTFail("embryoRetrieval 이벤트 없음")
+        }
+        XCTAssertEqual(count, 7)
+    }
+
+    // MARK: - delete
+
+    func testDelete_callsRepositoryWithCorrectID() async throws {
+        // given
+        let id = UUID()
+
+        // when
+        try await sut.delete(id: id)
+
+        // then
+        XCTAssertEqual(repo.deletedIDs, [id])
+    }
+
+    // MARK: - removeTransferEvent
+
+    func testRemoveTransferEvent_removesMatchingEvent() async throws {
+        // given
+        let transferID = UUID()
+        let record = makeCycleRecord(events: [.embryoTransfer(transferID: transferID), .ovulation])
+        repo.fetchAllResult = [record]
+
+        // when
+        try await sut.removeTransferEvent(transferID: transferID)
+
+        // then
+        XCTAssertEqual(repo.updatedRecords.count, 1)
+        XCTAssertEqual(repo.updatedRecords.first?.events.count, 1)
+    }
+
+    func testRemoveTransferEvent_whenNoMatch_doesNotUpdate() async throws {
+        // given
+        let record = makeCycleRecord(events: [.ovulation])
+        repo.fetchAllResult = [record]
+
+        // when
+        try await sut.removeTransferEvent(transferID: UUID())
+
+        // then
+        XCTAssertTrue(repo.updatedRecords.isEmpty)
+    }
+
+    // MARK: - clearDiary
+
+    func testClearDiary_whenRecordExists_setsDiaryToNil() async throws {
+        // given
+        let diary = DiaryEntry(id: UUID(), date: Date(), emoji: "😊", content: "기록")
+        let record = makeCycleRecord(diary: diary)
+        repo.fetchDateResult = record
+
+        // when
+        try await sut.clearDiary(for: record.date)
+
+        // then
+        XCTAssertEqual(repo.updatedRecords.count, 1)
+        XCTAssertNil(repo.updatedRecords.first?.diary)
+    }
+
+    func testClearDiary_whenNoRecord_doesNothing() async throws {
+        // given
+        repo.fetchDateResult = nil
+
+        // when
+        try await sut.clearDiary(for: Date())
+
+        // then
+        XCTAssertTrue(repo.updatedRecords.isEmpty)
+    }
+
+    // MARK: - addEvent (protocol extension convenience)
+
+    func testAddEvent_convenienceOverload_usesCycleNumber1() async throws {
+        // given
+        repo.fetchDateResult = nil
+        let sutProtocol: CycleRecordUseCaseProtocol = sut
+
+        // when
+        try await sutProtocol.addEvent(.ovulation, to: Date())
+
+        // then
+        XCTAssertEqual(repo.savedRecords.first?.cycleNumber, 1)
+    }
+
     // MARK: - estimateOvulation
 
     func testEstimateOvulation_returns14DaysAfterPeriodStart() {
@@ -138,12 +305,33 @@ final class CycleRecordUseCaseTests: XCTestCase {
         // then
         XCTAssertEqual(result, expected)
     }
+
+    func testEstimateOvulation_withCustomCycleLength_returnsCorrectDate() {
+        // given
+        let periodStart = Date(timeIntervalSince1970: 0)
+        let expected = Calendar.current.date(byAdding: .day, value: 21, to: periodStart)!
+
+        // when
+        let result = sut.estimateOvulation(from: periodStart, cycleLength: 35)
+
+        // then
+        XCTAssertEqual(result, expected)
+    }
 }
 
 // MARK: - Helpers
 
 private extension CycleRecordUseCaseTests {
-    func makeCycleRecord(events: [DayEvent] = []) -> CycleRecord {
-        CycleRecord(id: UUID(), date: Date(), events: events, diary: nil)
+    func makeCycleRecord(cycleNumber: Int = 1, events: [DayEvent] = [], diary: DiaryEntry? = nil) -> CycleRecord {
+        CycleRecord(id: UUID(), cycleNumber: cycleNumber, date: Date(), events: events, diary: diary)
     }
+}
+
+// MARK: - Async throw helper
+
+private func XCTAssertThrowsErrorAsync(_ expression: @autoclosure () async throws -> some Any) async {
+    do {
+        _ = try await expression()
+        XCTFail("에러가 발생해야 합니다.")
+    } catch {}
 }
