@@ -50,7 +50,7 @@ jobs:
           set -o pipefail && xcodebuild test \
             -project Aran.xcodeproj \
             -scheme AranTests \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4' \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
             -resultBundlePath TestResults.xcresult \
             | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
