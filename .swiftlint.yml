@@ -1,0 +1,30 @@
+excluded:
+  - Packages/AranData/.build
+  - Packages/AranDomain/.build
+
+line_length:
+  warning: 150
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+file_length:
+  warning: 600
+  error: 1300
+
+type_body_length:
+  warning: 400
+  error: 800
+
+function_body_length:
+  warning: 60
+  error: 100
+
+disabled_rules:
+  - trailing_whitespace
+  - identifier_name
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - explicit_init

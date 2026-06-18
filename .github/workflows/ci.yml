@@ -7,6 +7,23 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: |
+          LATEST=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$LATEST/Contents/Developer"
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint lint --reporter github-actions-logging
+
   domain-test:
     name: Domain Unit Tests (swift test)
     runs-on: macos-15
@@ -21,7 +38,15 @@ jobs:
           restore-keys: ${{ runner.os }}-spm-domain-
 
       - name: swift test (AranDomain)
-        run: swift test --package-path Packages/AranDomain
+        run: swift test --package-path Packages/AranDomain --enable-code-coverage
+
+      - name: Upload coverage (AranDomain)
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          working-directory: Packages/AranDomain
+          flags: domain
+          fail_ci_if_error: false
 
   unit-test:
     name: Unit Tests (xcodebuild)
@@ -51,6 +76,7 @@ jobs:
             -project Aran.xcodeproj \
             -scheme AranTests \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             | grep -E "^(Build|Test|error:|warning:|✓|✗|Executed)"
 
@@ -60,3 +86,12 @@ jobs:
         with:
           name: TestResults
           path: TestResults.xcresult
+
+      - name: Upload coverage (AranTests)
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          xcode: true
+          xcode_archive_path: TestResults.xcresult
+          flags: unit
+          fail_ci_if_error: false

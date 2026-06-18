@@ -1,6 +1,7 @@
 # 🌸 아란 (Aran)
 
 [![CI](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml/badge.svg)](https://github.com/UiHyungZo/Aran/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/UiHyungZo/Aran/branch/main/graph/badge.svg)](https://codecov.io/gh/UiHyungZo/Aran)
 
 > 시험관 시술(IVF)을 진행 중인 여성을 위한 통합 관리 iOS 앱
 
@@ -33,7 +34,7 @@
 | 아키텍처 | Clean Architecture + MVVM |
 | UI | SwiftUI + Combine / UIKit + RxSwift |
 | 데이터 | SwiftData |
-| 테스트 | UnitTest, UITest |
+| 테스트 | Unit Test 중심 / UI Test Phase 2 |
 
 <br>
 
@@ -199,7 +200,7 @@ SwiftUI의 선언형 상태 기반으로 `@State` + presentation detent 조합�
 | Repository | CycleRecordRepository, TransferRecordRepository, FavoriteDrugRepository, DiaryEntry, Drug, HealthRecord, HospitalVisit, MedicationLog, Medication, MenstrualCycle, PGTRecord, RecentDrugSearch |
 | Network | DrugRouter, DrugApprovalRouter, DrugAPIClient, DocDataXMLParser |
 | Mapper | DrugMapper, DrugApprovalMapper, CycleRecord, DiaryEntry, FavoriteDrug, HealthRecord, HospitalVisit, MedicationLog, Medication, MenstrualCycle, PGTRecord, RecentDrugSearch, TransferRecord |
-| UI Test | 캘린더, 약 등록, 약 검색, 채취.이식, 검사 수치 플로우, 탭 네비게이션
+| UI Test (Phase 2) | 캘린더, 약 등록, 약 검색, 채취.이식, 검사 수치 플로우, 탭 네비게이션 |
 
 <br>
 
@@ -276,7 +277,8 @@ open Aran.xcodeproj
 swift test --package-path Packages/AranDomain
 
 # 전체 단위 테스트
-xcodebuild test -scheme AranTests \
+xcodebuild test -project Aran.xcodeproj \
+  -scheme AranTests \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 ```
 
