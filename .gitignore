@@ -12,6 +12,7 @@ Aran/Configuration/Secrets.xcconfig
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/
+fastlane/test-results/
 fastlane/test_output/
 fastlane/build/
 *.ipa

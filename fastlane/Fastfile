@@ -1,3 +1,12 @@
+require "fileutils"
+require "shellwords"
+
+REPO_ROOT = File.expand_path("..", __dir__)
+
+def repo_path(*components)
+  File.join(REPO_ROOT, *components)
+end
+
 default_platform(:ios)
 
 platform :ios do
@@ -11,20 +20,25 @@ platform :ios do
 
   desc "Run SwiftLint"
   lane :lint do
-    sh("swiftlint lint --reporter github-actions-logging ..")
+    sh("swiftlint lint --reporter github-actions-logging #{REPO_ROOT.shellescape}")
   end
 
   desc "Run Domain package tests"
   lane :domain_tests do
-    sh("swift test --package-path ../Packages/AranDomain")
+    sh("swift test --package-path #{repo_path("Packages/AranDomain").shellescape}")
   end
 
   desc "Run Xcode unit tests"
   lane :unit_tests do
-    sh("cd .. && set -o pipefail && xcodebuild test " \
-       "-project Aran.xcodeproj " \
+    result_bundle_path = repo_path("fastlane/test-results/AranTests.xcresult")
+    FileUtils.rm_rf(result_bundle_path)
+    FileUtils.mkdir_p(File.dirname(result_bundle_path))
+
+    sh("set -o pipefail && xcodebuild test " \
+       "-project #{repo_path("Aran.xcodeproj").shellescape} " \
        "-scheme AranTests " \
-       "-destination 'platform=iOS Simulator,name=iPhone 16 Pro'")
+       "-destination 'platform=iOS Simulator,name=iPhone 16 Pro' " \
+       "-resultBundlePath #{result_bundle_path.shellescape}")
   end
 
   desc "Archive and upload a build to TestFlight"
@@ -33,7 +47,7 @@ platform :ios do
     setup_app_store_connect_api_key
     increment_build_number(
       build_number: latest_testflight_build_number(initial_build_number: 0) + 1,
-      xcodeproj: "Aran.xcodeproj"
+      xcodeproj: repo_path("Aran.xcodeproj")
     )
     build_app_store_archive
     upload_to_testflight(skip_waiting_for_build_processing: true)
@@ -58,7 +72,7 @@ platform :ios do
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "Aran.xcodeproj",
+      path: repo_path("Aran.xcodeproj"),
       team_id: "9G5T5K3BP2",
       targets: ["Aran"],
       code_sign_identity: "Apple Distribution",
@@ -67,11 +81,11 @@ platform :ios do
     )
 
     gym(
-      project: "Aran.xcodeproj",
+      project: repo_path("Aran.xcodeproj"),
       scheme: "Aran",
       configuration: "Release",
       export_method: "app-store",
-      output_directory: "fastlane/build",
+      output_directory: repo_path("fastlane/build"),
       output_name: "Aran.ipa",
       export_options: {
         signingStyle: "manual",
@@ -95,9 +109,9 @@ platform :ios do
   private_lane :ensure_secrets_xcconfig do
     next if ENV["CI"]
 
-    secrets_path = "Aran/Configuration/Secrets.xcconfig"
-    example_path = "Aran/Configuration/Secrets.xcconfig.example"
+    secrets_path = repo_path("Aran/Configuration/Secrets.xcconfig")
+    example_path = repo_path("Aran/Configuration/Secrets.xcconfig.example")
 
-    sh("cp #{example_path} #{secrets_path}") unless File.exist?(secrets_path)
+    FileUtils.cp(example_path, secrets_path) unless File.exist?(secrets_path)
   end
 end
